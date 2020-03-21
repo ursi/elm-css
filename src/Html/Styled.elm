@@ -78,6 +78,10 @@ toStyledNode maybeHashAndString tag attributes children =
     V.node tag newAttributes (addStyleNode styleDict children_)
 
 
+
+-- TODO: figure out a helper function make this not just a copy-past of the non-keyed version
+
+
 toStyledKeyedNode :
     Maybe ( Int, String )
     -> String
@@ -135,6 +139,10 @@ addStyleNode styleDict nodes =
 
     else
         V.node "style" [] textNodes :: nodes
+
+
+
+-- TODO: don't use an arbitrary string, maybe use a hash
 
 
 addKeyedStyleNode : Dict Int String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
@@ -261,6 +269,10 @@ folderHelperHelper maybeHashAndString attributes nodes styleDict =
                 ( [], styleDict )
                 nodes
             )
+
+
+
+-- potentially want to use keyed nodes
 
 
 toTextNodes : Dict Int String -> List (V.Node msg)
