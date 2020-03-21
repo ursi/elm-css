@@ -12,11 +12,10 @@ type Node msg
     = Text String
     | Node String (List (Attribute msg)) (List (Node msg))
       -- | NodeNS String String (List (Attribute msg)) (List (Node msg))
+    | KeyedNode String (List (Attribute msg)) (List ( String, Node msg ))
     | StyledNode String (List Declaration) (List (Attribute msg)) (List (Node msg))
-
-
-
--- | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
+      -- | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
+    | StyledKeyedNode String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
 
 
 withStyles : List Statement -> List (Node msg) -> List (V.Node msg)
@@ -41,8 +40,18 @@ toHtml node_ =
         Node tag attributes children ->
             toStyledNode Nothing tag attributes children
 
+        KeyedNode tag attributes children ->
+            toStyledKeyedNode Nothing tag attributes children
+
         StyledNode tag declarations attributes children ->
             toStyledNode
+                (getHashAndString declarations)
+                tag
+                attributes
+                children
+
+        StyledKeyedNode tag declarations attributes children ->
+            toStyledKeyedNode
                 (getHashAndString declarations)
                 tag
                 attributes
@@ -69,6 +78,35 @@ toStyledNode maybeHashAndString tag attributes children =
     V.node tag newAttributes (addStyleNode styleDict children_)
 
 
+toStyledKeyedNode :
+    Maybe ( Int, String )
+    -> String
+    -> List (Attribute msg)
+    -> List ( String, Node msg )
+    -> V.Node msg
+toStyledKeyedNode maybeHashAndString tag attributes children =
+    let
+        ( dict, newAttributes ) =
+            toStyledNodeHelper maybeHashAndString attributes
+
+        ( children_, styleDict ) =
+            List.foldr
+                folder
+                ( [], dict )
+                (List.map Tuple.second children)
+    in
+    V.keyedNode tag
+        newAttributes
+        (addKeyedStyleNode
+            styleDict
+            (List.map2
+                (\( id, _ ) child -> ( id, child ))
+                children
+                children_
+            )
+        )
+
+
 toStyledNodeHelper :
     Maybe ( Int, String )
     -> List (Attribute msg)
@@ -89,6 +127,11 @@ toStyledNodeHelper maybeHashAndString attributes =
 addStyleNode : Dict Int String -> List (V.Node msg) -> List (V.Node msg)
 addStyleNode =
     (::) << V.node "style" [] << toTextNodes
+
+
+addKeyedStyleNode : Dict Int String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
+addKeyedStyleNode =
+    (::) << Tuple.pair "asdfasfasd" << V.node "style" [] << toTextNodes
 
 
 addClass : Int -> List (Attribute msg) -> List (Attribute msg)
@@ -129,6 +172,24 @@ folderHelper styleDict node_ =
 
         -- NodeNS someStr otherStr attributes children ->
         --     V.nodeNS someStr otherStr attributes <| folder (folderHelper seed styleDict) children
+        KeyedNode tag attributes children ->
+            let
+                ( children_, newStyleDict ) =
+                    List.foldr
+                        folder
+                        ( [], styleDict )
+                        (List.map Tuple.second children)
+            in
+            ( V.keyedNode tag
+                attributes
+                (List.map2
+                    (\( id, _ ) child -> ( id, child ))
+                    children
+                    children_
+                )
+            , newStyleDict
+            )
+
         StyledNode tag declarations attributes children ->
             let
                 ( newAttributes, ( children_, newStyleDict ) ) =
@@ -140,19 +201,35 @@ folderHelper styleDict node_ =
             in
             ( V.node tag newAttributes children_, newStyleDict )
 
-
-
--- StyledNodeNS someStr otherStr declarations attributes children ->
---     let
---         ( decStr, hash ) =
---             getHashAndString seed declarations
---     in
---     V.nodeNS someStr otherStr attributes <|
---         folder
---             (folderHelper hash <|
---                 Dict.insert hash decStr styleDict
---             )
---             children
+        -- StyledNodeNS someStr otherStr declarations attributes children ->
+        --     let
+        --         ( decStr, hash ) =
+        --             getHashAndString seed declarations
+        --     in
+        --     V.nodeNS someStr otherStr attributes <|
+        --         folder
+        --             (folderHelper hash <|
+        --                 Dict.insert hash decStr styleDict
+        --             )
+        --             children
+        StyledKeyedNode tag declarations attributes children ->
+            let
+                ( newAttributes, ( children_, newStyleDict ) ) =
+                    folderHelperHelper
+                        (getHashAndString declarations)
+                        attributes
+                        (List.map Tuple.second children)
+                        styleDict
+            in
+            ( V.keyedNode tag
+                attributes
+                (List.map2
+                    (\( id, _ ) child -> ( id, child ))
+                    children
+                    children_
+                )
+            , newStyleDict
+            )
 
 
 folderHelperHelper :
