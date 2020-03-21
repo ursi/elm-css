@@ -43,11 +43,6 @@ append =
     (>>) (++) << (|>)
 
 
-hover : List Declaration -> Declaration
-hover =
-    createSelectorVariation <| append ":hover"
-
-
 adjacent : List Declaration -> Declaration
 adjacent =
     createSelectorVariation (\class -> class ++ " + " ++ class)
@@ -61,6 +56,30 @@ children =
 descendants : List Declaration -> Declaration
 descendants =
     createSelectorVariation <| append " *"
+
+
+
+-- the created style element can mess this up
+
+
+firstChild : List Declaration -> Declaration
+firstChild =
+    createSelectorVariation <| append ":first-child"
+
+
+hover : List Declaration -> Declaration
+hover =
+    createSelectorVariation <| append ":hover"
+
+
+important : String -> String
+important =
+    append " !important"
+
+
+importantJ : List String -> String
+importantJ =
+    append " !important" << String.join " "
 
 
 
