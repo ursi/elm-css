@@ -53,6 +53,16 @@ adjacent =
     createSelectorVariation (\class -> class ++ " + " ++ class)
 
 
+children : List Declaration -> Declaration
+children =
+    createSelectorVariation <| append " > *"
+
+
+descendants : List Declaration -> Declaration
+descendants =
+    createSelectorVariation <| append " *"
+
+
 
 -- Properties
 -- https://ellie-app.com/8mDhdJMyRq4a1
