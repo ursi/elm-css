@@ -4,7 +4,7 @@ import Css.Global as G exposing (Statement)
 import Css.Internal as I exposing (Declaration)
 import Dict exposing (Dict)
 import Html.Attributes as A
-import Murmur3 as M
+import Murmur3
 import VirtualDom as V
 
 
@@ -59,7 +59,7 @@ toHtml node_ =
 
 
 toStyledNode :
-    Maybe ( Int, String )
+    Maybe ( String, String )
     -> String
     -> List (Attribute msg)
     -> List (Node msg)
@@ -83,7 +83,7 @@ toStyledNode maybeHashAndString tag attributes children =
 
 
 toStyledKeyedNode :
-    Maybe ( Int, String )
+    Maybe ( String, String )
     -> String
     -> List (Attribute msg)
     -> List ( String, Node msg )
@@ -112,9 +112,9 @@ toStyledKeyedNode maybeHashAndString tag attributes children =
 
 
 toStyledNodeHelper :
-    Maybe ( Int, String )
+    Maybe ( String, String )
     -> List (Attribute msg)
-    -> ( Dict Int String, List (Attribute msg) )
+    -> ( Dict String String, List (Attribute msg) )
 toStyledNodeHelper maybeHashAndString attributes =
     case maybeHashAndString of
         Just ( hash, decsStr ) ->
@@ -128,7 +128,7 @@ toStyledNodeHelper maybeHashAndString attributes =
             )
 
 
-addStyleNode : Dict Int String -> List (V.Node msg) -> List (V.Node msg)
+addStyleNode : Dict String String -> List (V.Node msg) -> List (V.Node msg)
 addStyleNode styleDict nodes =
     let
         textNodes =
@@ -138,27 +138,27 @@ addStyleNode styleDict nodes =
         nodes
 
     else
-        V.node "style" [] textNodes :: nodes
+        V.keyedNode "style" [] textNodes :: nodes
 
 
 
 -- TODO: don't use an arbitrary string, maybe use a hash
 
 
-addKeyedStyleNode : Dict Int String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
+addKeyedStyleNode : Dict String String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
 addKeyedStyleNode =
-    (::) << Tuple.pair "asdfasfasd" << V.node "style" [] << toTextNodes
+    (::) << Tuple.pair "asdfasfasd" << V.keyedNode "style" [] << toTextNodes
 
 
-addClass : Int -> List (Attribute msg) -> List (Attribute msg)
+addClass : String -> List (Attribute msg) -> List (Attribute msg)
 addClass =
-    (::) << A.class << (++) "_" << String.fromInt
+    (::) << A.class << (++) "_"
 
 
 folder :
     Node msg
-    -> ( List (V.Node msg), Dict Int String )
-    -> ( List (V.Node msg), Dict Int String )
+    -> ( List (V.Node msg), Dict String String )
+    -> ( List (V.Node msg), Dict String String )
 folder node_ ( children, styleDict ) =
     let
         ( newNode, newStyleDict ) =
@@ -168,9 +168,9 @@ folder node_ ( children, styleDict ) =
 
 
 folderHelper :
-    Dict Int String
+    Dict String String
     -> Node msg
-    -> ( V.Node msg, Dict Int String )
+    -> ( V.Node msg, Dict String String )
 folderHelper styleDict node_ =
     case node_ of
         Text str ->
@@ -249,11 +249,11 @@ folderHelper styleDict node_ =
 
 
 folderHelperHelper :
-    Maybe ( Int, String )
+    Maybe ( String, String )
     -> List (Attribute msg)
     -> List (Node msg)
-    -> Dict Int String
-    -> ( List (Attribute msg), ( List (V.Node msg), Dict Int String ) )
+    -> Dict String String
+    -> ( List (Attribute msg), ( List (V.Node msg), Dict String String ) )
 folderHelperHelper maybeHashAndString attributes nodes styleDict =
     case maybeHashAndString of
         Just ( hash, decsStr ) ->
@@ -271,31 +271,34 @@ folderHelperHelper maybeHashAndString attributes nodes styleDict =
             )
 
 
-
--- potentially want to use keyed nodes
-
-
-toTextNodes : Dict Int String -> List (V.Node msg)
+toTextNodes : Dict String String -> List ( String, V.Node msg )
 toTextNodes =
     Dict.toList
         >> List.map
             (\( hash, ruleTemplate ) ->
-                V.text <|
+                ( hash
+                , V.text <|
                     String.replace
                         I.tmpClass
-                        ((++) "._" <| String.fromInt hash)
+                        ("._" ++ hash)
                         ruleTemplate
+                )
             )
 
 
-getHashAndString : List Declaration -> Maybe ( Int, String )
+getHashAndString : List Declaration -> Maybe ( String, String )
 getHashAndString declarations =
     let
         maybeDecStr =
             I.toString declarations
     in
     Maybe.map
-        (\decsStr -> ( M.hashString seed decsStr, decsStr ))
+        (\decsStr ->
+            ( String.fromInt <|
+                Murmur3.hashString seed decsStr
+            , decsStr
+            )
+        )
         maybeDecStr
 
 

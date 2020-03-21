@@ -3,6 +3,7 @@ module Css.Global exposing (..)
 import Css as C exposing (Declaration)
 import Css.Internal as I exposing (Declaration(..))
 import Dict exposing (Dict)
+import Murmur3
 import VirtualDom as V exposing (Node)
 
 
@@ -31,19 +32,19 @@ rule =
     Rule
 
 
-toStyleElement : List Statement -> List (Node msg) -> Node msg
+toStyleElement : List Statement -> List ( String, Node msg ) -> Node msg
 toStyleElement statements styleTextNodes =
-    V.node "style" [] <|
+    V.keyedNode "style" [] <|
         toTextNodes statements
             ++ styleTextNodes
 
 
-toTextNodes : List Statement -> List (Node msg)
+toTextNodes : List Statement -> List ( String, Node msg )
 toTextNodes statements =
     toTextNodesFrom statements <| Stylesheet_ [] Dict.empty
 
 
-toTextNodesFrom : List Statement -> Stylesheet_ -> List (Node msg)
+toTextNodesFrom : List Statement -> Stylesheet_ -> List ( String, Node msg )
 toTextNodesFrom statements stylesheet =
     case statements of
         first :: rest_ ->
@@ -69,12 +70,13 @@ toTextNodesFrom statements stylesheet =
             stylesheet.imports
                 |> List.map (\import_ -> "@import '" ++ import_ ++ "';")
                 |> String.join "\n"
-                |> V.text
+                |> Tuple.pair "imports"
+                << V.text
                 |> (::)
                 >> (|>) (rulesToTextNodes stylesheet.rules)
 
 
-rulesToTextNodes : Dict String (List Declaration) -> List (Node msg)
+rulesToTextNodes : Dict String (List Declaration) -> List ( String, Node msg )
 rulesToTextNodes =
     Dict.toList
         >> List.map
@@ -84,7 +86,11 @@ rulesToTextNodes =
                     |> List.singleton
                     |> I.toString
                     |> Maybe.withDefault ""
-                    |> V.text
+                    |> (\text ->
+                            ( String.fromInt <| Murmur3.hashString 0 text
+                            , V.text text
+                            )
+                       )
             )
 
 
