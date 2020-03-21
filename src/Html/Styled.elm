@@ -125,8 +125,16 @@ toStyledNodeHelper maybeHashAndString attributes =
 
 
 addStyleNode : Dict Int String -> List (V.Node msg) -> List (V.Node msg)
-addStyleNode =
-    (::) << V.node "style" [] << toTextNodes
+addStyleNode styleDict nodes =
+    let
+        textNodes =
+            toTextNodes styleDict
+    in
+    if List.isEmpty textNodes then
+        nodes
+
+    else
+        V.node "style" [] textNodes :: nodes
 
 
 addKeyedStyleNode : Dict Int String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
