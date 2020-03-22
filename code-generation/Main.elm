@@ -338,19 +338,17 @@ properties =
     , ( "border-block-width"
       , Space1
       )
-
-    -- here
     , ( "border-bottom"
-      , None
+      , Space1
       )
     , ( "border-bottom-color"
       , None
       )
     , ( "border-bottom-left-radius"
-      , None
+      , Space1
       )
     , ( "border-bottom-right-radius"
-      , None
+      , Space1
       )
     , ( "border-bottom-style"
       , None
@@ -365,35 +363,37 @@ properties =
       , None
       )
     , ( "border-color"
-      , None
+      , Space1
       )
     , ( "border-end-end-radius"
-      , None
+      , Space1
       )
     , ( "border-end-start-radius"
-      , None
+      , Space1
       )
     , ( "border-image"
-      , None
+      , Space1
       )
     , ( "border-image-outset"
-      , None
+      , Space1
       )
     , ( "border-image-repeat"
-      , None
+      , Space1
       )
     , ( "border-image-slice"
-      , None
+      , Space1
       )
     , ( "border-image-source"
       , None
       )
     , ( "border-image-width"
-      , None
+      , Space1
       )
     , ( "border-inline"
-      , None
+      , Space1
       )
+
+    -- here
     , ( "border-inline-color"
       , None
       )
