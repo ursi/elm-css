@@ -63,12 +63,6 @@ toTr ( property, joinType ) =
         ]
 
 
-isList : Maybe JoinType -> Bool
-isList =
-    Maybe.map (\_ -> True)
-        >> Maybe.withDefault False
-
-
 code : Html ()
 code =
     div [] <| List.map generateCode <| sort properties
@@ -132,6 +126,14 @@ $JJ = I.Single identity "#" << String.join "%" << List.map (String.join " ")
 """
 
 
+camelCase : String -> String
+camelCase =
+    String.split "-"
+        >> List.map (somethingFirst String.toUpper)
+        >> String.join ""
+        >> somethingFirst String.toLower
+
+
 somethingFirst func str =
     case String.uncons str of
         Just ( first, rest ) ->
@@ -143,14 +145,6 @@ somethingFirst func str =
 
         Nothing ->
             ""
-
-
-camelCase : String -> String
-camelCase =
-    String.split "-"
-        >> List.map (somethingFirst String.toUpper)
-        >> String.join ""
-        >> somethingFirst String.toLower
 
 
 sortList : List JoinType
@@ -188,27 +182,6 @@ getIndex =
     List.elemIndex
         >> (|>) sortList
         >> Maybe.withDefault -1
-
-
-boolSort : Bool -> Bool -> Bool -> Order
-boolSort first b1 b2 =
-    case ( b1, b2 ) of
-        ( True, False ) ->
-            if first then
-                LT
-
-            else
-                GT
-
-        ( False, True ) ->
-            if first then
-                GT
-
-            else
-                LT
-
-        _ ->
-            EQ
 
 
 properties =
