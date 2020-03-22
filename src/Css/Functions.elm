@@ -169,9 +169,49 @@ saturate =
 
 
 
+-- calc
+
+
+calc : String -> String
+calc =
+    function "calc"
+
+
+biOperator : String -> String -> String -> String
+biOperator operator operand1 operand2 =
+    "(" ++ operand1 ++ " " ++ operator ++ " " ++ operand2 ++ ")"
+
+
+neg : String -> String
+neg =
+    (++) "-"
+
+
+add : String -> String -> String
+add =
+    biOperator "+"
+
+
+sub : String -> String -> String
+sub =
+    biOperator "-"
+
+
+mul : Float -> String -> String
+mul =
+    biOperator "*" << String.fromFloat
+
+
+div : String -> Float -> String
+div value =
+    biOperator "/" value << String.fromFloat
+
+
+
 -- misc
 
 
 url : String -> String
 url url_ =
     "url('" ++ url_ ++ "')"
+
