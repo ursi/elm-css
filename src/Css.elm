@@ -84,7 +84,121 @@ importantJ =
 
 
 -- Properties
--- https://ellie-app.com/8mDhdJMyRq4a1
+
+
+animation : List String -> Declaration
+animation =
+    I.Single identity "animation" << String.join ", "
+
+
+animationJ : List (List String) -> Declaration
+animationJ =
+    I.Single identity "animation" << String.join ", " << List.map (String.join " ")
+
+
+background : List String -> Declaration
+background =
+    I.Single identity "background" << String.join ", "
+
+
+backgroundJ : List (List String) -> Declaration
+backgroundJ =
+    I.Single identity "background" << String.join ", " << List.map (String.join " ")
+
+
+backgroundRepeat : List String -> Declaration
+backgroundRepeat =
+    I.Single identity "background-repeat" << String.join ", "
+
+
+backgroundRepeatJ : List (List String) -> Declaration
+backgroundRepeatJ =
+    I.Single identity "background-repeat" << String.join ", " << List.map (String.join " ")
+
+
+backgroundSize : List String -> Declaration
+backgroundSize =
+    I.Single identity "background-size" << String.join ", "
+
+
+backgroundSizeJ : List (List String) -> Declaration
+backgroundSizeJ =
+    I.Single identity "background-size" << String.join ", " << List.map (String.join " ")
+
+
+transform : List String -> Declaration
+transform =
+    I.Single identity "transform" << String.join " "
+
+
+transformJ : List (List String) -> Declaration
+transformJ =
+    I.Single identity "transform" << String.join " " << List.map (String.join " ")
+
+
+animationDelay : List String -> Declaration
+animationDelay =
+    I.Single identity "animation-delay" << String.join ", "
+
+
+animationDirection : List String -> Declaration
+animationDirection =
+    I.Single identity "animation-direction" << String.join ", "
+
+
+animationDuration : List String -> Declaration
+animationDuration =
+    I.Single identity "animation-duration" << String.join ", "
+
+
+animationFillMode : List String -> Declaration
+animationFillMode =
+    I.Single identity "animation-fill-mode" << String.join ", "
+
+
+animationIterationCount : List String -> Declaration
+animationIterationCount =
+    I.Single identity "animation-iteration-count" << String.join ", "
+
+
+animationName : List String -> Declaration
+animationName =
+    I.Single identity "animation-name" << String.join ", "
+
+
+animationPlayState : List String -> Declaration
+animationPlayState =
+    I.Single identity "animation-play-state" << String.join ", "
+
+
+animationTimingFunction : List String -> Declaration
+animationTimingFunction =
+    I.Single identity "animation-timing-function" << String.join ", "
+
+
+backgroundAttachment : List String -> Declaration
+backgroundAttachment =
+    I.Single identity "background-attachment" << String.join ", "
+
+
+backgroundClip : List String -> Declaration
+backgroundClip =
+    I.Single identity "background-clip" << String.join ", "
+
+
+backgroundImage : List String -> Declaration
+backgroundImage =
+    I.Single identity "background-image" << String.join ", "
+
+
+backgroundOrigin : List String -> Declaration
+backgroundOrigin =
+    I.Single identity "background-origin" << String.join ", "
+
+
+bookmarkLabel : List String -> Declaration
+bookmarkLabel =
+    I.Single identity "bookmark-label" << String.join " "
 
 
 alignContent : String -> Declaration
@@ -117,121 +231,6 @@ alignSelfJ =
     I.Single identity "align-self" << String.join " "
 
 
-alignmentBaseline : String -> Declaration
-alignmentBaseline =
-    I.Single identity "alignment-baseline"
-
-
-alignmentBaselineJ : List String -> Declaration
-alignmentBaselineJ =
-    I.Single identity "alignment-baseline" << String.join " "
-
-
-all : String -> Declaration
-all =
-    I.Single identity "all"
-
-
-animation : String -> Declaration
-animation =
-    I.Single identity "animation"
-
-
-animationJ : List String -> Declaration
-animationJ =
-    I.Single identity "animation" << String.join " "
-
-
-animationDelay : String -> Declaration
-animationDelay =
-    I.Single identity "animation-delay"
-
-
-animationDelayJ : List String -> Declaration
-animationDelayJ =
-    I.Single identity "animation-delay" << String.join " "
-
-
-animationDirection : String -> Declaration
-animationDirection =
-    I.Single identity "animation-direction"
-
-
-animationDirectionJ : List String -> Declaration
-animationDirectionJ =
-    I.Single identity "animation-direction" << String.join " "
-
-
-animationDuration : String -> Declaration
-animationDuration =
-    I.Single identity "animation-duration"
-
-
-animationDurationJ : List String -> Declaration
-animationDurationJ =
-    I.Single identity "animation-duration" << String.join " "
-
-
-animationFillMode : String -> Declaration
-animationFillMode =
-    I.Single identity "animation-fill-mode"
-
-
-animationFillModeJ : List String -> Declaration
-animationFillModeJ =
-    I.Single identity "animation-fill-mode" << String.join " "
-
-
-animationIterationCount : String -> Declaration
-animationIterationCount =
-    I.Single identity "animation-iteration-count"
-
-
-animationIterationCountJ : List String -> Declaration
-animationIterationCountJ =
-    I.Single identity "animation-iteration-count" << String.join " "
-
-
-animationName : String -> Declaration
-animationName =
-    I.Single identity "animation-name"
-
-
-animationNameJ : List String -> Declaration
-animationNameJ =
-    I.Single identity "animation-name" << String.join " "
-
-
-animationPlayState : String -> Declaration
-animationPlayState =
-    I.Single identity "animation-play-state"
-
-
-animationPlayStateJ : List String -> Declaration
-animationPlayStateJ =
-    I.Single identity "animation-play-state" << String.join " "
-
-
-animationTimingFunction : String -> Declaration
-animationTimingFunction =
-    I.Single identity "animation-timing-function"
-
-
-animationTimingFunctionJ : List String -> Declaration
-animationTimingFunctionJ =
-    I.Single identity "animation-timing-function" << String.join " "
-
-
-appearance : String -> Declaration
-appearance =
-    I.Single identity "appearance"
-
-
-appearanceJ : List String -> Declaration
-appearanceJ =
-    I.Single identity "appearance" << String.join " "
-
-
 azimuth : String -> Declaration
 azimuth =
     I.Single identity "azimuth"
@@ -240,86 +239,6 @@ azimuth =
 azimuthJ : List String -> Declaration
 azimuthJ =
     I.Single identity "azimuth" << String.join " "
-
-
-backfaceVisibility : String -> Declaration
-backfaceVisibility =
-    I.Single identity "backface-visibility"
-
-
-backfaceVisibilityJ : List String -> Declaration
-backfaceVisibilityJ =
-    I.Single identity "backface-visibility" << String.join " "
-
-
-background : String -> Declaration
-background =
-    I.Single identity "background"
-
-
-backgroundJ : List String -> Declaration
-backgroundJ =
-    I.Single identity "background" << String.join " "
-
-
-backgroundAttachment : String -> Declaration
-backgroundAttachment =
-    I.Single identity "background-attachment"
-
-
-backgroundAttachmentJ : List String -> Declaration
-backgroundAttachmentJ =
-    I.Single identity "background-attachment" << String.join " "
-
-
-backgroundBlendMode : String -> Declaration
-backgroundBlendMode =
-    I.Single identity "background-blend-mode"
-
-
-backgroundBlendModeJ : List String -> Declaration
-backgroundBlendModeJ =
-    I.Single identity "background-blend-mode" << String.join " "
-
-
-backgroundClip : String -> Declaration
-backgroundClip =
-    I.Single identity "background-clip"
-
-
-backgroundClipJ : List String -> Declaration
-backgroundClipJ =
-    I.Single identity "background-clip" << String.join " "
-
-
-backgroundColor : String -> Declaration
-backgroundColor =
-    I.Single identity "background-color"
-
-
-backgroundColorJ : List String -> Declaration
-backgroundColorJ =
-    I.Single identity "background-color" << String.join " "
-
-
-backgroundImage : String -> Declaration
-backgroundImage =
-    I.Single identity "background-image"
-
-
-backgroundImageJ : List String -> Declaration
-backgroundImageJ =
-    I.Single identity "background-image" << String.join " "
-
-
-backgroundOrigin : String -> Declaration
-backgroundOrigin =
-    I.Single identity "background-origin"
-
-
-backgroundOriginJ : List String -> Declaration
-backgroundOriginJ =
-    I.Single identity "background-origin" << String.join " "
 
 
 backgroundPosition : String -> Declaration
@@ -332,56 +251,6 @@ backgroundPositionJ =
     I.Single identity "background-position" << String.join " "
 
 
-backgroundRepeat : String -> Declaration
-backgroundRepeat =
-    I.Single identity "background-repeat"
-
-
-backgroundRepeatJ : List String -> Declaration
-backgroundRepeatJ =
-    I.Single identity "background-repeat" << String.join " "
-
-
-backgroundSize : String -> Declaration
-backgroundSize =
-    I.Single identity "background-size"
-
-
-backgroundSizeJ : List String -> Declaration
-backgroundSizeJ =
-    I.Single identity "background-size" << String.join " "
-
-
-baselineShift : String -> Declaration
-baselineShift =
-    I.Single identity "baseline-shift"
-
-
-baselineShiftJ : List String -> Declaration
-baselineShiftJ =
-    I.Single identity "baseline-shift" << String.join " "
-
-
-blockOverflow : String -> Declaration
-blockOverflow =
-    I.Single identity "block-overflow"
-
-
-blockOverflowJ : List String -> Declaration
-blockOverflowJ =
-    I.Single identity "block-overflow" << String.join " "
-
-
-blockSize : String -> Declaration
-blockSize =
-    I.Single identity "block-size"
-
-
-blockSizeJ : List String -> Declaration
-blockSizeJ =
-    I.Single identity "block-size" << String.join " "
-
-
 blockStep : String -> Declaration
 blockStep =
     I.Single identity "block-step"
@@ -390,76 +259,6 @@ blockStep =
 blockStepJ : List String -> Declaration
 blockStepJ =
     I.Single identity "block-step" << String.join " "
-
-
-blockStepAlign : String -> Declaration
-blockStepAlign =
-    I.Single identity "block-step-align"
-
-
-blockStepAlignJ : List String -> Declaration
-blockStepAlignJ =
-    I.Single identity "block-step-align" << String.join " "
-
-
-blockStepInsert : String -> Declaration
-blockStepInsert =
-    I.Single identity "block-step-insert"
-
-
-blockStepInsertJ : List String -> Declaration
-blockStepInsertJ =
-    I.Single identity "block-step-insert" << String.join " "
-
-
-blockStepRound : String -> Declaration
-blockStepRound =
-    I.Single identity "block-step-round"
-
-
-blockStepRoundJ : List String -> Declaration
-blockStepRoundJ =
-    I.Single identity "block-step-round" << String.join " "
-
-
-blockStepSize : String -> Declaration
-blockStepSize =
-    I.Single identity "block-step-size"
-
-
-blockStepSizeJ : List String -> Declaration
-blockStepSizeJ =
-    I.Single identity "block-step-size" << String.join " "
-
-
-bookmarkLabel : String -> Declaration
-bookmarkLabel =
-    I.Single identity "bookmark-label"
-
-
-bookmarkLabelJ : List String -> Declaration
-bookmarkLabelJ =
-    I.Single identity "bookmark-label" << String.join " "
-
-
-bookmarkLevel : String -> Declaration
-bookmarkLevel =
-    I.Single identity "bookmark-level"
-
-
-bookmarkLevelJ : List String -> Declaration
-bookmarkLevelJ =
-    I.Single identity "bookmark-level" << String.join " "
-
-
-bookmarkState : String -> Declaration
-bookmarkState =
-    I.Single identity "bookmark-state"
-
-
-bookmarkStateJ : List String -> Declaration
-bookmarkStateJ =
-    I.Single identity "bookmark-state" << String.join " "
 
 
 border : String -> Declaration
@@ -502,36 +301,6 @@ borderBlockEndJ =
     I.Single identity "border-block-end" << String.join " "
 
 
-borderBlockEndColor : String -> Declaration
-borderBlockEndColor =
-    I.Single identity "border-block-end-color"
-
-
-borderBlockEndColorJ : List String -> Declaration
-borderBlockEndColorJ =
-    I.Single identity "border-block-end-color" << String.join " "
-
-
-borderBlockEndStyle : String -> Declaration
-borderBlockEndStyle =
-    I.Single identity "border-block-end-style"
-
-
-borderBlockEndStyleJ : List String -> Declaration
-borderBlockEndStyleJ =
-    I.Single identity "border-block-end-style" << String.join " "
-
-
-borderBlockEndWidth : String -> Declaration
-borderBlockEndWidth =
-    I.Single identity "border-block-end-width"
-
-
-borderBlockEndWidthJ : List String -> Declaration
-borderBlockEndWidthJ =
-    I.Single identity "border-block-end-width" << String.join " "
-
-
 borderBlockStart : String -> Declaration
 borderBlockStart =
     I.Single identity "border-block-start"
@@ -540,36 +309,6 @@ borderBlockStart =
 borderBlockStartJ : List String -> Declaration
 borderBlockStartJ =
     I.Single identity "border-block-start" << String.join " "
-
-
-borderBlockStartColor : String -> Declaration
-borderBlockStartColor =
-    I.Single identity "border-block-start-color"
-
-
-borderBlockStartColorJ : List String -> Declaration
-borderBlockStartColorJ =
-    I.Single identity "border-block-start-color" << String.join " "
-
-
-borderBlockStartStyle : String -> Declaration
-borderBlockStartStyle =
-    I.Single identity "border-block-start-style"
-
-
-borderBlockStartStyleJ : List String -> Declaration
-borderBlockStartStyleJ =
-    I.Single identity "border-block-start-style" << String.join " "
-
-
-borderBlockStartWidth : String -> Declaration
-borderBlockStartWidth =
-    I.Single identity "border-block-start-width"
-
-
-borderBlockStartWidthJ : List String -> Declaration
-borderBlockStartWidthJ =
-    I.Single identity "border-block-start-width" << String.join " "
 
 
 borderBlockStyle : String -> Declaration
@@ -3302,9 +3041,14 @@ offsetStartJ =
     I.Single identity "offset-start" << String.join " "
 
 
-opacity : Float -> Declaration
+opacity : String -> Declaration
 opacity =
-    I.Single identity "opacity" << String.fromFloat
+    I.Single identity "opacity"
+
+
+opacityJ : List String -> Declaration
+opacityJ =
+    I.Single identity "opacity" << String.join " "
 
 
 order : String -> Declaration
@@ -4897,16 +4641,6 @@ topJ =
     I.Single identity "top" << String.join " "
 
 
-transform : List String -> Declaration
-transform =
-    I.Single identity "transform" << String.join " "
-
-
-transformJ : List (List String) -> Declaration
-transformJ =
-    I.Single identity "transform" << String.join " " << List.map (String.join "")
-
-
 transformBox : String -> Declaration
 transformBox =
     I.Single identity "transform-box"
@@ -5280,6 +5014,116 @@ writingModeJ =
 zIndex : String -> Declaration
 zIndex =
     I.Single identity "z-index"
+
+
+zIndexJ : List String -> Declaration
+zIndexJ =
+    I.Single identity "z-index" << String.join " "
+
+
+alignmentBaseline : String -> Declaration
+alignmentBaseline =
+    I.Single identity "alignment-baseline"
+
+
+all : String -> Declaration
+all =
+    I.Single identity "all"
+
+
+appearance : String -> Declaration
+appearance =
+    I.Single identity "appearance"
+
+
+backfaceVisibility : String -> Declaration
+backfaceVisibility =
+    I.Single identity "backface-visibility"
+
+
+backgroundBlendMode : String -> Declaration
+backgroundBlendMode =
+    I.Single identity "background-blend-mode"
+
+
+backgroundColor : String -> Declaration
+backgroundColor =
+    I.Single identity "background-color"
+
+
+baselineShift : String -> Declaration
+baselineShift =
+    I.Single identity "baseline-shift"
+
+
+blockOverflow : String -> Declaration
+blockOverflow =
+    I.Single identity "block-overflow"
+
+
+blockSize : String -> Declaration
+blockSize =
+    I.Single identity "block-size"
+
+
+blockStepAlign : String -> Declaration
+blockStepAlign =
+    I.Single identity "block-step-align"
+
+
+blockStepInsert : String -> Declaration
+blockStepInsert =
+    I.Single identity "block-step-insert"
+
+
+blockStepRound : String -> Declaration
+blockStepRound =
+    I.Single identity "block-step-round"
+
+
+blockStepSize : String -> Declaration
+blockStepSize =
+    I.Single identity "block-step-size"
+
+
+bookmarkLevel : String -> Declaration
+bookmarkLevel =
+    I.Single identity "bookmark-level"
+
+
+bookmarkState : String -> Declaration
+bookmarkState =
+    I.Single identity "bookmark-state"
+
+
+borderBlockEndColor : String -> Declaration
+borderBlockEndColor =
+    I.Single identity "border-block-end-color"
+
+
+borderBlockEndStyle : String -> Declaration
+borderBlockEndStyle =
+    I.Single identity "border-block-end-style"
+
+
+borderBlockEndWidth : String -> Declaration
+borderBlockEndWidth =
+    I.Single identity "border-block-end-width"
+
+
+borderBlockStartColor : String -> Declaration
+borderBlockStartColor =
+    I.Single identity "border-block-start-color"
+
+
+borderBlockStartStyle : String -> Declaration
+borderBlockStartStyle =
+    I.Single identity "border-block-start-style"
+
+
+borderBlockStartWidth : String -> Declaration
+borderBlockStartWidth =
+    I.Single identity "border-block-start-width"
 
 
 
