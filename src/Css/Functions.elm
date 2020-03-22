@@ -110,6 +110,65 @@ hlsa =
 
 
 
+-- filter
+
+
+blur : String -> String
+blur =
+    function "blur"
+
+
+brightness : String -> String
+brightness =
+    function "brightness"
+
+
+contrast : String -> String
+contrast =
+    function "contrast"
+
+
+dropShadow : String -> String
+dropShadow =
+    function "drop-shadow"
+
+
+dropShadowJ : List String -> String
+dropShadowJ =
+    functionJ "drop-shadow"
+
+
+grayscale : String -> String
+grayscale =
+    function "grayscale"
+
+
+hueRotate : String -> String
+hueRotate =
+    function "hue-rotate"
+
+
+invert : String -> String
+invert =
+    function "invert"
+
+
+opacity : String -> String
+opacity =
+    function "opacity"
+
+
+sepia : String -> String
+sepia =
+    function "sepia"
+
+
+saturate : String -> String
+saturate =
+    function "saturate"
+
+
+
 -- misc
 
 
