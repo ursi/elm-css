@@ -72,14 +72,14 @@ hover =
     createSelectorVariation <| append ":hover"
 
 
-important : String -> String
-important =
-    append " !important"
+important : Declaration -> Declaration
+important declaration_ =
+    case declaration_ of
+        I.Single f p value ->
+            I.Single f p <| append " !important" value
 
-
-importantJ : List String -> String
-importantJ =
-    append " !important" << String.join " "
+        I.Batch declarations ->
+            I.Batch <| List.map important declarations
 
 
 
