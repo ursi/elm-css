@@ -8,6 +8,11 @@ import Murmur3
 import VirtualDom as V
 
 
+
+-- TODO maybe separate some of this into it's own virtual dom library like rtfeldman/elm-css'
+-- or maybe move it to Css.Internal
+
+
 type Node msg
     = Text String
     | Node String (List (Attribute msg)) (List (Node msg))
