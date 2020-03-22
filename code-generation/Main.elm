@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import List.Extra as List
 
 
 main =
@@ -10,16 +11,15 @@ main =
 
 
 type alias Property =
-    ( String
-    , { join : Bool
-      , list : Maybe JoinType
-      }
-    )
+    ( String, JoinType )
 
 
 type JoinType
-    = Space
-    | Comma
+    = None
+    | Space1
+    | Space2
+    | Comma1
+    | Comma2
 
 
 view : Html ()
@@ -28,8 +28,7 @@ view =
         [ thead []
             [ tr []
                 [ td [] [ text "Property" ]
-                , td [] [ text "Join" ]
-                , td [] [ text "List" ]
+                , td [] [ text "Join Type" ]
                 ]
             ]
         , tbody [] <|
@@ -39,24 +38,27 @@ view =
 
 
 toTr : Property -> Html ()
-toTr ( property, propertyProperties ) =
+toTr ( property, joinType ) =
     tr []
         [ td [] [ text property ]
         , td []
-            [ input
-                [ type_ "checkbox"
-                , disabled True
-                , checked propertyProperties.join
-                ]
-                []
-            ]
-        , td []
-            [ input
-                [ type_ "checkbox"
-                , disabled True
-                , checked <| isList propertyProperties.list
-                ]
-                []
+            [ text
+                (case joinType of
+                    None ->
+                        "None"
+
+                    Space1 ->
+                        "Space1"
+
+                    Space2 ->
+                        "Space2"
+
+                    Comma1 ->
+                        "Comma1"
+
+                    Comma2 ->
+                        "Comma2"
+                )
             ]
         ]
 
@@ -73,68 +75,61 @@ code =
 
 
 generateCode : Property -> Html ()
-generateCode ( property, propertyProperties ) =
-    let
-        join =
-            propertyProperties.join
-
-        list =
-            propertyProperties.list
-    in
+generateCode ( property, joinType ) =
     div []
         [ pre []
-            [ ""
-                |> (++)
-                >> (|>)
-                    (case list of
-                        Just Space ->
-                            """
-$ : List String -> Declaration
-$ = I.Single identity "#" << String.join " "
-"""
-
-                        Just Comma ->
-                            """
-$ : List String -> Declaration
-$ = I.Single identity "#" << String.join ", "
-"""
-
-                        Nothing ->
-                            """
+            [ """
 $ : String -> Declaration
 $ = I.Single identity "#"
 """
-                    )
-                |> (++)
-                >> (|>)
-                    (if join then
-                        case list of
-                            Just Space ->
-                                """
-$J : List (List String) -> Declaration
-$J = I.Single identity "#" << String.join " " << List.map (String.join " ")
-"""
+                ++ (if joinType == Space1 || joinType == Space2 then
+                        j " "
+                            ++ (if joinType == Space2 then
+                                    jj " "
 
-                            Just Comma ->
-                                """
-$J : List (List String) -> Declaration
-$J = I.Single identity "#" << String.join ", " << List.map (String.join " ")
-"""
+                                else
+                                    ""
+                               )
 
-                            Nothing ->
-                                """
-$J : List String -> Declaration
-$J = I.Single identity "#" << String.join " "
-"""
+                    else if joinType == Comma1 || joinType == Comma2 then
+                        j ", "
+                            ++ (if joinType == Comma2 then
+                                    jj ", "
 
-                     else
+                                else
+                                    ""
+                               )
+
+                    else
                         ""
-                    )
+                   )
                 |> String.replace "$" (camelCase property)
                 |> String.replace "#" property
                 |> text
             ]
         ]
+
+
+j : String -> String
+j separator =
+    String.replace
+        "%"
+        separator
+        """
+$J : List String -> Declaration
+$J = I.Single identity "#" << String.join "%"
+"""
+
+
+jj : String -> String
+jj separator =
+    String.replace
+        "%"
+        separator
+        """
+$JJ : List (List String) -> Declaration
+$JJ = I.Single identity "#" << String.join "%" << List.map (String.join " ")
+"""
 
 
 somethingFirst func str =
@@ -158,34 +153,41 @@ camelCase =
         >> somethingFirst String.toLower
 
 
+sortList : List JoinType
+sortList =
+    [ Comma2, Space2, Comma1, Space1, None ]
+
+
 sort : List Property -> List Property
 sort =
     List.sortWith
-        (\( property1, pps1 ) ( property2, pps2 ) ->
+        (\( property1, joinType1 ) ( property2, joinType2 ) ->
             let
-                firstSort =
-                    boolSort True
-                        (isList pps1.list)
-                        (isList pps2.list)
+                index1 =
+                    getIndex joinType1
+
+                index2 =
+                    getIndex joinType2
             in
-            if firstSort == EQ then
-                let
-                    secondSort =
-                        boolSort True pps1.join pps2.join
-                in
-                if secondSort == EQ then
-                    if property1 < property2 then
-                        LT
+            if index1 < index2 then
+                LT
 
-                    else
-                        GT
+            else if index1 > index2 then
+                GT
 
-                else
-                    secondSort
+            else if property1 < property2 then
+                LT
 
             else
-                firstSort
+                GT
         )
+
+
+getIndex : JoinType -> Int
+getIndex =
+    List.elemIndex
+        >> (|>) sortList
+        >> Maybe.withDefault -1
 
 
 boolSort : Bool -> Bool -> Bool -> Order
@@ -211,2610 +213,1568 @@ boolSort first b1 b2 =
 
 properties =
     [ ( "align-content"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "align-items"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "align-self"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "alignment-baseline"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "all"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "animation"
-      , { join = True
-        , list = Just Comma
-        }
+      , Comma2
       )
     , ( "animation-delay"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-direction"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-duration"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-fill-mode"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-iteration-count"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-name"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-play-state"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "animation-timing-function"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "appearance"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "azimuth"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "backface-visibility"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "background"
-      , { join = True
-        , list = Just Comma
-        }
+      , Comma2
       )
     , ( "background-attachment"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "background-blend-mode"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "background-clip"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "background-color"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "background-image"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "background-origin"
-      , { join = False
-        , list = Just Comma
-        }
+      , Comma1
       )
     , ( "background-position"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "background-repeat"
-      , { join = True
-        , list = Just Comma
-        }
+      , Comma2
       )
     , ( "background-size"
-      , { join = True
-        , list = Just Comma
-        }
+      , Comma2
       )
     , ( "baseline-shift"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-overflow"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-size"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-step"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "block-step-align"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-step-insert"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-step-round"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "block-step-size"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "bookmark-label"
-      , { join = False
-        , list = Just Space
-        }
+      , Space1
       )
     , ( "bookmark-level"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "bookmark-state"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block-color"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block-end-color"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-end-style"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-end-width"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block-start-color"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-start-style"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-start-width"
-      , { join = False
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-block-style"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
     , ( "border-block-width"
-      , { join = True
-        , list = Nothing
-        }
+      , Space1
       )
 
     -- here
     , ( "border-bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-bottom-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-bottom-left-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-bottom-right-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-bottom-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-bottom-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-boundary"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-collapse"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-end-end-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-end-start-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image-outset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image-repeat"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image-slice"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image-source"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-image-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-end-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-end-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-end-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-start-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-start-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-start-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-inline-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-left-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-left-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-left-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-right-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-right-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-right-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-spacing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-start-end-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-start-start-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top-left-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top-right-radius"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-top-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "border-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "box-decoration-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "box-shadow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "box-sizing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "box-snap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "break-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "break-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "break-inside"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "caption-side"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "caret"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "caret-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "caret-shape"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "clear"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "clip"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "clip-path"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "clip-rule"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "color-adjust"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "color-interpolation-filters"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "color-scheme"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-count"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-fill"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-gap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-rule"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-rule-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-rule-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-rule-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-span"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "column-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "columns"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "contain"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "content"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "continue"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "counter-increment"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "counter-reset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "counter-set"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "cue"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "cue-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "cue-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "cursor"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "direction"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "display"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "dominant-baseline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "elevation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "empty-cells"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-image"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-opacity"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-origin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-repeat"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-rule"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "fill-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "filter"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-basis"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-direction"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-flow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-grow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-shrink"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flex-wrap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "float"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "float-defer"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "float-offset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "float-reference"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flood-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flood-opacity"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flow-from"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "flow-into"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-family"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-feature-settings"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-kerning"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-language-override"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-optical-sizing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-palette"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-size-adjust"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-stretch"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-synthesis"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-synthesis-small-caps"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-synthesis-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-synthesis-weight"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-alternates"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-caps"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-east-asian"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-emoji"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-ligatures"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-numeric"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variant-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-variation-settings"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "font-weight"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "footnote-display"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "footnote-policy"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "forced-color-adjust"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "gap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "glyph-orientation-vertical"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-area"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-auto-columns"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-auto-flow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-auto-rows"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-column"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-column-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-column-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-row"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-row-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-row-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-template"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-template-areas"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-template-columns"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "grid-template-rows"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hanging-punctuation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "height"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphenate-character"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphenate-limit-chars"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphenate-limit-last"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphenate-limit-lines"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphenate-limit-zone"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "hyphens"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "image-orientation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "image-rendering"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "image-resolution"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "initial-letters"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "initial-letters-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "initial-letters-wrap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inline-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inline-sizing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "inset-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "isolation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "justify-content"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "justify-items"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "justify-self"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "letter-spacing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "lighting-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-clamp"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-grid"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-height"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-height-step"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-padding"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "line-snap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "list-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "list-style-image"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "list-style-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "list-style-type"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "margin-trim"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-knockout-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-knockout-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-mid"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-pattern"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-segment"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-side"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "marker-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-mode"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-outset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-repeat"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-slice"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-source"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-border-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-clip"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-composite"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-image"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-mode"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-origin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-repeat"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mask-type"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "max-block-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "max-height"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "max-inline-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "max-lines"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "max-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "min-block-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "min-height"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "min-inline-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "min-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "mix-blend-mode"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "nav-down"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "nav-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "nav-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "nav-up"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "object-fit"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "object-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-anchor"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-distance"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-path"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-rotate"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "offset-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "opacity"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "order"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "orphans"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "outline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "outline-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "outline-offset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "outline-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "outline-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-anchor"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-wrap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-x"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overflow-y"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overscroll-behavior"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overscroll-behavior-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overscroll-behavior-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overscroll-behavior-x"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "overscroll-behavior-y"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "padding-top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "page"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "page-break-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "page-break-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "page-break-inside"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pause"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pause-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pause-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "perspective"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "perspective-origin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pitch"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pitch-range"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "place-content"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "place-items"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "place-self"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "play-during"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "pointer-events"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "quotes"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "region-fragment"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "resize"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "rest"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "rest-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "rest-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "richness"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "rotate"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "row-gap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "ruby-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "ruby-merge"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "ruby-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "running"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scale"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-behavior"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-margin-top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-block"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-block-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-block-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-bottom"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-inline"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-inline-end"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-inline-start"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-left"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-right"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-padding-top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-snap-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-snap-stop"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scroll-snap-type"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scrollbar-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scrollbar-gutter"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "scrollbar-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "shape-image-threshold"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "shape-inside"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "shape-margin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "shape-outside"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "spatial-navigation-action"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "spatial-navigation-contain"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "spatial-navigation-function"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speak"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speak-as"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speak-header"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speak-numeral"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speak-punctuation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "speech-rate"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stress"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "string-set"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-alignment"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dash-corner"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dash-justify"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dashadjust"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dasharray"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dashcorner"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-dashoffset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-image"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-linecap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-linejoin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-miterlimit"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-opacity"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-origin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-repeat"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "stroke-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "tab-size"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "table-layout"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-align-all"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-align-last"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-combine-upright"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-line"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-skip"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-skip-ink"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-decoration-width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-emphasis"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-emphasis-color"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-emphasis-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-emphasis-skip"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-emphasis-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-group-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-indent"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-justify"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-orientation"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-overflow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-shadow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-space-collapse"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-space-trim"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-spacing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-transform"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-underline-offset"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-underline-position"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "text-wrap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "top"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transform"
-      , { join = True
-        , list = Just Space
-        }
+      , Space1
       )
     , ( "transform-box"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transform-origin"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transform-style"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transition"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transition-delay"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transition-duration"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transition-property"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "transition-timing-function"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "translate"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "unicode-bidi"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "user-select"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "vertical-align"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "visibility"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-balance"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-duration"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-family"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-pitch"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-range"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-rate"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-stress"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "voice-volume"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "volume"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "white-space"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "widows"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "width"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "will-change"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "word-boundary-detection"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "word-boundary-expansion"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "word-break"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "word-spacing"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "word-wrap"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "wrap-after"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "wrap-before"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "wrap-flow"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "wrap-inside"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "wrap-through"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "writing-mode"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     , ( "z-index"
-      , { join = True
-        , list = Nothing
-        }
+      , None
       )
     ]
