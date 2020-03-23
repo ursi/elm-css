@@ -46,8 +46,8 @@ rule =
     (<<) Rule << Rule_
 
 
-keyframes : ( String, List ( String, List Declaration ) ) -> Statement
-keyframes ( name, rules ) =
+keyframes : String -> List ( String, List Declaration ) -> Statement
+keyframes name rules =
     rules
         |> List.map
             (\( selector, declarations ) ->
