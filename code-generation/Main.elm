@@ -389,13 +389,11 @@ properties =
     , ( "border-inline"
       , Space1
       )
-
-    -- here
     , ( "border-inline-color"
-      , None
+      , Space1
       )
     , ( "border-inline-end"
-      , None
+      , Space1
       )
     , ( "border-inline-end-color"
       , None
@@ -407,7 +405,7 @@ properties =
       , None
       )
     , ( "border-inline-start"
-      , None
+      , Space1
       )
     , ( "border-inline-start-color"
       , None
@@ -419,13 +417,13 @@ properties =
       , None
       )
     , ( "border-inline-style"
-      , None
+      , Space1
       )
     , ( "border-inline-width"
-      , None
+      , Space1
       )
     , ( "border-left"
-      , None
+      , Space1
       )
     , ( "border-left-color"
       , None
@@ -437,10 +435,10 @@ properties =
       , None
       )
     , ( "border-radius"
-      , None
+      , Space1
       )
     , ( "border-right"
-      , None
+      , Space1
       )
     , ( "border-right-color"
       , None
@@ -452,28 +450,28 @@ properties =
       , None
       )
     , ( "border-spacing"
-      , None
+      , Space1
       )
     , ( "border-start-end-radius"
-      , None
+      , Space1
       )
     , ( "border-start-start-radius"
-      , None
+      , Space1
       )
     , ( "border-style"
-      , None
+      , Space1
       )
     , ( "border-top"
-      , None
+      , Space1
       )
     , ( "border-top-color"
       , None
       )
     , ( "border-top-left-radius"
-      , None
+      , Space1
       )
     , ( "border-top-right-radius"
-      , None
+      , Space1
       )
     , ( "border-top-style"
       , None
@@ -482,7 +480,7 @@ properties =
       , None
       )
     , ( "border-width"
-      , None
+      , Space1
       )
     , ( "bottom"
       , None
@@ -491,7 +489,7 @@ properties =
       , None
       )
     , ( "box-shadow"
-      , None
+      , Comma2
       )
     , ( "box-sizing"
       , None
@@ -508,6 +506,8 @@ properties =
     , ( "break-inside"
       , None
       )
+
+    -- here
     , ( "caption-side"
       , None
       )
