@@ -85,14 +85,11 @@ $ = I.Single identity "#"
                                     ""
                                )
 
-                    else if joinType == Comma1 || joinType == Comma2 then
+                    else if joinType == Comma1 then
                         j ", "
-                            ++ (if joinType == Comma2 then
-                                    jj ", "
 
-                                else
-                                    ""
-                               )
+                    else if joinType == Comma2 then
+                        j " " ++ jj ", "
 
                     else
                         ""

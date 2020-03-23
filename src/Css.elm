@@ -93,7 +93,7 @@ animation =
 
 animationJ : List String -> Declaration
 animationJ =
-    I.Single identity "animation" << String.join ", "
+    I.Single identity "animation" << String.join " "
 
 
 animationJJ : List (List String) -> Declaration
@@ -108,7 +108,7 @@ background =
 
 backgroundJ : List String -> Declaration
 backgroundJ =
-    I.Single identity "background" << String.join ", "
+    I.Single identity "background" << String.join " "
 
 
 backgroundJJ : List (List String) -> Declaration
@@ -123,7 +123,7 @@ backgroundRepeat =
 
 backgroundRepeatJ : List String -> Declaration
 backgroundRepeatJ =
-    I.Single identity "background-repeat" << String.join ", "
+    I.Single identity "background-repeat" << String.join " "
 
 
 backgroundRepeatJJ : List (List String) -> Declaration
@@ -138,7 +138,7 @@ backgroundSize =
 
 backgroundSizeJ : List String -> Declaration
 backgroundSizeJ =
-    I.Single identity "background-size" << String.join ", "
+    I.Single identity "background-size" << String.join " "
 
 
 backgroundSizeJJ : List (List String) -> Declaration
@@ -153,7 +153,7 @@ transition =
 
 transitionJ : List String -> Declaration
 transitionJ =
-    I.Single identity "transition" << String.join ", "
+    I.Single identity "transition" << String.join " "
 
 
 transitionJJ : List (List String) -> Declaration
