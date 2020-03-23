@@ -1646,19 +1646,19 @@ properties =
       , None
       )
     , ( "transition"
-      , None
+      , Comma2
       )
     , ( "transition-delay"
-      , None
+      , Comma1
       )
     , ( "transition-duration"
-      , None
+      , Comma1
       )
     , ( "transition-property"
-      , None
+      , Comma1
       )
     , ( "transition-timing-function"
-      , None
+      , Comma1
       )
     , ( "translate"
       , None

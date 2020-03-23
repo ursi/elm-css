@@ -146,6 +146,21 @@ backgroundSizeJJ =
     I.Single identity "background-size" << String.join ", " << List.map (String.join " ")
 
 
+transition : String -> Declaration
+transition =
+    I.Single identity "transition"
+
+
+transitionJ : List String -> Declaration
+transitionJ =
+    I.Single identity "transition" << String.join ", "
+
+
+transitionJJ : List (List String) -> Declaration
+transitionJJ =
+    I.Single identity "transition" << String.join ", " << List.map (String.join " ")
+
+
 animationDelay : String -> Declaration
 animationDelay =
     I.Single identity "animation-delay"
@@ -264,6 +279,46 @@ backgroundOrigin =
 backgroundOriginJ : List String -> Declaration
 backgroundOriginJ =
     I.Single identity "background-origin" << String.join ", "
+
+
+transitionDelay : String -> Declaration
+transitionDelay =
+    I.Single identity "transition-delay"
+
+
+transitionDelayJ : List String -> Declaration
+transitionDelayJ =
+    I.Single identity "transition-delay" << String.join ", "
+
+
+transitionDuration : String -> Declaration
+transitionDuration =
+    I.Single identity "transition-duration"
+
+
+transitionDurationJ : List String -> Declaration
+transitionDurationJ =
+    I.Single identity "transition-duration" << String.join ", "
+
+
+transitionProperty : String -> Declaration
+transitionProperty =
+    I.Single identity "transition-property"
+
+
+transitionPropertyJ : List String -> Declaration
+transitionPropertyJ =
+    I.Single identity "transition-property" << String.join ", "
+
+
+transitionTimingFunction : String -> Declaration
+transitionTimingFunction =
+    I.Single identity "transition-timing-function"
+
+
+transitionTimingFunctionJ : List String -> Declaration
+transitionTimingFunctionJ =
+    I.Single identity "transition-timing-function" << String.join ", "
 
 
 alignContent : String -> Declaration
@@ -406,6 +461,126 @@ borderBlockWidthJ =
     I.Single identity "border-block-width" << String.join " "
 
 
+borderBottom : String -> Declaration
+borderBottom =
+    I.Single identity "border-bottom"
+
+
+borderBottomJ : List String -> Declaration
+borderBottomJ =
+    I.Single identity "border-bottom" << String.join " "
+
+
+borderBottomLeftRadius : String -> Declaration
+borderBottomLeftRadius =
+    I.Single identity "border-bottom-left-radius"
+
+
+borderBottomLeftRadiusJ : List String -> Declaration
+borderBottomLeftRadiusJ =
+    I.Single identity "border-bottom-left-radius" << String.join " "
+
+
+borderBottomRightRadius : String -> Declaration
+borderBottomRightRadius =
+    I.Single identity "border-bottom-right-radius"
+
+
+borderBottomRightRadiusJ : List String -> Declaration
+borderBottomRightRadiusJ =
+    I.Single identity "border-bottom-right-radius" << String.join " "
+
+
+borderColor : String -> Declaration
+borderColor =
+    I.Single identity "border-color"
+
+
+borderColorJ : List String -> Declaration
+borderColorJ =
+    I.Single identity "border-color" << String.join " "
+
+
+borderEndEndRadius : String -> Declaration
+borderEndEndRadius =
+    I.Single identity "border-end-end-radius"
+
+
+borderEndEndRadiusJ : List String -> Declaration
+borderEndEndRadiusJ =
+    I.Single identity "border-end-end-radius" << String.join " "
+
+
+borderEndStartRadius : String -> Declaration
+borderEndStartRadius =
+    I.Single identity "border-end-start-radius"
+
+
+borderEndStartRadiusJ : List String -> Declaration
+borderEndStartRadiusJ =
+    I.Single identity "border-end-start-radius" << String.join " "
+
+
+borderImage : String -> Declaration
+borderImage =
+    I.Single identity "border-image"
+
+
+borderImageJ : List String -> Declaration
+borderImageJ =
+    I.Single identity "border-image" << String.join " "
+
+
+borderImageOutset : String -> Declaration
+borderImageOutset =
+    I.Single identity "border-image-outset"
+
+
+borderImageOutsetJ : List String -> Declaration
+borderImageOutsetJ =
+    I.Single identity "border-image-outset" << String.join " "
+
+
+borderImageRepeat : String -> Declaration
+borderImageRepeat =
+    I.Single identity "border-image-repeat"
+
+
+borderImageRepeatJ : List String -> Declaration
+borderImageRepeatJ =
+    I.Single identity "border-image-repeat" << String.join " "
+
+
+borderImageSlice : String -> Declaration
+borderImageSlice =
+    I.Single identity "border-image-slice"
+
+
+borderImageSliceJ : List String -> Declaration
+borderImageSliceJ =
+    I.Single identity "border-image-slice" << String.join " "
+
+
+borderImageWidth : String -> Declaration
+borderImageWidth =
+    I.Single identity "border-image-width"
+
+
+borderImageWidthJ : List String -> Declaration
+borderImageWidthJ =
+    I.Single identity "border-image-width" << String.join " "
+
+
+borderInline : String -> Declaration
+borderInline =
+    I.Single identity "border-inline"
+
+
+borderInlineJ : List String -> Declaration
+borderInlineJ =
+    I.Single identity "border-inline" << String.join " "
+
+
 transform : String -> Declaration
 transform =
     I.Single identity "transform"
@@ -521,24 +696,9 @@ borderBlockStartWidth =
     I.Single identity "border-block-start-width"
 
 
-borderBottom : String -> Declaration
-borderBottom =
-    I.Single identity "border-bottom"
-
-
 borderBottomColor : String -> Declaration
 borderBottomColor =
     I.Single identity "border-bottom-color"
-
-
-borderBottomLeftRadius : String -> Declaration
-borderBottomLeftRadius =
-    I.Single identity "border-bottom-left-radius"
-
-
-borderBottomRightRadius : String -> Declaration
-borderBottomRightRadius =
-    I.Single identity "border-bottom-right-radius"
 
 
 borderBottomStyle : String -> Declaration
@@ -561,54 +721,9 @@ borderCollapse =
     I.Single identity "border-collapse"
 
 
-borderColor : String -> Declaration
-borderColor =
-    I.Single identity "border-color"
-
-
-borderEndEndRadius : String -> Declaration
-borderEndEndRadius =
-    I.Single identity "border-end-end-radius"
-
-
-borderEndStartRadius : String -> Declaration
-borderEndStartRadius =
-    I.Single identity "border-end-start-radius"
-
-
-borderImage : String -> Declaration
-borderImage =
-    I.Single identity "border-image"
-
-
-borderImageOutset : String -> Declaration
-borderImageOutset =
-    I.Single identity "border-image-outset"
-
-
-borderImageRepeat : String -> Declaration
-borderImageRepeat =
-    I.Single identity "border-image-repeat"
-
-
-borderImageSlice : String -> Declaration
-borderImageSlice =
-    I.Single identity "border-image-slice"
-
-
 borderImageSource : String -> Declaration
 borderImageSource =
     I.Single identity "border-image-source"
-
-
-borderImageWidth : String -> Declaration
-borderImageWidth =
-    I.Single identity "border-image-width"
-
-
-borderInline : String -> Declaration
-borderInline =
-    I.Single identity "border-inline"
 
 
 borderInlineColor : String -> Declaration
@@ -2689,31 +2804,6 @@ transformOrigin =
 transformStyle : String -> Declaration
 transformStyle =
     I.Single identity "transform-style"
-
-
-transition : String -> Declaration
-transition =
-    I.Single identity "transition"
-
-
-transitionDelay : String -> Declaration
-transitionDelay =
-    I.Single identity "transition-delay"
-
-
-transitionDuration : String -> Declaration
-transitionDuration =
-    I.Single identity "transition-duration"
-
-
-transitionProperty : String -> Declaration
-transitionProperty =
-    I.Single identity "transition-property"
-
-
-transitionTimingFunction : String -> Declaration
-transitionTimingFunction =
-    I.Single identity "transition-timing-function"
 
 
 translate : String -> Declaration
