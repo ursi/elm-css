@@ -12,9 +12,22 @@ todo =
 
 
 type Statement
-    = Rule String (List Declaration)
+    = Rule Rule_
     | Batch (List Statement)
     | Import (List String)
+    | Keyframes Keyframes_
+
+
+type alias Rule_ =
+    { selector : String
+    , declarations : List Declaration
+    }
+
+
+type alias Keyframes_ =
+    { name : String
+    , rules : List Rule_
+    }
 
 
 type Stylesheet
@@ -23,13 +36,25 @@ type Stylesheet
 
 type alias Stylesheet_ =
     { imports : List String
+    , keyframes : List Keyframes_
     , rules : Dict String (List Declaration)
     }
 
 
 rule : String -> List Declaration -> Statement
 rule =
-    Rule
+    (<<) Rule << Rule_
+
+
+keyframes : ( String, List ( String, List Declaration ) ) -> Statement
+keyframes ( name, rules ) =
+    rules
+        |> List.map
+            (\( selector, declarations ) ->
+                Rule_ selector declarations
+            )
+        |> Keyframes_ name
+        |> Keyframes
 
 
 toStyleElement : List Statement -> List ( String, Node msg ) -> Node msg
@@ -41,7 +66,7 @@ toStyleElement statements styleTextNodes =
 
 toTextNodes : List Statement -> List ( String, Node msg )
 toTextNodes statements =
-    toTextNodesFrom statements <| Stylesheet_ [] Dict.empty
+    toTextNodesFrom statements <| Stylesheet_ [] [] Dict.empty
 
 
 toTextNodesFrom : List Statement -> Stylesheet_ -> List ( String, Node msg )
@@ -49,14 +74,14 @@ toTextNodesFrom statements stylesheet =
     case statements of
         first :: rest_ ->
             case first of
-                Rule selector_ declarations ->
+                Rule rule_ ->
                     toTextNodesFrom rest_
                         { stylesheet
                             | rules =
-                                Dict.get selector_ stylesheet.rules
-                                    |> Maybe.map ((++) declarations)
-                                    |> Maybe.withDefault declarations
-                                    |> Dict.insert selector_
+                                Dict.get rule_.selector stylesheet.rules
+                                    |> Maybe.map ((++) rule_.declarations)
+                                    |> Maybe.withDefault rule_.declarations
+                                    |> Dict.insert rule_.selector
                                     >> (|>) stylesheet.rules
                         }
 
@@ -66,32 +91,59 @@ toTextNodesFrom statements stylesheet =
                 Import imports_ ->
                     toTextNodesFrom rest_ { stylesheet | imports = imports_ }
 
+                Keyframes keyframes_ ->
+                    toTextNodesFrom rest_ { stylesheet | keyframes = keyframes_ :: stylesheet.keyframes }
+
         [] ->
             stylesheet.imports
                 |> List.map (\import_ -> "@import '" ++ import_ ++ "';")
                 |> String.join "\n"
-                |> Tuple.pair "imports"
-                << V.text
+                |> V.text
+                >> Tuple.pair "imports"
                 |> (::)
-                >> (|>) (rulesToTextNodes stylesheet.rules)
+                >> (|>)
+                    (keyframesToTextNodes stylesheet.keyframes
+                        ++ rulesToTextNodes stylesheet.rules
+                    )
+
+
+keyframesToTextNodes : List Keyframes_ -> List ( String, Node msg )
+keyframesToTextNodes =
+    List.map
+        (\{ name, rules } ->
+            ( "keyframes start" ++ name, V.text <| "@keyframes " ++ name ++ " {" )
+                :: (rules
+                        |> List.map
+                            (\{ selector, declarations } ->
+                                ruleToTextNode "keyframes" selector declarations
+                            )
+                   )
+                ++ [ ( "keyframes end" ++ name, V.text "}" ) ]
+        )
+        >> List.concat
 
 
 rulesToTextNodes : Dict String (List Declaration) -> List ( String, Node msg )
 rulesToTextNodes =
     Dict.toList
         >> List.map
-            (\( selector_, declarations ) ->
-                declarations
-                    |> (C.createSelectorVariation <| \_ -> selector_)
-                    |> List.singleton
-                    |> I.toString
-                    |> Maybe.withDefault ""
-                    |> (\text ->
-                            ( String.fromInt <| Murmur3.hashString 0 text
-                            , V.text text
-                            )
-                       )
+            (\( selector, declarations ) ->
+                ruleToTextNode "" selector declarations
             )
+
+
+ruleToTextNode : String -> String -> List Declaration -> ( String, V.Node msg )
+ruleToTextNode idPrefix selector declarations =
+    declarations
+        |> (C.createSelectorVariation <| \_ -> selector)
+        |> List.singleton
+        |> I.toString
+        |> Maybe.withDefault ""
+        |> (\text ->
+                ( idPrefix ++ (String.fromInt <| Murmur3.hashString 0 text)
+                , V.text text
+                )
+           )
 
 
 batch : List Statement -> Statement
@@ -110,544 +162,544 @@ imports =
 
 a : List Declaration -> Statement
 a =
-    Rule "a"
+    Rule << Rule_ "a"
 
 
 abbr : List Declaration -> Statement
 abbr =
-    Rule "abbr"
+    Rule << Rule_ "abbr"
 
 
 address : List Declaration -> Statement
 address =
-    Rule "address"
+    Rule << Rule_ "address"
 
 
 area : List Declaration -> Statement
 area =
-    Rule "area"
+    Rule << Rule_ "area"
 
 
 article : List Declaration -> Statement
 article =
-    Rule "article"
+    Rule << Rule_ "article"
 
 
 aside : List Declaration -> Statement
 aside =
-    Rule "aside"
+    Rule << Rule_ "aside"
 
 
 audio : List Declaration -> Statement
 audio =
-    Rule "audio"
+    Rule << Rule_ "audio"
 
 
 b : List Declaration -> Statement
 b =
-    Rule "b"
+    Rule << Rule_ "b"
 
 
 base : List Declaration -> Statement
 base =
-    Rule "base"
+    Rule << Rule_ "base"
 
 
 bdi : List Declaration -> Statement
 bdi =
-    Rule "bdi"
+    Rule << Rule_ "bdi"
 
 
 bdo : List Declaration -> Statement
 bdo =
-    Rule "bdo"
+    Rule << Rule_ "bdo"
 
 
 blockquote : List Declaration -> Statement
 blockquote =
-    Rule "blockquote"
+    Rule << Rule_ "blockquote"
 
 
 body : List Declaration -> Statement
 body =
-    Rule "body"
+    Rule << Rule_ "body"
 
 
 br : List Declaration -> Statement
 br =
-    Rule "br"
+    Rule << Rule_ "br"
 
 
 button : List Declaration -> Statement
 button =
-    Rule "button"
+    Rule << Rule_ "button"
 
 
 canvas : List Declaration -> Statement
 canvas =
-    Rule "canvas"
+    Rule << Rule_ "canvas"
 
 
 caption : List Declaration -> Statement
 caption =
-    Rule "caption"
+    Rule << Rule_ "caption"
 
 
 cite : List Declaration -> Statement
 cite =
-    Rule "cite"
+    Rule << Rule_ "cite"
 
 
 code : List Declaration -> Statement
 code =
-    Rule "code"
+    Rule << Rule_ "code"
 
 
 col : List Declaration -> Statement
 col =
-    Rule "col"
+    Rule << Rule_ "col"
 
 
 colgroup : List Declaration -> Statement
 colgroup =
-    Rule "colgroup"
+    Rule << Rule_ "colgroup"
 
 
 data : List Declaration -> Statement
 data =
-    Rule "data"
+    Rule << Rule_ "data"
 
 
 datalist : List Declaration -> Statement
 datalist =
-    Rule "datalist"
+    Rule << Rule_ "datalist"
 
 
 dd : List Declaration -> Statement
 dd =
-    Rule "dd"
+    Rule << Rule_ "dd"
 
 
 del : List Declaration -> Statement
 del =
-    Rule "del"
+    Rule << Rule_ "del"
 
 
 details : List Declaration -> Statement
 details =
-    Rule "details"
+    Rule << Rule_ "details"
 
 
 dfn : List Declaration -> Statement
 dfn =
-    Rule "dfn"
+    Rule << Rule_ "dfn"
 
 
 dialog : List Declaration -> Statement
 dialog =
-    Rule "dialog"
+    Rule << Rule_ "dialog"
 
 
 div : List Declaration -> Statement
 div =
-    Rule "div"
+    Rule << Rule_ "div"
 
 
 dl : List Declaration -> Statement
 dl =
-    Rule "dl"
+    Rule << Rule_ "dl"
 
 
 dt : List Declaration -> Statement
 dt =
-    Rule "dt"
+    Rule << Rule_ "dt"
 
 
 em_ : List Declaration -> Statement
 em_ =
-    Rule "em"
+    Rule << Rule_ "em"
 
 
 embed : List Declaration -> Statement
 embed =
-    Rule "embed"
+    Rule << Rule_ "embed"
 
 
 fieldset : List Declaration -> Statement
 fieldset =
-    Rule "fieldset"
+    Rule << Rule_ "fieldset"
 
 
 figcaption : List Declaration -> Statement
 figcaption =
-    Rule "figcaption"
+    Rule << Rule_ "figcaption"
 
 
 figure : List Declaration -> Statement
 figure =
-    Rule "figure"
+    Rule << Rule_ "figure"
 
 
 footer : List Declaration -> Statement
 footer =
-    Rule "footer"
+    Rule << Rule_ "footer"
 
 
 form : List Declaration -> Statement
 form =
-    Rule "form"
+    Rule << Rule_ "form"
 
 
 h1 : List Declaration -> Statement
 h1 =
-    Rule "h1"
+    Rule << Rule_ "h1"
 
 
 head : List Declaration -> Statement
 head =
-    Rule "head"
+    Rule << Rule_ "head"
 
 
 header : List Declaration -> Statement
 header =
-    Rule "header"
+    Rule << Rule_ "header"
 
 
 hgroup : List Declaration -> Statement
 hgroup =
-    Rule "hgroup"
+    Rule << Rule_ "hgroup"
 
 
 hr : List Declaration -> Statement
 hr =
-    Rule "hr"
+    Rule << Rule_ "hr"
 
 
 html : List Declaration -> Statement
 html =
-    Rule "html"
+    Rule << Rule_ "html"
 
 
 i : List Declaration -> Statement
 i =
-    Rule "i"
+    Rule << Rule_ "i"
 
 
 iframe : List Declaration -> Statement
 iframe =
-    Rule "iframe"
+    Rule << Rule_ "iframe"
 
 
 img : List Declaration -> Statement
 img =
-    Rule "img"
+    Rule << Rule_ "img"
 
 
 input : List Declaration -> Statement
 input =
-    Rule "input"
+    Rule << Rule_ "input"
 
 
 ins : List Declaration -> Statement
 ins =
-    Rule "ins"
+    Rule << Rule_ "ins"
 
 
 kbd : List Declaration -> Statement
 kbd =
-    Rule "kbd"
+    Rule << Rule_ "kbd"
 
 
 label : List Declaration -> Statement
 label =
-    Rule "label"
+    Rule << Rule_ "label"
 
 
 legend : List Declaration -> Statement
 legend =
-    Rule "legend"
+    Rule << Rule_ "legend"
 
 
 li : List Declaration -> Statement
 li =
-    Rule "li"
+    Rule << Rule_ "li"
 
 
 link : List Declaration -> Statement
 link =
-    Rule "link"
+    Rule << Rule_ "link"
 
 
 main_ : List Declaration -> Statement
 main_ =
-    Rule "main"
+    Rule << Rule_ "main"
 
 
 map : List Declaration -> Statement
 map =
-    Rule "map"
+    Rule << Rule_ "map"
 
 
 mark : List Declaration -> Statement
 mark =
-    Rule "mark"
+    Rule << Rule_ "mark"
 
 
 mathML : List Declaration -> Statement
 mathML =
-    Rule "MathML"
+    Rule << Rule_ "MathML"
 
 
 menu : List Declaration -> Statement
 menu =
-    Rule "menu"
+    Rule << Rule_ "menu"
 
 
 meta : List Declaration -> Statement
 meta =
-    Rule "meta"
+    Rule << Rule_ "meta"
 
 
 meter : List Declaration -> Statement
 meter =
-    Rule "meter"
+    Rule << Rule_ "meter"
 
 
 nav : List Declaration -> Statement
 nav =
-    Rule "nav"
+    Rule << Rule_ "nav"
 
 
 noscript : List Declaration -> Statement
 noscript =
-    Rule "noscript"
+    Rule << Rule_ "noscript"
 
 
 object : List Declaration -> Statement
 object =
-    Rule "object"
+    Rule << Rule_ "object"
 
 
 ol : List Declaration -> Statement
 ol =
-    Rule "ol"
+    Rule << Rule_ "ol"
 
 
 optgroup : List Declaration -> Statement
 optgroup =
-    Rule "optgroup"
+    Rule << Rule_ "optgroup"
 
 
 option : List Declaration -> Statement
 option =
-    Rule "option"
+    Rule << Rule_ "option"
 
 
 output : List Declaration -> Statement
 output =
-    Rule "output"
+    Rule << Rule_ "output"
 
 
 p : List Declaration -> Statement
 p =
-    Rule "p"
+    Rule << Rule_ "p"
 
 
 param : List Declaration -> Statement
 param =
-    Rule "param"
+    Rule << Rule_ "param"
 
 
 picture : List Declaration -> Statement
 picture =
-    Rule "picture"
+    Rule << Rule_ "picture"
 
 
 pre : List Declaration -> Statement
 pre =
-    Rule "pre"
+    Rule << Rule_ "pre"
 
 
 progress : List Declaration -> Statement
 progress =
-    Rule "progress"
+    Rule << Rule_ "progress"
 
 
 q_ : List Declaration -> Statement
 q_ =
-    Rule "q"
+    Rule << Rule_ "q"
 
 
 rp : List Declaration -> Statement
 rp =
-    Rule "rp"
+    Rule << Rule_ "rp"
 
 
 rt : List Declaration -> Statement
 rt =
-    Rule "rt"
+    Rule << Rule_ "rt"
 
 
 ruby : List Declaration -> Statement
 ruby =
-    Rule "ruby"
+    Rule << Rule_ "ruby"
 
 
 s_ : List Declaration -> Statement
 s_ =
-    Rule "s"
+    Rule << Rule_ "s"
 
 
 samp : List Declaration -> Statement
 samp =
-    Rule "samp"
+    Rule << Rule_ "samp"
 
 
 script : List Declaration -> Statement
 script =
-    Rule "script"
+    Rule << Rule_ "script"
 
 
 section : List Declaration -> Statement
 section =
-    Rule "section"
+    Rule << Rule_ "section"
 
 
 select : List Declaration -> Statement
 select =
-    Rule "select"
+    Rule << Rule_ "select"
 
 
 slot : List Declaration -> Statement
 slot =
-    Rule "slot"
+    Rule << Rule_ "slot"
 
 
 small : List Declaration -> Statement
 small =
-    Rule "small"
+    Rule << Rule_ "small"
 
 
 source : List Declaration -> Statement
 source =
-    Rule "source"
+    Rule << Rule_ "source"
 
 
 span : List Declaration -> Statement
 span =
-    Rule "span"
+    Rule << Rule_ "span"
 
 
 strong : List Declaration -> Statement
 strong =
-    Rule "strong"
+    Rule << Rule_ "strong"
 
 
 style : List Declaration -> Statement
 style =
-    Rule "style"
+    Rule << Rule_ "style"
 
 
 sub : List Declaration -> Statement
 sub =
-    Rule "sub"
+    Rule << Rule_ "sub"
 
 
 summary : List Declaration -> Statement
 summary =
-    Rule "summary"
+    Rule << Rule_ "summary"
 
 
 sup : List Declaration -> Statement
 sup =
-    Rule "sup"
+    Rule << Rule_ "sup"
 
 
 svg : List Declaration -> Statement
 svg =
-    Rule "SVG"
+    Rule << Rule_ "SVG"
 
 
 table : List Declaration -> Statement
 table =
-    Rule "table"
+    Rule << Rule_ "table"
 
 
 tbody : List Declaration -> Statement
 tbody =
-    Rule "tbody"
+    Rule << Rule_ "tbody"
 
 
 td : List Declaration -> Statement
 td =
-    Rule "td"
+    Rule << Rule_ "td"
 
 
 template : List Declaration -> Statement
 template =
-    Rule "template"
+    Rule << Rule_ "template"
 
 
 textarea : List Declaration -> Statement
 textarea =
-    Rule "textarea"
+    Rule << Rule_ "textarea"
 
 
 tfoot : List Declaration -> Statement
 tfoot =
-    Rule "tfoot"
+    Rule << Rule_ "tfoot"
 
 
 th : List Declaration -> Statement
 th =
-    Rule "th"
+    Rule << Rule_ "th"
 
 
 thead : List Declaration -> Statement
 thead =
-    Rule "thead"
+    Rule << Rule_ "thead"
 
 
 time : List Declaration -> Statement
 time =
-    Rule "time"
+    Rule << Rule_ "time"
 
 
 title : List Declaration -> Statement
 title =
-    Rule "title"
+    Rule << Rule_ "title"
 
 
 tr : List Declaration -> Statement
 tr =
-    Rule "tr"
+    Rule << Rule_ "tr"
 
 
 track : List Declaration -> Statement
 track =
-    Rule "track"
+    Rule << Rule_ "track"
 
 
 u : List Declaration -> Statement
 u =
-    Rule "u"
+    Rule << Rule_ "u"
 
 
 ul : List Declaration -> Statement
 ul =
-    Rule "ul"
+    Rule << Rule_ "ul"
 
 
 var : List Declaration -> Statement
 var =
-    Rule "var"
+    Rule << Rule_ "var"
 
 
 video : List Declaration -> Statement
 video =
-    Rule "video"
+    Rule << Rule_ "video"
 
 
 wbr : List Declaration -> Statement
 wbr =
-    Rule "wbr"
+    Rule << Rule_ "wbr"
