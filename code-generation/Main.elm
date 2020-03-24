@@ -506,13 +506,11 @@ properties =
     , ( "break-inside"
       , None
       )
-
-    -- here
     , ( "caption-side"
       , None
       )
     , ( "caret"
-      , None
+      , Space1
       )
     , ( "caret-color"
       , None
@@ -527,7 +525,7 @@ properties =
       , None
       )
     , ( "clip-path"
-      , None
+      , Space1
       )
     , ( "clip-rule"
       , None
@@ -542,7 +540,7 @@ properties =
       , None
       )
     , ( "color-scheme"
-      , None
+      , Space1
       )
     , ( "column-count"
       , None
@@ -554,7 +552,7 @@ properties =
       , None
       )
     , ( "column-rule"
-      , None
+      , Space1
       )
     , ( "column-rule-color"
       , None
@@ -572,11 +570,13 @@ properties =
       , None
       )
     , ( "columns"
-      , None
+      , Space1
       )
     , ( "contain"
-      , None
+      , Space1
       )
+
+    -- here
     , ( "content"
       , None
       )
