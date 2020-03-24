@@ -1,5 +1,6 @@
 module Css.Internal exposing
     ( Declaration(..)
+    , seed
     , tmpClass
     , toPairsDict
     , toString
@@ -11,6 +12,11 @@ import Dict exposing (Dict)
 type Declaration
     = Single (String -> String) String String
     | Batch (List Declaration)
+
+
+seed : Int
+seed =
+    0
 
 
 toString : List Declaration -> Maybe String

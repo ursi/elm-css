@@ -32,7 +32,7 @@ withStyles statments nodes =
                 ( [], Dict.empty )
                 nodes
     in
-    (G.toStyleElement statments <| toTextNodes styleDict)
+    (G.toStyleNode statments <| toStyleNodes styleDict)
         :: nodes_
 
 
@@ -80,7 +80,7 @@ toStyledNode maybeHashAndString tag attributes children =
                 ( [], dict )
                 children
     in
-    V.node tag newAttributes (addStyleNode styleDict children_)
+    V.node tag newAttributes (addStyleNodes styleDict children_)
 
 
 
@@ -106,7 +106,7 @@ toStyledKeyedNode maybeHashAndString tag attributes children =
     in
     V.keyedNode tag
         newAttributes
-        (addKeyedStyleNode
+        (addKeyedStyleNodes
             styleDict
             (List.map2
                 (\( id, _ ) child -> ( id, child ))
@@ -133,26 +133,34 @@ toStyledNodeHelper maybeHashAndString attributes =
             )
 
 
-addStyleNode : Dict String String -> List (V.Node msg) -> List (V.Node msg)
-addStyleNode styleDict nodes =
+addStyleNodes : Dict String String -> List (V.Node msg) -> List (V.Node msg)
+addStyleNodes styleDict nodes =
     let
-        textNodes =
-            toTextNodes styleDict
+        styleNodes =
+            toStyleNodes styleDict
     in
-    if List.isEmpty textNodes then
+    if List.isEmpty styleNodes then
         nodes
 
     else
-        V.keyedNode "style" [] textNodes :: nodes
+        V.keyedNode "style" [] styleNodes :: nodes
 
 
 
 -- TODO: don't use an arbitrary string, maybe use a hash
 
 
-addKeyedStyleNode : Dict String String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
-addKeyedStyleNode =
-    (::) << Tuple.pair "asdfasfasd" << V.keyedNode "style" [] << toTextNodes
+addKeyedStyleNodes : Dict String String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
+addKeyedStyleNodes styleDict nodes =
+    let
+        styleNodes =
+            toStyleNodes styleDict
+    in
+    if List.isEmpty styleNodes then
+        nodes
+
+    else
+        ( "elm-css node", V.keyedNode "style" [] styleNodes ) :: nodes
 
 
 addClass : String -> List (Attribute msg) -> List (Attribute msg)
@@ -276,17 +284,20 @@ folderHelperHelper maybeHashAndString attributes nodes styleDict =
             )
 
 
-toTextNodes : Dict String String -> List ( String, V.Node msg )
-toTextNodes =
+toStyleNodes : Dict String String -> List ( String, V.Node msg )
+toStyleNodes =
     Dict.toList
         >> List.map
             (\( hash, ruleTemplate ) ->
                 ( hash
-                , V.text <|
-                    String.replace
-                        I.tmpClass
-                        ("._" ++ hash)
-                        ruleTemplate
+                , V.node "style"
+                    []
+                    [ V.text <|
+                        String.replace
+                            I.tmpClass
+                            ("._" ++ hash)
+                            ruleTemplate
+                    ]
                 )
             )
 
@@ -300,16 +311,11 @@ getHashAndString declarations =
     Maybe.map
         (\decsStr ->
             ( String.fromInt <|
-                Murmur3.hashString seed decsStr
+                Murmur3.hashString I.seed decsStr
             , decsStr
             )
         )
         maybeDecStr
-
-
-seed : Int
-seed =
-    0
 
 
 type alias Html msg =

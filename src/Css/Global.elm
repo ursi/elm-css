@@ -41,6 +41,24 @@ type alias Stylesheet_ =
     }
 
 
+style : List (Node msg) -> Node msg
+style =
+    V.node "style" []
+
+
+joinMap : (a -> String) -> String -> List a -> String
+joinMap f sep list =
+    case list of
+        [ only ] ->
+            f only
+
+        first :: rest ->
+            f first ++ sep ++ joinMap f sep rest
+
+        [] ->
+            ""
+
+
 rule : String -> List Declaration -> Statement
 rule =
     (<<) Rule << Rule_
@@ -57,25 +75,25 @@ keyframes name rules =
         |> Keyframes
 
 
-toStyleElement : List Statement -> List ( String, Node msg ) -> Node msg
-toStyleElement statements styleTextNodes =
+toStyleNode : List Statement -> List ( String, Node msg ) -> Node msg
+toStyleNode statements styleNodes =
     V.keyedNode "style" [] <|
-        toTextNodes statements
-            ++ styleTextNodes
+        toStyleNodes statements
+            ++ styleNodes
 
 
-toTextNodes : List Statement -> List ( String, Node msg )
-toTextNodes statements =
-    toTextNodesFrom statements <| Stylesheet_ [] [] Dict.empty
+toStyleNodes : List Statement -> List ( String, Node msg )
+toStyleNodes statements =
+    toStyleNodesFrom statements <| Stylesheet_ [] [] Dict.empty
 
 
-toTextNodesFrom : List Statement -> Stylesheet_ -> List ( String, Node msg )
-toTextNodesFrom statements stylesheet =
+toStyleNodesFrom : List Statement -> Stylesheet_ -> List ( String, Node msg )
+toStyleNodesFrom statements stylesheet =
     case statements of
         first :: rest_ ->
             case first of
                 Rule rule_ ->
-                    toTextNodesFrom rest_
+                    toStyleNodesFrom rest_
                         { stylesheet
                             | rules =
                                 Dict.get rule_.selector stylesheet.rules
@@ -86,64 +104,79 @@ toTextNodesFrom statements stylesheet =
                         }
 
                 Batch batchedStatements ->
-                    toTextNodesFrom (batchedStatements ++ rest_) stylesheet
+                    toStyleNodesFrom (batchedStatements ++ rest_) stylesheet
 
                 Import imports_ ->
-                    toTextNodesFrom rest_ { stylesheet | imports = imports_ }
+                    toStyleNodesFrom rest_ { stylesheet | imports = imports_ }
 
                 Keyframes keyframes_ ->
-                    toTextNodesFrom rest_ { stylesheet | keyframes = keyframes_ :: stylesheet.keyframes }
+                    toStyleNodesFrom rest_ { stylesheet | keyframes = keyframes_ :: stylesheet.keyframes }
 
         [] ->
-            stylesheet.imports
-                |> List.map (\import_ -> "@import '" ++ import_ ++ "';")
-                |> String.join "\n"
-                |> V.text
-                >> Tuple.pair "imports"
-                |> (::)
-                >> (|>)
-                    (keyframesToTextNodes stylesheet.keyframes
-                        ++ rulesToTextNodes stylesheet.rules
+            (if List.isEmpty stylesheet.imports then
+                identity
+
+             else
+                (::)
+                    (stylesheet.imports
+                        |> joinMap
+                            (\import_ -> "@import '" ++ import_ ++ "';")
+                            "\n"
+                        |> V.text
+                        |> List.singleton
+                        |> style
+                        >> Tuple.pair "imports"
                     )
+            )
+                (keyframesToStyleNodes stylesheet.keyframes
+                    ++ rulesToStyleNodes stylesheet.rules
+                )
 
 
-keyframesToTextNodes : List Keyframes_ -> List ( String, Node msg )
-keyframesToTextNodes =
+keyframesToStyleNodes : List Keyframes_ -> List ( String, Node msg )
+keyframesToStyleNodes =
     List.map
         (\{ name, rules } ->
-            ( "keyframes start" ++ name, V.text <| "@keyframes " ++ name ++ " {" )
-                :: (rules
-                        |> List.map
+            ( "keyframes" ++ name
+            , style <|
+                [ V.text <|
+                    "@keyframes "
+                        ++ name
+                        ++ " {\n"
+                        ++ joinMap
                             (\{ selector, declarations } ->
-                                ruleToTextNode "keyframes" selector declarations
+                                ruleToString selector declarations
                             )
-                   )
-                ++ [ ( "keyframes end" ++ name, V.text "}" ) ]
+                            "\n"
+                            rules
+                        ++ "\n}"
+                ]
+            )
         )
-        >> List.concat
 
 
-rulesToTextNodes : Dict String (List Declaration) -> List ( String, Node msg )
-rulesToTextNodes =
+rulesToStyleNodes : Dict String (List Declaration) -> List ( String, Node msg )
+rulesToStyleNodes =
     Dict.toList
         >> List.map
             (\( selector, declarations ) ->
-                ruleToTextNode "" selector declarations
+                let
+                    ruleText =
+                        ruleToString selector declarations
+                in
+                ( String.fromInt <| Murmur3.hashString I.seed ruleText
+                , style [ V.text ruleText ]
+                )
             )
 
 
-ruleToTextNode : String -> String -> List Declaration -> ( String, V.Node msg )
-ruleToTextNode idPrefix selector declarations =
+ruleToString : String -> List Declaration -> String
+ruleToString selector declarations =
     declarations
         |> (C.createSelectorVariation <| \_ -> selector)
         |> List.singleton
         |> I.toString
         |> Maybe.withDefault ""
-        |> (\text ->
-                ( idPrefix ++ (String.fromInt <| Murmur3.hashString 0 text)
-                , V.text text
-                )
-           )
 
 
 batch : List Statement -> Statement
@@ -593,11 +626,6 @@ span =
 strong : List Declaration -> Statement
 strong =
     Rule << Rule_ "strong"
-
-
-style : List Declaration -> Statement
-style =
-    Rule << Rule_ "style"
 
 
 sub : List Declaration -> Statement
