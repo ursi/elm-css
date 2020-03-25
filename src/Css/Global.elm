@@ -162,7 +162,8 @@ ruleToString selector declarations =
     declarations
         |> (C.createSelectorVariation <| \_ -> selector)
         |> List.singleton
-        |> I.toString
+        |> I.toStrings
+        |> Maybe.andThen .node
         |> Maybe.withDefault ""
 
 

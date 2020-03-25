@@ -3,8 +3,7 @@ module Css.Internal exposing
     , joinMap
     , seed
     , tmpClass
-    , toPairsDict
-    , toString
+    , toStrings
     )
 
 import Dict exposing (Dict)
@@ -13,6 +12,13 @@ import Dict exposing (Dict)
 type Declaration
     = Single (String -> String) String String
     | Batch (List Declaration)
+    | Inline (List Declaration)
+
+
+type alias StylePairs =
+    { node : Dict String (List ( String, String ))
+    , inline : List ( String, String )
+    }
 
 
 joinMap : (a -> String) -> String -> List a -> String
@@ -33,30 +39,63 @@ seed =
     0
 
 
-toString : List Declaration -> Maybe String
-toString declarations =
+toStrings :
+    List Declaration
+    ->
+        Maybe
+            { node : Maybe String
+            , inline : Maybe String
+            }
+toStrings declarations =
     if List.isEmpty declarations then
         Nothing
 
     else
-        declarations
-            |> toPairsDict
-            |> Dict.toList
-            |> joinMap
-                (\( selector, pairs ) ->
-                    selector
-                        ++ " {\n"
-                        ++ (pairs
-                                |> joinMap
-                                    (\( property, value ) ->
-                                        "\t" ++ property ++ ": " ++ value ++ ";"
-                                    )
-                                    "\n"
-                           )
-                        ++ "\n}"
-                )
-                "\n"
-            |> Just
+        let
+            { node, inline } =
+                toStylePairs declarations
+        in
+        Just
+            { node =
+                node
+                    |> Dict.toList
+                    |> joinMap
+                        (\( selector, pairs ) ->
+                            selector
+                                ++ " {\n"
+                                ++ (pairs
+                                        |> joinMap
+                                            (\( property, value ) ->
+                                                "\t" ++ property ++ ": " ++ value ++ ";"
+                                            )
+                                            "\n"
+                                   )
+                                ++ "\n}"
+                        )
+                        "\n"
+                    |> (\str ->
+                            if String.isEmpty str then
+                                Nothing
+
+                            else
+                                Just str
+                       )
+            , inline =
+                inline
+                    |> joinMap
+                        -- this is how the browser styles it
+                        (\( property, value ) ->
+                            property ++ ": " ++ value ++ ";"
+                        )
+                        " "
+                    |> (\str ->
+                            if String.isEmpty str then
+                                Nothing
+
+                            else
+                                Just str
+                       )
+            }
 
 
 tmpClass : String
@@ -64,13 +103,16 @@ tmpClass =
     "!@#$%^&*()"
 
 
-toPairsDict : List Declaration -> Dict String (List ( String, String ))
-toPairsDict =
-    toPairsDictFrom Dict.empty
+toStylePairs : List Declaration -> StylePairs
+toStylePairs =
+    toStylePairsFrom <| StylePairs Dict.empty []
 
 
-toPairsDictFrom : Dict String (List ( String, String )) -> List Declaration -> Dict String (List ( String, String ))
-toPairsDictFrom pairsDict declarations =
+toStylePairsFrom :
+    StylePairs
+    -> List Declaration
+    -> StylePairs
+toStylePairsFrom ({ node, inline } as stylePairs) declarations =
     case declarations of
         first :: rest ->
             case first of
@@ -79,21 +121,51 @@ toPairsDictFrom pairsDict declarations =
                         selector =
                             classToSelector tmpClass
                     in
-                    toPairsDictFrom
-                        (Dict.insert selector
-                            (case Dict.get selector pairsDict of
-                                Just pairs ->
-                                    ( property, value ) :: pairs
+                    toStylePairsFrom
+                        { node =
+                            node
+                                |> Dict.insert selector
+                                    (case Dict.get selector node of
+                                        Just pairs ->
+                                            ( property, value ) :: pairs
 
-                                Nothing ->
-                                    [ ( property, value ) ]
-                            )
-                            pairsDict
-                        )
+                                        Nothing ->
+                                            [ ( property, value ) ]
+                                    )
+                        , inline = inline
+                        }
                         rest
 
                 Batch declarations_ ->
-                    toPairsDictFrom pairsDict <| declarations_ ++ rest
+                    toStylePairsFrom
+                        { node = node
+                        , inline = inline
+                        }
+                        (declarations_ ++ rest)
+
+                Inline declarations_ ->
+                    toStylePairsFrom
+                        { node = node
+                        , inline = toPairs declarations_ ++ inline
+                        }
+                        rest
 
         [] ->
-            pairsDict
+            stylePairs
+
+
+toPairs : List Declaration -> List ( String, String )
+toPairs =
+    List.foldr
+        (\declaration pairs ->
+            case declaration of
+                Single _ property value ->
+                    ( property, value ) :: pairs
+
+                Batch declarations ->
+                    toPairs declarations ++ pairs
+
+                Inline declarations ->
+                    toPairs declarations ++ pairs
+        )
+        []

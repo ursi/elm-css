@@ -23,6 +23,19 @@ type Node msg
     | StyledKeyedNode String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
 
 
+type alias StyleInfo =
+    Maybe
+        { node : Maybe RuleInfo
+        , inline : Maybe String
+        }
+
+
+type alias RuleInfo =
+    { hash : String
+    , string : String
+    }
+
+
 withStyles : List Statement -> List (Node msg) -> List (V.Node msg)
 withStyles statments nodes =
     let
@@ -64,15 +77,15 @@ toHtml node_ =
 
 
 toStyledNode :
-    Maybe ( String, String )
+    StyleInfo
     -> String
     -> List (Attribute msg)
     -> List (Node msg)
     -> V.Node msg
-toStyledNode maybeHashAndString tag attributes children =
+toStyledNode styleInfo tag attributes children =
     let
         ( dict, newAttributes ) =
-            toStyledNodeHelper maybeHashAndString attributes
+            toStyledNodeHelper styleInfo attributes
 
         ( children_, styleDict ) =
             List.foldr
@@ -88,15 +101,15 @@ toStyledNode maybeHashAndString tag attributes children =
 
 
 toStyledKeyedNode :
-    Maybe ( String, String )
+    StyleInfo
     -> String
     -> List (Attribute msg)
     -> List ( String, Node msg )
     -> V.Node msg
-toStyledKeyedNode maybeHashAndString tag attributes children =
+toStyledKeyedNode styleInfo tag attributes children =
     let
         ( dict, newAttributes ) =
-            toStyledNodeHelper maybeHashAndString attributes
+            toStyledNodeHelper styleInfo attributes
 
         ( children_, styleDict ) =
             List.foldr
@@ -117,15 +130,24 @@ toStyledKeyedNode maybeHashAndString tag attributes children =
 
 
 toStyledNodeHelper :
-    Maybe ( String, String )
+    StyleInfo
     -> List (Attribute msg)
     -> ( Dict String String, List (Attribute msg) )
-toStyledNodeHelper maybeHashAndString attributes =
-    case maybeHashAndString of
-        Just ( hash, decsStr ) ->
-            ( Dict.singleton hash decsStr
-            , addClass hash attributes
-            )
+toStyledNodeHelper styleInfo attributes =
+    case styleInfo of
+        Just innerStyleInfo ->
+            case innerStyleInfo.node of
+                Just { hash, string } ->
+                    ( Dict.singleton hash string
+                    , attributes
+                        |> addClass hash
+                        |> addInlineStyles innerStyleInfo.inline
+                    )
+
+                Nothing ->
+                    ( Dict.empty
+                    , addInlineStyles innerStyleInfo.inline attributes
+                    )
 
         Nothing ->
             ( Dict.empty
@@ -262,19 +284,30 @@ folderHelper styleDict node_ =
 
 
 folderHelperHelper :
-    Maybe ( String, String )
+    StyleInfo
     -> List (Attribute msg)
     -> List (Node msg)
     -> Dict String String
     -> ( List (Attribute msg), ( List (V.Node msg), Dict String String ) )
-folderHelperHelper maybeHashAndString attributes nodes styleDict =
-    case maybeHashAndString of
-        Just ( hash, decsStr ) ->
-            ( addClass hash attributes
-            , List.foldr folder
-                ( [], Dict.insert hash decsStr styleDict )
-                nodes
-            )
+folderHelperHelper styleInfo attributes nodes styleDict =
+    case styleInfo of
+        Just innerStyleInfo ->
+            case innerStyleInfo.node of
+                Just { hash, string } ->
+                    ( attributes
+                        |> addClass hash
+                        |> addInlineStyles innerStyleInfo.inline
+                    , List.foldr folder
+                        ( [], Dict.insert hash string styleDict )
+                        nodes
+                    )
+
+                Nothing ->
+                    ( addInlineStyles innerStyleInfo.inline attributes
+                    , List.foldr folder
+                        ( [], styleDict )
+                        nodes
+                    )
 
         Nothing ->
             ( attributes
@@ -282,6 +315,16 @@ folderHelperHelper maybeHashAndString attributes nodes styleDict =
                 ( [], styleDict )
                 nodes
             )
+
+
+addInlineStyles : Maybe String -> List (Attribute msg) -> List (Attribute msg)
+addInlineStyles maybeInlineStyles =
+    case maybeInlineStyles of
+        Just inlineStyles ->
+            (::) <| V.attribute "style" inlineStyles
+
+        Nothing ->
+            identity
 
 
 toStyleNodes : Dict String String -> List ( String, V.Node msg )
@@ -302,20 +345,28 @@ toStyleNodes =
             )
 
 
-getHashAndString : List Declaration -> Maybe ( String, String )
+getHashAndString : List Declaration -> StyleInfo
 getHashAndString declarations =
     let
-        maybeDecStr =
-            I.toString declarations
+        styleStrings =
+            I.toStrings declarations
     in
-    Maybe.map
-        (\decsStr ->
-            ( String.fromInt <|
-                Murmur3.hashString I.seed decsStr
-            , decsStr
+    styleStrings
+        |> Maybe.map
+            (\innerStyleInfo ->
+                { node =
+                    innerStyleInfo.node
+                        |> Maybe.map
+                            (\decsStr ->
+                                RuleInfo
+                                    (String.fromInt <|
+                                        Murmur3.hashString I.seed decsStr
+                                    )
+                                    decsStr
+                            )
+                , inline = innerStyleInfo.inline
+                }
             )
-        )
-        maybeDecStr
 
 
 type alias Html msg =

@@ -21,6 +21,11 @@ batch =
     I.Batch
 
 
+addInline : List Declaration -> Declaration
+addInline =
+    I.Inline
+
+
 createSelectorVariation : (String -> String) -> List Declaration -> Declaration
 createSelectorVariation classToSelector =
     List.map
@@ -34,6 +39,9 @@ createSelectorVariation classToSelector =
 
                 I.Batch declarations ->
                     createSelectorVariation classToSelector declarations
+
+                I.Inline declarations ->
+                    I.Batch []
         )
         >> I.Batch
 
@@ -80,6 +88,9 @@ important declaration_ =
 
         I.Batch declarations ->
             I.Batch <| List.map important declarations
+
+        I.Inline declarations ->
+            I.Batch declarations
 
 
 
