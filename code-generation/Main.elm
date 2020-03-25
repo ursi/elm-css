@@ -575,40 +575,38 @@ properties =
     , ( "contain"
       , Space1
       )
-
-    -- here
     , ( "content"
-      , None
+      , Space1
       )
     , ( "continue"
       , None
       )
     , ( "counter-increment"
-      , None
+      , Space2
       )
     , ( "counter-reset"
-      , None
+      , Space2
       )
     , ( "counter-set"
-      , None
+      , Space2
       )
     , ( "cue"
-      , None
+      , Space2
       )
     , ( "cue-after"
-      , None
+      , Space1
       )
     , ( "cue-before"
-      , None
+      , Space1
       )
     , ( "cursor"
-      , None
+      , Space2
       )
     , ( "direction"
       , None
       )
     , ( "display"
-      , None
+      , Space1
       )
     , ( "dominant-baseline"
       , None
@@ -619,6 +617,8 @@ properties =
     , ( "empty-cells"
       , None
       )
+
+    -- here
     , ( "fill"
       , None
       )
