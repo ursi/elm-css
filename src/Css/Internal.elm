@@ -1,5 +1,6 @@
 module Css.Internal exposing
     ( Declaration(..)
+    , joinMap
     , seed
     , tmpClass
     , toPairsDict
@@ -12,6 +13,19 @@ import Dict exposing (Dict)
 type Declaration
     = Single (String -> String) String String
     | Batch (List Declaration)
+
+
+joinMap : (a -> String) -> String -> List a -> String
+joinMap f sep list =
+    case list of
+        [ only ] ->
+            f only
+
+        first :: rest ->
+            f first ++ sep ++ joinMap f sep rest
+
+        [] ->
+            ""
 
 
 seed : Int
@@ -28,20 +42,20 @@ toString declarations =
         declarations
             |> toPairsDict
             |> Dict.toList
-            |> List.map
+            |> joinMap
                 (\( selector, pairs ) ->
                     selector
                         ++ " {\n"
                         ++ (pairs
-                                |> List.map
+                                |> joinMap
                                     (\( property, value ) ->
                                         "\t" ++ property ++ ": " ++ value ++ ";"
                                     )
-                                |> String.join "\n"
+                                    "\n"
                            )
                         ++ "\n}"
                 )
-            |> String.join "\n"
+                "\n"
             |> Just
 
 

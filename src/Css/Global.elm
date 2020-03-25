@@ -46,19 +46,6 @@ style =
     V.node "style" []
 
 
-joinMap : (a -> String) -> String -> List a -> String
-joinMap f sep list =
-    case list of
-        [ only ] ->
-            f only
-
-        first :: rest ->
-            f first ++ sep ++ joinMap f sep rest
-
-        [] ->
-            ""
-
-
 rule : String -> List Declaration -> Statement
 rule =
     (<<) Rule << Rule_
@@ -119,7 +106,7 @@ toStyleNodesFrom statements stylesheet =
              else
                 (::)
                     (stylesheet.imports
-                        |> joinMap
+                        |> I.joinMap
                             (\import_ -> "@import '" ++ import_ ++ "';")
                             "\n"
                         |> V.text
@@ -143,7 +130,7 @@ keyframesToStyleNodes =
                     "@keyframes "
                         ++ name
                         ++ " {\n"
-                        ++ joinMap
+                        ++ I.joinMap
                             (\{ selector, declarations } ->
                                 ruleToString selector declarations
                             )
