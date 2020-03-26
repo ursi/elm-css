@@ -617,10 +617,8 @@ properties =
     , ( "empty-cells"
       , None
       )
-
-    -- here
     , ( "fill"
-      , None
+      , Space1
       )
     , ( "fill-break"
       , None
@@ -629,7 +627,7 @@ properties =
       , None
       )
     , ( "fill-image"
-      , None
+      , Comma1
       )
     , ( "fill-opacity"
       , None
@@ -638,22 +636,22 @@ properties =
       , None
       )
     , ( "fill-position"
-      , None
+      , Comma2
       )
     , ( "fill-repeat"
-      , None
+      , Comma2
       )
     , ( "fill-rule"
       , None
       )
     , ( "fill-size"
-      , None
+      , Comma2
       )
     , ( "filter"
-      , None
+      , Space1
       )
     , ( "flex"
-      , None
+      , Space1
       )
     , ( "flex-basis"
       , None
@@ -662,12 +660,14 @@ properties =
       , None
       )
     , ( "flex-flow"
-      , None
+      , Space1
       )
     , ( "flex-grow"
+        -- number
       , None
       )
     , ( "flex-shrink"
+        -- number
       , None
       )
     , ( "flex-wrap"
@@ -695,16 +695,16 @@ properties =
       , None
       )
     , ( "flow-into"
-      , None
+      , Space1
       )
     , ( "font"
-      , None
+      , Space1
       )
     , ( "font-family"
-      , None
+      , Comma1
       )
     , ( "font-feature-settings"
-      , None
+      , Comma2
       )
     , ( "font-kerning"
       , None
@@ -728,10 +728,10 @@ properties =
       , None
       )
     , ( "font-style"
-      , None
+      , Space1
       )
     , ( "font-synthesis"
-      , None
+      , Space1
       )
     , ( "font-synthesis-small-caps"
       , None
@@ -743,31 +743,31 @@ properties =
       , None
       )
     , ( "font-variant"
-      , None
+      , Space1
       )
     , ( "font-variant-alternates"
-      , None
+      , Space1
       )
     , ( "font-variant-caps"
       , None
       )
     , ( "font-variant-east-asian"
-      , None
+      , Space1
       )
     , ( "font-variant-emoji"
       , None
       )
     , ( "font-variant-ligatures"
-      , None
+      , Space1
       )
     , ( "font-variant-numeric"
-      , None
+      , Space1
       )
     , ( "font-variant-position"
       , None
       )
     , ( "font-variation-settings"
-      , None
+      , Comma2
       )
     , ( "font-weight"
       , None
@@ -781,6 +781,8 @@ properties =
     , ( "forced-color-adjust"
       , None
       )
+
+    -- here
     , ( "gap"
       , None
       )
