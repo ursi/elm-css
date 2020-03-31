@@ -781,59 +781,59 @@ properties =
     , ( "forced-color-adjust"
       , None
       )
-
-    -- here
     , ( "gap"
-      , None
+      , Space1
       )
     , ( "glyph-orientation-vertical"
       , None
       )
     , ( "grid"
-      , None
+      , Space2
       )
     , ( "grid-area"
-      , None
+      , Space2
       )
     , ( "grid-auto-columns"
-      , None
+      , Space1
       )
     , ( "grid-auto-flow"
-      , None
+      , Space1
       )
     , ( "grid-auto-rows"
-      , None
+      , Space1
       )
     , ( "grid-column"
-      , None
+      , Space2
       )
     , ( "grid-column-end"
-      , None
+      , Space1
       )
     , ( "grid-column-start"
-      , None
+      , Space1
       )
     , ( "grid-row"
-      , None
+      , Space2
       )
     , ( "grid-row-end"
-      , None
+      , Space1
       )
     , ( "grid-row-start"
-      , None
+      , Space1
       )
     , ( "grid-template"
-      , None
+      , Space2
       )
     , ( "grid-template-areas"
-      , None
+      , Space1
       )
     , ( "grid-template-columns"
-      , None
+      , Space2
       )
     , ( "grid-template-rows"
-      , None
+      , Space2
       )
+
+    -- here
     , ( "hanging-punctuation"
       , None
       )
