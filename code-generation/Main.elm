@@ -832,10 +832,8 @@ properties =
     , ( "grid-template-rows"
       , Space2
       )
-
-    -- here
     , ( "hanging-punctuation"
-      , None
+      , Space1
       )
     , ( "height"
       , None
@@ -844,7 +842,7 @@ properties =
       , None
       )
     , ( "hyphenate-limit-chars"
-      , None
+      , Space1
       )
     , ( "hyphenate-limit-last"
       , None
@@ -858,6 +856,8 @@ properties =
     , ( "hyphens"
       , None
       )
+
+    -- here
     , ( "image-orientation"
       , None
       )
