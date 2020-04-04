@@ -59,12 +59,92 @@ descendants =
 
 
 
+-- Structural pseudo-classes
+-- https://drafts.csswg.org/selectors-3/#structural-pseudos
 -- these pseudo-classes are the reason style elements aren't inserted in the element they're attached to
+
+
+root : List Declaration -> Declaration
+root =
+    mapSelector <| append ":root"
+
+
+nthChild : Int -> Int -> List Declaration -> Declaration
+nthChild a b =
+    anpb a b
+        |> I.function ":nth-child"
+        |> append
+        |> mapSelector
+
+
+nthLastChild : Int -> Int -> List Declaration -> Declaration
+nthLastChild a b =
+    anpb a b
+        |> I.function ":nth-last-child"
+        |> append
+        |> mapSelector
+
+
+nthOfType : Int -> Int -> List Declaration -> Declaration
+nthOfType a b =
+    anpb a b
+        |> I.function ":nth-of-type"
+        |> append
+        |> mapSelector
+
+
+nthLastOfType : Int -> Int -> List Declaration -> Declaration
+nthLastOfType a b =
+    anpb a b
+        |> I.function ":nth-last-of-type"
+        |> append
+        |> mapSelector
 
 
 firstChild : List Declaration -> Declaration
 firstChild =
     mapSelector <| append ":first-child"
+
+
+lastChild : List Declaration -> Declaration
+lastChild =
+    mapSelector <| append ":last-child"
+
+
+firstOfType : List Declaration -> Declaration
+firstOfType =
+    mapSelector <| append ":first-of-type"
+
+
+lastOfType : List Declaration -> Declaration
+lastOfType =
+    mapSelector <| append ":last-of-type"
+
+
+onlyChild : List Declaration -> Declaration
+onlyChild =
+    mapSelector <| append ":only-child"
+
+
+onlyOfType : List Declaration -> Declaration
+onlyOfType =
+    mapSelector <| append ":only-of-type"
+
+
+empty : List Declaration -> Declaration
+empty =
+    mapSelector <| append ":empty"
+
+
+anpb : Int -> Int -> String
+anpb a b =
+    String.fromInt a
+        ++ "n+"
+        ++ String.fromInt b
+
+
+
+--
 
 
 hover : List Declaration -> Declaration

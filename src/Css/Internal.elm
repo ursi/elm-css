@@ -1,5 +1,10 @@
 module Css.Internal exposing
     ( Declaration(..)
+    , function
+    , function2
+    , function3
+    , function4
+    , functionJ
     , joinMap
     , seed
     , tmpClass
@@ -13,6 +18,31 @@ import Dict exposing (Dict)
 type Declaration
     = Single (String -> String) String String
     | Batch (List Declaration)
+
+
+function : String -> String -> String
+function name a =
+    name ++ "(" ++ a ++ ")"
+
+
+function2 : String -> String -> String -> String
+function2 name a b =
+    name ++ "(" ++ a ++ ", " ++ b ++ ")"
+
+
+function3 : String -> String -> String -> String -> String
+function3 name a b c =
+    name ++ "(" ++ a ++ ", " ++ b ++ ", " ++ c ++ ")"
+
+
+function4 : String -> String -> String -> String -> String -> String
+function4 name a b c d =
+    name ++ "(" ++ a ++ ", " ++ b ++ ", " ++ c ++ ", " ++ d ++ ")"
+
+
+functionJ : String -> List String -> String
+functionJ name args =
+    name ++ "(" ++ String.join ", " args ++ ")"
 
 
 joinMap : (a -> String) -> String -> List a -> String
