@@ -146,6 +146,96 @@ backgroundSizeJJ =
     I.Single identity "background-size" << String.join ", " << List.map (String.join " ")
 
 
+boxShadow : String -> Declaration
+boxShadow =
+    I.Single identity "box-shadow"
+
+
+boxShadowJ : List String -> Declaration
+boxShadowJ =
+    I.Single identity "box-shadow" << String.join " "
+
+
+boxShadowJJ : List (List String) -> Declaration
+boxShadowJJ =
+    I.Single identity "box-shadow" << String.join ", " << List.map (String.join " ")
+
+
+fillPosition : String -> Declaration
+fillPosition =
+    I.Single identity "fill-position"
+
+
+fillPositionJ : List String -> Declaration
+fillPositionJ =
+    I.Single identity "fill-position" << String.join " "
+
+
+fillPositionJJ : List (List String) -> Declaration
+fillPositionJJ =
+    I.Single identity "fill-position" << String.join ", " << List.map (String.join " ")
+
+
+fillRepeat : String -> Declaration
+fillRepeat =
+    I.Single identity "fill-repeat"
+
+
+fillRepeatJ : List String -> Declaration
+fillRepeatJ =
+    I.Single identity "fill-repeat" << String.join " "
+
+
+fillRepeatJJ : List (List String) -> Declaration
+fillRepeatJJ =
+    I.Single identity "fill-repeat" << String.join ", " << List.map (String.join " ")
+
+
+fillSize : String -> Declaration
+fillSize =
+    I.Single identity "fill-size"
+
+
+fillSizeJ : List String -> Declaration
+fillSizeJ =
+    I.Single identity "fill-size" << String.join " "
+
+
+fillSizeJJ : List (List String) -> Declaration
+fillSizeJJ =
+    I.Single identity "fill-size" << String.join ", " << List.map (String.join " ")
+
+
+fontFeatureSettings : String -> Declaration
+fontFeatureSettings =
+    I.Single identity "font-feature-settings"
+
+
+fontFeatureSettingsJ : List String -> Declaration
+fontFeatureSettingsJ =
+    I.Single identity "font-feature-settings" << String.join " "
+
+
+fontFeatureSettingsJJ : List (List String) -> Declaration
+fontFeatureSettingsJJ =
+    I.Single identity "font-feature-settings" << String.join ", " << List.map (String.join " ")
+
+
+fontVariationSettings : String -> Declaration
+fontVariationSettings =
+    I.Single identity "font-variation-settings"
+
+
+fontVariationSettingsJ : List String -> Declaration
+fontVariationSettingsJ =
+    I.Single identity "font-variation-settings" << String.join " "
+
+
+fontVariationSettingsJJ : List (List String) -> Declaration
+fontVariationSettingsJJ =
+    I.Single identity "font-variation-settings" << String.join ", " << List.map (String.join " ")
+
+
 transition : String -> Declaration
 transition =
     I.Single identity "transition"
@@ -159,6 +249,186 @@ transitionJ =
 transitionJJ : List (List String) -> Declaration
 transitionJJ =
     I.Single identity "transition" << String.join ", " << List.map (String.join " ")
+
+
+counterIncrement : String -> Declaration
+counterIncrement =
+    I.Single identity "counter-increment"
+
+
+counterIncrementJ : List String -> Declaration
+counterIncrementJ =
+    I.Single identity "counter-increment" << String.join " "
+
+
+counterIncrementJJ : List (List String) -> Declaration
+counterIncrementJJ =
+    I.Single identity "counter-increment" << String.join " " << List.map (String.join " ")
+
+
+counterReset : String -> Declaration
+counterReset =
+    I.Single identity "counter-reset"
+
+
+counterResetJ : List String -> Declaration
+counterResetJ =
+    I.Single identity "counter-reset" << String.join " "
+
+
+counterResetJJ : List (List String) -> Declaration
+counterResetJJ =
+    I.Single identity "counter-reset" << String.join " " << List.map (String.join " ")
+
+
+counterSet : String -> Declaration
+counterSet =
+    I.Single identity "counter-set"
+
+
+counterSetJ : List String -> Declaration
+counterSetJ =
+    I.Single identity "counter-set" << String.join " "
+
+
+counterSetJJ : List (List String) -> Declaration
+counterSetJJ =
+    I.Single identity "counter-set" << String.join " " << List.map (String.join " ")
+
+
+cue : String -> Declaration
+cue =
+    I.Single identity "cue"
+
+
+cueJ : List String -> Declaration
+cueJ =
+    I.Single identity "cue" << String.join " "
+
+
+cueJJ : List (List String) -> Declaration
+cueJJ =
+    I.Single identity "cue" << String.join " " << List.map (String.join " ")
+
+
+cursor : String -> Declaration
+cursor =
+    I.Single identity "cursor"
+
+
+cursorJ : List String -> Declaration
+cursorJ =
+    I.Single identity "cursor" << String.join " "
+
+
+cursorJJ : List (List String) -> Declaration
+cursorJJ =
+    I.Single identity "cursor" << String.join " " << List.map (String.join " ")
+
+
+grid : String -> Declaration
+grid =
+    I.Single identity "grid"
+
+
+gridJ : List String -> Declaration
+gridJ =
+    I.Single identity "grid" << String.join " "
+
+
+gridJJ : List (List String) -> Declaration
+gridJJ =
+    I.Single identity "grid" << String.join " " << List.map (String.join " ")
+
+
+gridArea : String -> Declaration
+gridArea =
+    I.Single identity "grid-area"
+
+
+gridAreaJ : List String -> Declaration
+gridAreaJ =
+    I.Single identity "grid-area" << String.join " "
+
+
+gridAreaJJ : List (List String) -> Declaration
+gridAreaJJ =
+    I.Single identity "grid-area" << String.join " " << List.map (String.join " ")
+
+
+gridColumn : String -> Declaration
+gridColumn =
+    I.Single identity "grid-column"
+
+
+gridColumnJ : List String -> Declaration
+gridColumnJ =
+    I.Single identity "grid-column" << String.join " "
+
+
+gridColumnJJ : List (List String) -> Declaration
+gridColumnJJ =
+    I.Single identity "grid-column" << String.join " " << List.map (String.join " ")
+
+
+gridRow : String -> Declaration
+gridRow =
+    I.Single identity "grid-row"
+
+
+gridRowJ : List String -> Declaration
+gridRowJ =
+    I.Single identity "grid-row" << String.join " "
+
+
+gridRowJJ : List (List String) -> Declaration
+gridRowJJ =
+    I.Single identity "grid-row" << String.join " " << List.map (String.join " ")
+
+
+gridTemplate : String -> Declaration
+gridTemplate =
+    I.Single identity "grid-template"
+
+
+gridTemplateJ : List String -> Declaration
+gridTemplateJ =
+    I.Single identity "grid-template" << String.join " "
+
+
+gridTemplateJJ : List (List String) -> Declaration
+gridTemplateJJ =
+    I.Single identity "grid-template" << String.join " " << List.map (String.join " ")
+
+
+gridTemplateColumns : String -> Declaration
+gridTemplateColumns =
+    I.Single identity "grid-template-columns"
+
+
+gridTemplateColumnsJ : List String -> Declaration
+gridTemplateColumnsJ =
+    I.Single identity "grid-template-columns" << String.join " "
+
+
+gridTemplateColumnsJJ : List (List String) -> Declaration
+gridTemplateColumnsJJ =
+    I.Single identity "grid-template-columns" << String.join " " << List.map (String.join " ")
+
+
+gridTemplateRows : String -> Declaration
+gridTemplateRows =
+    I.Single identity "grid-template-rows"
+
+
+gridTemplateRowsJ : List String -> Declaration
+gridTemplateRowsJ =
+    I.Single identity "grid-template-rows" << String.join " "
+
+
+gridTemplateRowsJJ : List (List String) -> Declaration
+gridTemplateRowsJJ =
+    I.Single identity "grid-template-rows" << String.join " " << List.map (String.join " ")
 
 
 animationDelay : String -> Declaration
@@ -279,6 +549,26 @@ backgroundOrigin =
 backgroundOriginJ : List String -> Declaration
 backgroundOriginJ =
     I.Single identity "background-origin" << String.join ", "
+
+
+fillImage : String -> Declaration
+fillImage =
+    I.Single identity "fill-image"
+
+
+fillImageJ : List String -> Declaration
+fillImageJ =
+    I.Single identity "fill-image" << String.join ", "
+
+
+fontFamily : String -> Declaration
+fontFamily =
+    I.Single identity "font-family"
+
+
+fontFamilyJ : List String -> Declaration
+fontFamilyJ =
+    I.Single identity "font-family" << String.join ", "
 
 
 transitionDelay : String -> Declaration
@@ -581,6 +871,506 @@ borderInlineJ =
     I.Single identity "border-inline" << String.join " "
 
 
+borderInlineColor : String -> Declaration
+borderInlineColor =
+    I.Single identity "border-inline-color"
+
+
+borderInlineColorJ : List String -> Declaration
+borderInlineColorJ =
+    I.Single identity "border-inline-color" << String.join " "
+
+
+borderInlineEnd : String -> Declaration
+borderInlineEnd =
+    I.Single identity "border-inline-end"
+
+
+borderInlineEndJ : List String -> Declaration
+borderInlineEndJ =
+    I.Single identity "border-inline-end" << String.join " "
+
+
+borderInlineStart : String -> Declaration
+borderInlineStart =
+    I.Single identity "border-inline-start"
+
+
+borderInlineStartJ : List String -> Declaration
+borderInlineStartJ =
+    I.Single identity "border-inline-start" << String.join " "
+
+
+borderInlineStyle : String -> Declaration
+borderInlineStyle =
+    I.Single identity "border-inline-style"
+
+
+borderInlineStyleJ : List String -> Declaration
+borderInlineStyleJ =
+    I.Single identity "border-inline-style" << String.join " "
+
+
+borderInlineWidth : String -> Declaration
+borderInlineWidth =
+    I.Single identity "border-inline-width"
+
+
+borderInlineWidthJ : List String -> Declaration
+borderInlineWidthJ =
+    I.Single identity "border-inline-width" << String.join " "
+
+
+borderLeft : String -> Declaration
+borderLeft =
+    I.Single identity "border-left"
+
+
+borderLeftJ : List String -> Declaration
+borderLeftJ =
+    I.Single identity "border-left" << String.join " "
+
+
+borderRadius : String -> Declaration
+borderRadius =
+    I.Single identity "border-radius"
+
+
+borderRadiusJ : List String -> Declaration
+borderRadiusJ =
+    I.Single identity "border-radius" << String.join " "
+
+
+borderRight : String -> Declaration
+borderRight =
+    I.Single identity "border-right"
+
+
+borderRightJ : List String -> Declaration
+borderRightJ =
+    I.Single identity "border-right" << String.join " "
+
+
+borderSpacing : String -> Declaration
+borderSpacing =
+    I.Single identity "border-spacing"
+
+
+borderSpacingJ : List String -> Declaration
+borderSpacingJ =
+    I.Single identity "border-spacing" << String.join " "
+
+
+borderStartEndRadius : String -> Declaration
+borderStartEndRadius =
+    I.Single identity "border-start-end-radius"
+
+
+borderStartEndRadiusJ : List String -> Declaration
+borderStartEndRadiusJ =
+    I.Single identity "border-start-end-radius" << String.join " "
+
+
+borderStartStartRadius : String -> Declaration
+borderStartStartRadius =
+    I.Single identity "border-start-start-radius"
+
+
+borderStartStartRadiusJ : List String -> Declaration
+borderStartStartRadiusJ =
+    I.Single identity "border-start-start-radius" << String.join " "
+
+
+borderStyle : String -> Declaration
+borderStyle =
+    I.Single identity "border-style"
+
+
+borderStyleJ : List String -> Declaration
+borderStyleJ =
+    I.Single identity "border-style" << String.join " "
+
+
+borderTop : String -> Declaration
+borderTop =
+    I.Single identity "border-top"
+
+
+borderTopJ : List String -> Declaration
+borderTopJ =
+    I.Single identity "border-top" << String.join " "
+
+
+borderTopLeftRadius : String -> Declaration
+borderTopLeftRadius =
+    I.Single identity "border-top-left-radius"
+
+
+borderTopLeftRadiusJ : List String -> Declaration
+borderTopLeftRadiusJ =
+    I.Single identity "border-top-left-radius" << String.join " "
+
+
+borderTopRightRadius : String -> Declaration
+borderTopRightRadius =
+    I.Single identity "border-top-right-radius"
+
+
+borderTopRightRadiusJ : List String -> Declaration
+borderTopRightRadiusJ =
+    I.Single identity "border-top-right-radius" << String.join " "
+
+
+borderWidth : String -> Declaration
+borderWidth =
+    I.Single identity "border-width"
+
+
+borderWidthJ : List String -> Declaration
+borderWidthJ =
+    I.Single identity "border-width" << String.join " "
+
+
+caret : String -> Declaration
+caret =
+    I.Single identity "caret"
+
+
+caretJ : List String -> Declaration
+caretJ =
+    I.Single identity "caret" << String.join " "
+
+
+clipPath : String -> Declaration
+clipPath =
+    I.Single identity "clip-path"
+
+
+clipPathJ : List String -> Declaration
+clipPathJ =
+    I.Single identity "clip-path" << String.join " "
+
+
+colorScheme : String -> Declaration
+colorScheme =
+    I.Single identity "color-scheme"
+
+
+colorSchemeJ : List String -> Declaration
+colorSchemeJ =
+    I.Single identity "color-scheme" << String.join " "
+
+
+columnRule : String -> Declaration
+columnRule =
+    I.Single identity "column-rule"
+
+
+columnRuleJ : List String -> Declaration
+columnRuleJ =
+    I.Single identity "column-rule" << String.join " "
+
+
+columns : String -> Declaration
+columns =
+    I.Single identity "columns"
+
+
+columnsJ : List String -> Declaration
+columnsJ =
+    I.Single identity "columns" << String.join " "
+
+
+contain : String -> Declaration
+contain =
+    I.Single identity "contain"
+
+
+containJ : List String -> Declaration
+containJ =
+    I.Single identity "contain" << String.join " "
+
+
+content : String -> Declaration
+content =
+    I.Single identity "content"
+
+
+contentJ : List String -> Declaration
+contentJ =
+    I.Single identity "content" << String.join " "
+
+
+cueAfter : String -> Declaration
+cueAfter =
+    I.Single identity "cue-after"
+
+
+cueAfterJ : List String -> Declaration
+cueAfterJ =
+    I.Single identity "cue-after" << String.join " "
+
+
+cueBefore : String -> Declaration
+cueBefore =
+    I.Single identity "cue-before"
+
+
+cueBeforeJ : List String -> Declaration
+cueBeforeJ =
+    I.Single identity "cue-before" << String.join " "
+
+
+display : String -> Declaration
+display =
+    I.Single identity "display"
+
+
+displayJ : List String -> Declaration
+displayJ =
+    I.Single identity "display" << String.join " "
+
+
+fill : String -> Declaration
+fill =
+    I.Single identity "fill"
+
+
+fillJ : List String -> Declaration
+fillJ =
+    I.Single identity "fill" << String.join " "
+
+
+filter : String -> Declaration
+filter =
+    I.Single identity "filter"
+
+
+filterJ : List String -> Declaration
+filterJ =
+    I.Single identity "filter" << String.join " "
+
+
+flex : String -> Declaration
+flex =
+    I.Single identity "flex"
+
+
+flexJ : List String -> Declaration
+flexJ =
+    I.Single identity "flex" << String.join " "
+
+
+flexFlow : String -> Declaration
+flexFlow =
+    I.Single identity "flex-flow"
+
+
+flexFlowJ : List String -> Declaration
+flexFlowJ =
+    I.Single identity "flex-flow" << String.join " "
+
+
+flowInto : String -> Declaration
+flowInto =
+    I.Single identity "flow-into"
+
+
+flowIntoJ : List String -> Declaration
+flowIntoJ =
+    I.Single identity "flow-into" << String.join " "
+
+
+font : String -> Declaration
+font =
+    I.Single identity "font"
+
+
+fontJ : List String -> Declaration
+fontJ =
+    I.Single identity "font" << String.join " "
+
+
+fontStyle : String -> Declaration
+fontStyle =
+    I.Single identity "font-style"
+
+
+fontStyleJ : List String -> Declaration
+fontStyleJ =
+    I.Single identity "font-style" << String.join " "
+
+
+fontSynthesis : String -> Declaration
+fontSynthesis =
+    I.Single identity "font-synthesis"
+
+
+fontSynthesisJ : List String -> Declaration
+fontSynthesisJ =
+    I.Single identity "font-synthesis" << String.join " "
+
+
+fontVariant : String -> Declaration
+fontVariant =
+    I.Single identity "font-variant"
+
+
+fontVariantJ : List String -> Declaration
+fontVariantJ =
+    I.Single identity "font-variant" << String.join " "
+
+
+fontVariantAlternates : String -> Declaration
+fontVariantAlternates =
+    I.Single identity "font-variant-alternates"
+
+
+fontVariantAlternatesJ : List String -> Declaration
+fontVariantAlternatesJ =
+    I.Single identity "font-variant-alternates" << String.join " "
+
+
+fontVariantEastAsian : String -> Declaration
+fontVariantEastAsian =
+    I.Single identity "font-variant-east-asian"
+
+
+fontVariantEastAsianJ : List String -> Declaration
+fontVariantEastAsianJ =
+    I.Single identity "font-variant-east-asian" << String.join " "
+
+
+fontVariantLigatures : String -> Declaration
+fontVariantLigatures =
+    I.Single identity "font-variant-ligatures"
+
+
+fontVariantLigaturesJ : List String -> Declaration
+fontVariantLigaturesJ =
+    I.Single identity "font-variant-ligatures" << String.join " "
+
+
+fontVariantNumeric : String -> Declaration
+fontVariantNumeric =
+    I.Single identity "font-variant-numeric"
+
+
+fontVariantNumericJ : List String -> Declaration
+fontVariantNumericJ =
+    I.Single identity "font-variant-numeric" << String.join " "
+
+
+gap : String -> Declaration
+gap =
+    I.Single identity "gap"
+
+
+gapJ : List String -> Declaration
+gapJ =
+    I.Single identity "gap" << String.join " "
+
+
+gridAutoColumns : String -> Declaration
+gridAutoColumns =
+    I.Single identity "grid-auto-columns"
+
+
+gridAutoColumnsJ : List String -> Declaration
+gridAutoColumnsJ =
+    I.Single identity "grid-auto-columns" << String.join " "
+
+
+gridAutoFlow : String -> Declaration
+gridAutoFlow =
+    I.Single identity "grid-auto-flow"
+
+
+gridAutoFlowJ : List String -> Declaration
+gridAutoFlowJ =
+    I.Single identity "grid-auto-flow" << String.join " "
+
+
+gridAutoRows : String -> Declaration
+gridAutoRows =
+    I.Single identity "grid-auto-rows"
+
+
+gridAutoRowsJ : List String -> Declaration
+gridAutoRowsJ =
+    I.Single identity "grid-auto-rows" << String.join " "
+
+
+gridColumnEnd : String -> Declaration
+gridColumnEnd =
+    I.Single identity "grid-column-end"
+
+
+gridColumnEndJ : List String -> Declaration
+gridColumnEndJ =
+    I.Single identity "grid-column-end" << String.join " "
+
+
+gridColumnStart : String -> Declaration
+gridColumnStart =
+    I.Single identity "grid-column-start"
+
+
+gridColumnStartJ : List String -> Declaration
+gridColumnStartJ =
+    I.Single identity "grid-column-start" << String.join " "
+
+
+gridRowEnd : String -> Declaration
+gridRowEnd =
+    I.Single identity "grid-row-end"
+
+
+gridRowEndJ : List String -> Declaration
+gridRowEndJ =
+    I.Single identity "grid-row-end" << String.join " "
+
+
+gridRowStart : String -> Declaration
+gridRowStart =
+    I.Single identity "grid-row-start"
+
+
+gridRowStartJ : List String -> Declaration
+gridRowStartJ =
+    I.Single identity "grid-row-start" << String.join " "
+
+
+gridTemplateAreas : String -> Declaration
+gridTemplateAreas =
+    I.Single identity "grid-template-areas"
+
+
+gridTemplateAreasJ : List String -> Declaration
+gridTemplateAreasJ =
+    I.Single identity "grid-template-areas" << String.join " "
+
+
+hangingPunctuation : String -> Declaration
+hangingPunctuation =
+    I.Single identity "hanging-punctuation"
+
+
+hangingPunctuationJ : List String -> Declaration
+hangingPunctuationJ =
+    I.Single identity "hanging-punctuation" << String.join " "
+
+
+hyphenateLimitChars : String -> Declaration
+hyphenateLimitChars =
+    I.Single identity "hyphenate-limit-chars"
+
+
+hyphenateLimitCharsJ : List String -> Declaration
+hyphenateLimitCharsJ =
+    I.Single identity "hyphenate-limit-chars" << String.join " "
+
+
 transform : String -> Declaration
 transform =
     I.Single identity "transform"
@@ -726,16 +1516,6 @@ borderImageSource =
     I.Single identity "border-image-source"
 
 
-borderInlineColor : String -> Declaration
-borderInlineColor =
-    I.Single identity "border-inline-color"
-
-
-borderInlineEnd : String -> Declaration
-borderInlineEnd =
-    I.Single identity "border-inline-end"
-
-
 borderInlineEndColor : String -> Declaration
 borderInlineEndColor =
     I.Single identity "border-inline-end-color"
@@ -749,11 +1529,6 @@ borderInlineEndStyle =
 borderInlineEndWidth : String -> Declaration
 borderInlineEndWidth =
     I.Single identity "border-inline-end-width"
-
-
-borderInlineStart : String -> Declaration
-borderInlineStart =
-    I.Single identity "border-inline-start"
 
 
 borderInlineStartColor : String -> Declaration
@@ -771,21 +1546,6 @@ borderInlineStartWidth =
     I.Single identity "border-inline-start-width"
 
 
-borderInlineStyle : String -> Declaration
-borderInlineStyle =
-    I.Single identity "border-inline-style"
-
-
-borderInlineWidth : String -> Declaration
-borderInlineWidth =
-    I.Single identity "border-inline-width"
-
-
-borderLeft : String -> Declaration
-borderLeft =
-    I.Single identity "border-left"
-
-
 borderLeftColor : String -> Declaration
 borderLeftColor =
     I.Single identity "border-left-color"
@@ -799,16 +1559,6 @@ borderLeftStyle =
 borderLeftWidth : String -> Declaration
 borderLeftWidth =
     I.Single identity "border-left-width"
-
-
-borderRadius : String -> Declaration
-borderRadius =
-    I.Single identity "border-radius"
-
-
-borderRight : String -> Declaration
-borderRight =
-    I.Single identity "border-right"
 
 
 borderRightColor : String -> Declaration
@@ -826,44 +1576,9 @@ borderRightWidth =
     I.Single identity "border-right-width"
 
 
-borderSpacing : String -> Declaration
-borderSpacing =
-    I.Single identity "border-spacing"
-
-
-borderStartEndRadius : String -> Declaration
-borderStartEndRadius =
-    I.Single identity "border-start-end-radius"
-
-
-borderStartStartRadius : String -> Declaration
-borderStartStartRadius =
-    I.Single identity "border-start-start-radius"
-
-
-borderStyle : String -> Declaration
-borderStyle =
-    I.Single identity "border-style"
-
-
-borderTop : String -> Declaration
-borderTop =
-    I.Single identity "border-top"
-
-
 borderTopColor : String -> Declaration
 borderTopColor =
     I.Single identity "border-top-color"
-
-
-borderTopLeftRadius : String -> Declaration
-borderTopLeftRadius =
-    I.Single identity "border-top-left-radius"
-
-
-borderTopRightRadius : String -> Declaration
-borderTopRightRadius =
-    I.Single identity "border-top-right-radius"
 
 
 borderTopStyle : String -> Declaration
@@ -876,11 +1591,6 @@ borderTopWidth =
     I.Single identity "border-top-width"
 
 
-borderWidth : String -> Declaration
-borderWidth =
-    I.Single identity "border-width"
-
-
 bottom : String -> Declaration
 bottom =
     I.Single identity "bottom"
@@ -889,11 +1599,6 @@ bottom =
 boxDecorationBreak : String -> Declaration
 boxDecorationBreak =
     I.Single identity "box-decoration-break"
-
-
-boxShadow : String -> Declaration
-boxShadow =
-    I.Single identity "box-shadow"
 
 
 boxSizing : String -> Declaration
@@ -926,11 +1631,6 @@ captionSide =
     I.Single identity "caption-side"
 
 
-caret : String -> Declaration
-caret =
-    I.Single identity "caret"
-
-
 caretColor : String -> Declaration
 caretColor =
     I.Single identity "caret-color"
@@ -949,11 +1649,6 @@ clear =
 clip : String -> Declaration
 clip =
     I.Single identity "clip"
-
-
-clipPath : String -> Declaration
-clipPath =
-    I.Single identity "clip-path"
 
 
 clipRule : String -> Declaration
@@ -976,11 +1671,6 @@ colorInterpolationFilters =
     I.Single identity "color-interpolation-filters"
 
 
-colorScheme : String -> Declaration
-colorScheme =
-    I.Single identity "color-scheme"
-
-
 columnCount : String -> Declaration
 columnCount =
     I.Single identity "column-count"
@@ -994,11 +1684,6 @@ columnFill =
 columnGap : String -> Declaration
 columnGap =
     I.Single identity "column-gap"
-
-
-columnRule : String -> Declaration
-columnRule =
-    I.Single identity "column-rule"
 
 
 columnRuleColor : String -> Declaration
@@ -1026,69 +1711,14 @@ columnWidth =
     I.Single identity "column-width"
 
 
-columns : String -> Declaration
-columns =
-    I.Single identity "columns"
-
-
-contain : String -> Declaration
-contain =
-    I.Single identity "contain"
-
-
-content : String -> Declaration
-content =
-    I.Single identity "content"
-
-
 continue : String -> Declaration
 continue =
     I.Single identity "continue"
 
 
-counterIncrement : String -> Declaration
-counterIncrement =
-    I.Single identity "counter-increment"
-
-
-counterReset : String -> Declaration
-counterReset =
-    I.Single identity "counter-reset"
-
-
-counterSet : String -> Declaration
-counterSet =
-    I.Single identity "counter-set"
-
-
-cue : String -> Declaration
-cue =
-    I.Single identity "cue"
-
-
-cueAfter : String -> Declaration
-cueAfter =
-    I.Single identity "cue-after"
-
-
-cueBefore : String -> Declaration
-cueBefore =
-    I.Single identity "cue-before"
-
-
-cursor : String -> Declaration
-cursor =
-    I.Single identity "cursor"
-
-
 direction : String -> Declaration
 direction =
     I.Single identity "direction"
-
-
-display : String -> Declaration
-display =
-    I.Single identity "display"
 
 
 dominantBaseline : String -> Declaration
@@ -1106,11 +1736,6 @@ emptyCells =
     I.Single identity "empty-cells"
 
 
-fill : String -> Declaration
-fill =
-    I.Single identity "fill"
-
-
 fillBreak : String -> Declaration
 fillBreak =
     I.Single identity "fill-break"
@@ -1119,11 +1744,6 @@ fillBreak =
 fillColor : String -> Declaration
 fillColor =
     I.Single identity "fill-color"
-
-
-fillImage : String -> Declaration
-fillImage =
-    I.Single identity "fill-image"
 
 
 fillOpacity : String -> Declaration
@@ -1136,34 +1756,9 @@ fillOrigin =
     I.Single identity "fill-origin"
 
 
-fillPosition : String -> Declaration
-fillPosition =
-    I.Single identity "fill-position"
-
-
-fillRepeat : String -> Declaration
-fillRepeat =
-    I.Single identity "fill-repeat"
-
-
 fillRule : String -> Declaration
 fillRule =
     I.Single identity "fill-rule"
-
-
-fillSize : String -> Declaration
-fillSize =
-    I.Single identity "fill-size"
-
-
-filter : String -> Declaration
-filter =
-    I.Single identity "filter"
-
-
-flex : String -> Declaration
-flex =
-    I.Single identity "flex"
 
 
 flexBasis : String -> Declaration
@@ -1174,11 +1769,6 @@ flexBasis =
 flexDirection : String -> Declaration
 flexDirection =
     I.Single identity "flex-direction"
-
-
-flexFlow : String -> Declaration
-flexFlow =
-    I.Single identity "flex-flow"
 
 
 flexGrow : String -> Declaration
@@ -1231,26 +1821,6 @@ flowFrom =
     I.Single identity "flow-from"
 
 
-flowInto : String -> Declaration
-flowInto =
-    I.Single identity "flow-into"
-
-
-font : String -> Declaration
-font =
-    I.Single identity "font"
-
-
-fontFamily : String -> Declaration
-fontFamily =
-    I.Single identity "font-family"
-
-
-fontFeatureSettings : String -> Declaration
-fontFeatureSettings =
-    I.Single identity "font-feature-settings"
-
-
 fontKerning : String -> Declaration
 fontKerning =
     I.Single identity "font-kerning"
@@ -1286,16 +1856,6 @@ fontStretch =
     I.Single identity "font-stretch"
 
 
-fontStyle : String -> Declaration
-fontStyle =
-    I.Single identity "font-style"
-
-
-fontSynthesis : String -> Declaration
-fontSynthesis =
-    I.Single identity "font-synthesis"
-
-
 fontSynthesisSmallCaps : String -> Declaration
 fontSynthesisSmallCaps =
     I.Single identity "font-synthesis-small-caps"
@@ -1311,24 +1871,9 @@ fontSynthesisWeight =
     I.Single identity "font-synthesis-weight"
 
 
-fontVariant : String -> Declaration
-fontVariant =
-    I.Single identity "font-variant"
-
-
-fontVariantAlternates : String -> Declaration
-fontVariantAlternates =
-    I.Single identity "font-variant-alternates"
-
-
 fontVariantCaps : String -> Declaration
 fontVariantCaps =
     I.Single identity "font-variant-caps"
-
-
-fontVariantEastAsian : String -> Declaration
-fontVariantEastAsian =
-    I.Single identity "font-variant-east-asian"
 
 
 fontVariantEmoji : String -> Declaration
@@ -1336,24 +1881,9 @@ fontVariantEmoji =
     I.Single identity "font-variant-emoji"
 
 
-fontVariantLigatures : String -> Declaration
-fontVariantLigatures =
-    I.Single identity "font-variant-ligatures"
-
-
-fontVariantNumeric : String -> Declaration
-fontVariantNumeric =
-    I.Single identity "font-variant-numeric"
-
-
 fontVariantPosition : String -> Declaration
 fontVariantPosition =
     I.Single identity "font-variant-position"
-
-
-fontVariationSettings : String -> Declaration
-fontVariationSettings =
-    I.Single identity "font-variation-settings"
 
 
 fontWeight : String -> Declaration
@@ -1376,94 +1906,9 @@ forcedColorAdjust =
     I.Single identity "forced-color-adjust"
 
 
-gap : String -> Declaration
-gap =
-    I.Single identity "gap"
-
-
 glyphOrientationVertical : String -> Declaration
 glyphOrientationVertical =
     I.Single identity "glyph-orientation-vertical"
-
-
-grid : String -> Declaration
-grid =
-    I.Single identity "grid"
-
-
-gridArea : String -> Declaration
-gridArea =
-    I.Single identity "grid-area"
-
-
-gridAutoColumns : String -> Declaration
-gridAutoColumns =
-    I.Single identity "grid-auto-columns"
-
-
-gridAutoFlow : String -> Declaration
-gridAutoFlow =
-    I.Single identity "grid-auto-flow"
-
-
-gridAutoRows : String -> Declaration
-gridAutoRows =
-    I.Single identity "grid-auto-rows"
-
-
-gridColumn : String -> Declaration
-gridColumn =
-    I.Single identity "grid-column"
-
-
-gridColumnEnd : String -> Declaration
-gridColumnEnd =
-    I.Single identity "grid-column-end"
-
-
-gridColumnStart : String -> Declaration
-gridColumnStart =
-    I.Single identity "grid-column-start"
-
-
-gridRow : String -> Declaration
-gridRow =
-    I.Single identity "grid-row"
-
-
-gridRowEnd : String -> Declaration
-gridRowEnd =
-    I.Single identity "grid-row-end"
-
-
-gridRowStart : String -> Declaration
-gridRowStart =
-    I.Single identity "grid-row-start"
-
-
-gridTemplate : String -> Declaration
-gridTemplate =
-    I.Single identity "grid-template"
-
-
-gridTemplateAreas : String -> Declaration
-gridTemplateAreas =
-    I.Single identity "grid-template-areas"
-
-
-gridTemplateColumns : String -> Declaration
-gridTemplateColumns =
-    I.Single identity "grid-template-columns"
-
-
-gridTemplateRows : String -> Declaration
-gridTemplateRows =
-    I.Single identity "grid-template-rows"
-
-
-hangingPunctuation : String -> Declaration
-hangingPunctuation =
-    I.Single identity "hanging-punctuation"
 
 
 height : String -> Declaration
@@ -1474,11 +1919,6 @@ height =
 hyphenateCharacter : String -> Declaration
 hyphenateCharacter =
     I.Single identity "hyphenate-character"
-
-
-hyphenateLimitChars : String -> Declaration
-hyphenateLimitChars =
-    I.Single identity "hyphenate-limit-chars"
 
 
 hyphenateLimitLast : String -> Declaration
