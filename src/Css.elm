@@ -59,7 +59,7 @@ descendants =
 
 
 
--- the created style element can mess this up
+-- these pseudo-classes are the reason style elements aren't inserted in the element they're attached to
 
 
 firstChild : List Declaration -> Declaration
