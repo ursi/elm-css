@@ -160,7 +160,7 @@ rulesToStyleNodes =
 ruleToString : String -> List Declaration -> String
 ruleToString selector declarations =
     declarations
-        |> (C.createSelectorVariation <| \_ -> selector)
+        |> (C.mapSelector <| \_ -> selector)
         |> List.singleton
         |> I.toString
         |> Maybe.withDefault ""

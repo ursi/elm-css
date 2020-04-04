@@ -21,8 +21,8 @@ batch =
     I.Batch
 
 
-createSelectorVariation : (String -> String) -> List Declaration -> Declaration
-createSelectorVariation classToSelector =
+mapSelector : (String -> String) -> List Declaration -> Declaration
+mapSelector classToSelector =
     List.map
         (\declaration_ ->
             case declaration_ of
@@ -33,7 +33,7 @@ createSelectorVariation classToSelector =
                         value
 
                 I.Batch declarations ->
-                    createSelectorVariation classToSelector declarations
+                    mapSelector classToSelector declarations
         )
         >> I.Batch
 
@@ -45,17 +45,17 @@ append =
 
 adjacent : List Declaration -> Declaration
 adjacent =
-    createSelectorVariation (\class -> class ++ " + " ++ class)
+    mapSelector (\class -> class ++ " + " ++ class)
 
 
 children : List Declaration -> Declaration
 children =
-    createSelectorVariation <| append " > *"
+    mapSelector <| append " > *"
 
 
 descendants : List Declaration -> Declaration
 descendants =
-    createSelectorVariation <| append " *"
+    mapSelector <| append " *"
 
 
 
@@ -64,12 +64,12 @@ descendants =
 
 firstChild : List Declaration -> Declaration
 firstChild =
-    createSelectorVariation <| append ":first-child"
+    mapSelector <| append ":first-child"
 
 
 hover : List Declaration -> Declaration
 hover =
-    createSelectorVariation <| append ":hover"
+    mapSelector <| append ":hover"
 
 
 important : Declaration -> Declaration
