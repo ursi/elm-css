@@ -48,9 +48,19 @@ adjacent =
     mapSelector (\class -> class ++ " + " ++ class)
 
 
+child : String -> List Declaration -> Declaration
+child tag =
+    mapSelector <| append <| " > " ++ tag
+
+
 children : List Declaration -> Declaration
 children =
     mapSelector <| append " > *"
+
+
+descendant : String -> List Declaration -> Declaration
+descendant tag =
+    mapSelector <| append <| " " ++ tag
 
 
 descendants : List Declaration -> Declaration
