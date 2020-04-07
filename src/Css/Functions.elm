@@ -1,15 +1,17 @@
 module Css.Functions exposing (..)
 
-import Css.Internal exposing (function, function2, function3, function4, functionJ)
+import Css.Internal as I exposing (function, function2, function3, function4, functionJ)
 
 
 
 -- transform
 
 
-matrix : String -> String
-matrix =
-    function "matrix"
+matrix : List Float -> String
+matrix m =
+    m
+        |> I.joinMap String.fromFloat ", "
+        |> function "matrix"
 
 
 translate : String -> String
@@ -27,19 +29,21 @@ translateY =
     function "translateY"
 
 
-scale : String -> String
-scale =
-    function "scale"
+scale : Float -> Float -> String
+scale x y =
+    function2 "scale"
+        (String.fromFloat x)
+        (String.fromFloat y)
 
 
-scaleX : String -> String
+scaleX : Float -> String
 scaleX =
-    function "scaleX"
+    function "scaleX" << String.fromFloat
 
 
-scaleY : String -> String
+scaleY : Float -> String
 scaleY =
-    function "scaleY"
+    function "scaleY" << String.fromFloat
 
 
 rotate : String -> String
