@@ -116,7 +116,8 @@ dropShadow =
 
 dropShadowJ : List String -> String
 dropShadowJ =
-    functionJ "drop-shadow"
+    String.join " "
+        >> function "drop-shadow"
 
 
 grayscale : String -> String
