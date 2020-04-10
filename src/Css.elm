@@ -176,6 +176,16 @@ important declaration_ =
 -- Properties
 
 
+flexGrow : Float -> Declaration
+flexGrow =
+    I.Single identity "flex-grow" << String.fromFloat
+
+
+flexShrink : Float -> Declaration
+flexShrink =
+    I.Single identity "flex-shrink" << String.fromFloat
+
+
 animation : String -> Declaration
 animation =
     I.Single identity "animation"
@@ -1461,6 +1471,126 @@ hyphenateLimitCharsJ =
     I.Single identity "hyphenate-limit-chars" << String.join " "
 
 
+imageOrientation : String -> Declaration
+imageOrientation =
+    I.Single identity "image-orientation"
+
+
+imageOrientationJ : List String -> Declaration
+imageOrientationJ =
+    I.Single identity "image-orientation" << String.join " "
+
+
+imageResolution : String -> Declaration
+imageResolution =
+    I.Single identity "image-resolution"
+
+
+imageResolutionJ : List String -> Declaration
+imageResolutionJ =
+    I.Single identity "image-resolution" << String.join " "
+
+
+initialLetters : String -> Declaration
+initialLetters =
+    I.Single identity "initial-letters"
+
+
+initialLettersJ : List String -> Declaration
+initialLettersJ =
+    I.Single identity "initial-letters" << String.join " "
+
+
+initialLettersAlign : String -> Declaration
+initialLettersAlign =
+    I.Single identity "initial-letters-align"
+
+
+initialLettersAlignJ : List String -> Declaration
+initialLettersAlignJ =
+    I.Single identity "initial-letters-align" << String.join " "
+
+
+inset : String -> Declaration
+inset =
+    I.Single identity "inset"
+
+
+insetJ : List String -> Declaration
+insetJ =
+    I.Single identity "inset" << String.join " "
+
+
+insetBlock : String -> Declaration
+insetBlock =
+    I.Single identity "inset-block"
+
+
+insetBlockJ : List String -> Declaration
+insetBlockJ =
+    I.Single identity "inset-block" << String.join " "
+
+
+insetInline : String -> Declaration
+insetInline =
+    I.Single identity "inset-inline"
+
+
+insetInlineJ : List String -> Declaration
+insetInlineJ =
+    I.Single identity "inset-inline" << String.join " "
+
+
+justifyContent : String -> Declaration
+justifyContent =
+    I.Single identity "justify-content"
+
+
+justifyContentJ : List String -> Declaration
+justifyContentJ =
+    I.Single identity "justify-content" << String.join " "
+
+
+justifyItems : String -> Declaration
+justifyItems =
+    I.Single identity "justify-items"
+
+
+justifyItemsJ : List String -> Declaration
+justifyItemsJ =
+    I.Single identity "justify-items" << String.join " "
+
+
+justifySelf : String -> Declaration
+justifySelf =
+    I.Single identity "justify-self"
+
+
+justifySelfJ : List String -> Declaration
+justifySelfJ =
+    I.Single identity "justify-self" << String.join " "
+
+
+lineClamp : String -> Declaration
+lineClamp =
+    I.Single identity "line-clamp"
+
+
+lineClampJ : List String -> Declaration
+lineClampJ =
+    I.Single identity "line-clamp" << String.join " "
+
+
+listStyle : String -> Declaration
+listStyle =
+    I.Single identity "list-style"
+
+
+listStyleJ : List String -> Declaration
+listStyleJ =
+    I.Single identity "list-style" << String.join " "
+
+
 transform : String -> Declaration
 transform =
     I.Single identity "transform"
@@ -1861,16 +1991,6 @@ flexDirection =
     I.Single identity "flex-direction"
 
 
-flexGrow : String -> Declaration
-flexGrow =
-    I.Single identity "flex-grow"
-
-
-flexShrink : String -> Declaration
-flexShrink =
-    I.Single identity "flex-shrink"
-
-
 flexWrap : String -> Declaration
 flexWrap =
     I.Single identity "flex-wrap"
@@ -2031,29 +2151,9 @@ hyphens =
     I.Single identity "hyphens"
 
 
-imageOrientation : String -> Declaration
-imageOrientation =
-    I.Single identity "image-orientation"
-
-
 imageRendering : String -> Declaration
 imageRendering =
     I.Single identity "image-rendering"
-
-
-imageResolution : String -> Declaration
-imageResolution =
-    I.Single identity "image-resolution"
-
-
-initialLetters : String -> Declaration
-initialLetters =
-    I.Single identity "initial-letters"
-
-
-initialLettersAlign : String -> Declaration
-initialLettersAlign =
-    I.Single identity "initial-letters-align"
 
 
 initialLettersWrap : String -> Declaration
@@ -2071,16 +2171,6 @@ inlineSizing =
     I.Single identity "inline-sizing"
 
 
-inset : String -> Declaration
-inset =
-    I.Single identity "inset"
-
-
-insetBlock : String -> Declaration
-insetBlock =
-    I.Single identity "inset-block"
-
-
 insetBlockEnd : String -> Declaration
 insetBlockEnd =
     I.Single identity "inset-block-end"
@@ -2089,11 +2179,6 @@ insetBlockEnd =
 insetBlockStart : String -> Declaration
 insetBlockStart =
     I.Single identity "inset-block-start"
-
-
-insetInline : String -> Declaration
-insetInline =
-    I.Single identity "inset-inline"
 
 
 insetInlineEnd : String -> Declaration
@@ -2109,21 +2194,6 @@ insetInlineStart =
 isolation : String -> Declaration
 isolation =
     I.Single identity "isolation"
-
-
-justifyContent : String -> Declaration
-justifyContent =
-    I.Single identity "justify-content"
-
-
-justifyItems : String -> Declaration
-justifyItems =
-    I.Single identity "justify-items"
-
-
-justifySelf : String -> Declaration
-justifySelf =
-    I.Single identity "justify-self"
 
 
 left : String -> Declaration
@@ -2144,11 +2214,6 @@ lightingColor =
 lineBreak : String -> Declaration
 lineBreak =
     I.Single identity "line-break"
-
-
-lineClamp : String -> Declaration
-lineClamp =
-    I.Single identity "line-clamp"
 
 
 lineGrid : String -> Declaration
@@ -2174,11 +2239,6 @@ linePadding =
 lineSnap : String -> Declaration
 lineSnap =
     I.Single identity "line-snap"
-
-
-listStyle : String -> Declaration
-listStyle =
-    I.Single identity "list-style"
 
 
 listStyleImage : String -> Declaration
