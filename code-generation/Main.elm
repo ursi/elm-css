@@ -904,17 +904,17 @@ properties =
     , ( "isolation"
       , None
       )
-
-    -- here
     , ( "justify-content"
-      , None
+      , Space1
       )
     , ( "justify-items"
-      , None
+      , Space1
       )
     , ( "justify-self"
-      , None
+      , Space1
       )
+
+    --here
     , ( "left"
       , None
       )
