@@ -913,8 +913,6 @@ properties =
     , ( "justify-self"
       , Space1
       )
-
-    --here
     , ( "left"
       , None
       )
@@ -928,7 +926,7 @@ properties =
       , None
       )
     , ( "line-clamp"
-      , None
+      , Space1
       )
     , ( "line-grid"
       , None
@@ -946,7 +944,7 @@ properties =
       , None
       )
     , ( "list-style"
-      , None
+      , Space1
       )
     , ( "list-style-image"
       , None
@@ -957,6 +955,8 @@ properties =
     , ( "list-style-type"
       , None
       )
+
+    -- here
     , ( "margin"
       , None
       )
