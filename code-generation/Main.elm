@@ -856,22 +856,20 @@ properties =
     , ( "hyphens"
       , None
       )
-
-    -- here
     , ( "image-orientation"
-      , None
+      , Space1
       )
     , ( "image-rendering"
       , None
       )
     , ( "image-resolution"
-      , None
+      , Space1
       )
     , ( "initial-letters"
-      , None
+      , Space1
       )
     , ( "initial-letters-align"
-      , None
+      , Space1
       )
     , ( "initial-letters-wrap"
       , None
@@ -883,10 +881,10 @@ properties =
       , None
       )
     , ( "inset"
-      , None
+      , Space1
       )
     , ( "inset-block"
-      , None
+      , Space1
       )
     , ( "inset-block-end"
       , None
@@ -895,7 +893,7 @@ properties =
       , None
       )
     , ( "inset-inline"
-      , None
+      , Space1
       )
     , ( "inset-inline-end"
       , None
@@ -906,6 +904,8 @@ properties =
     , ( "isolation"
       , None
       )
+
+    -- here
     , ( "justify-content"
       , None
       )
