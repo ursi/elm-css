@@ -20,6 +20,7 @@ type JoinType
     | Space2
     | Comma1
     | Comma2
+    | Number
 
 
 view : Html ()
@@ -58,6 +59,9 @@ toTr ( property, joinType ) =
 
                     Comma2 ->
                         "Comma2"
+
+                    Number ->
+                        "Number"
                 )
             ]
         ]
@@ -72,28 +76,36 @@ generateCode : Property -> Html ()
 generateCode ( property, joinType ) =
     div []
         [ pre []
-            [ """
+            [ (if joinType == Number then
+                """
+$ : Float -> Declaration
+$ = I.Single identity "#" << String.fromFloat
+"""
+
+               else
+                """
 $ : String -> Declaration
 $ = I.Single identity "#"
 """
-                ++ (if joinType == Space1 || joinType == Space2 then
-                        j " "
-                            ++ (if joinType == Space2 then
-                                    jj " "
+                    ++ (if joinType == Space1 || joinType == Space2 then
+                            j " "
+                                ++ (if joinType == Space2 then
+                                        jj " "
 
-                                else
-                                    ""
-                               )
+                                    else
+                                        ""
+                                   )
 
-                    else if joinType == Comma1 then
-                        j ", "
+                        else if joinType == Comma1 then
+                            j ", "
 
-                    else if joinType == Comma2 then
-                        j " " ++ jj ", "
+                        else if joinType == Comma2 then
+                            j " " ++ jj ", "
 
-                    else
-                        ""
-                   )
+                        else
+                            ""
+                       )
+              )
                 |> String.replace "$" (camelCase property)
                 |> String.replace "#" property
                 |> text
@@ -146,7 +158,13 @@ somethingFirst func str =
 
 sortList : List JoinType
 sortList =
-    [ Comma2, Space2, Comma1, Space1, None ]
+    [ Number
+    , Comma2
+    , Space2
+    , Comma1
+    , Space1
+    , None
+    ]
 
 
 sort : List Property -> List Property
@@ -663,12 +681,10 @@ properties =
       , Space1
       )
     , ( "flex-grow"
-        -- number
-      , None
+      , Number
       )
     , ( "flex-shrink"
-        -- number
-      , None
+      , Number
       )
     , ( "flex-wrap"
       , None
