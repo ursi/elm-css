@@ -971,13 +971,11 @@ properties =
     , ( "list-style-type"
       , None
       )
-
-    -- here
     , ( "margin"
-      , None
+      , Space1
       )
     , ( "margin-block"
-      , None
+      , Space1
       )
     , ( "margin-block-end"
       , None
@@ -992,7 +990,7 @@ properties =
       , None
       )
     , ( "margin-inline"
-      , None
+      , Space1
       )
     , ( "margin-inline-end"
       , None
@@ -1013,22 +1011,22 @@ properties =
       , None
       )
     , ( "marker"
-      , None
+      , Space1
       )
     , ( "marker-end"
       , None
       )
     , ( "marker-knockout-left"
-      , None
+      , Space1
       )
     , ( "marker-knockout-right"
-      , None
+      , Space1
       )
     , ( "marker-mid"
       , None
       )
     , ( "marker-pattern"
-      , None
+      , Space2
       )
     , ( "marker-segment"
       , None
@@ -1040,52 +1038,52 @@ properties =
       , None
       )
     , ( "mask"
-      , None
+      , Comma2
       )
     , ( "mask-border"
-      , None
+      , Space2
       )
     , ( "mask-border-mode"
       , None
       )
     , ( "mask-border-outset"
-      , None
+      , Space1
       )
     , ( "mask-border-repeat"
-      , None
+      , Space1
       )
     , ( "mask-border-slice"
-      , None
+      , Space2
       )
     , ( "mask-border-source"
       , None
       )
     , ( "mask-border-width"
-      , None
+      , Space1
       )
     , ( "mask-clip"
-      , None
+      , Comma1
       )
     , ( "mask-composite"
-      , None
+      , Comma1
       )
     , ( "mask-image"
-      , None
+      , Comma1
       )
     , ( "mask-mode"
-      , None
+      , Comma1
       )
     , ( "mask-origin"
-      , None
+      , Comma1
       )
     , ( "mask-position"
-      , None
+      , Comma1
       )
     , ( "mask-repeat"
-      , None
+      , Comma1
       )
     , ( "mask-size"
-      , None
+      , Comma1
       )
     , ( "mask-type"
       , None
@@ -1120,6 +1118,8 @@ properties =
     , ( "mix-blend-mode"
       , None
       )
+
+    -- here
     , ( "nav-down"
       , None
       )
