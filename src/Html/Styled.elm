@@ -21,6 +21,7 @@ type Node msg
     | StyledNode String (List Declaration) (List (Attribute msg)) (List (Node msg))
       -- | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
     | StyledKeyedNode String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
+    | VNode (V.Node msg)
 
 
 withStyles : List Statement -> List (Node msg) -> List (V.Node msg)
@@ -61,6 +62,14 @@ toHtml node_ =
                 tag
                 attributes
                 children
+
+        VNode vNode ->
+            vNode
+
+
+fromHtml : V.Node msg -> Node msg
+fromHtml =
+    VNode
 
 
 toStyledNode :
@@ -259,6 +268,9 @@ folderHelper styleDict node_ =
                 )
             , newStyleDict
             )
+
+        VNode vNode ->
+            ( vNode, styleDict )
 
 
 folderHelperHelper :
