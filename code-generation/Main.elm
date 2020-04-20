@@ -21,6 +21,7 @@ type JoinType
     | Comma1
     | Comma2
     | Number
+    | Integer
 
 
 view : Html ()
@@ -62,6 +63,9 @@ toTr ( property, joinType ) =
 
                     Number ->
                         "Number"
+
+                    Integer ->
+                        "Integer"
                 )
             ]
         ]
@@ -76,35 +80,42 @@ generateCode : Property -> Html ()
 generateCode ( property, joinType ) =
     div []
         [ pre []
-            [ (if joinType == Number then
-                """
+            [ (case joinType of
+                Number ->
+                    """
 $ : Float -> Declaration
 $ = I.Single identity "#" << String.fromFloat
 """
 
-               else
-                """
+                Integer ->
+                    """
+$ : Int -> Declaration
+$ = I.Single identity "#" << String.fromInt
+"""
+
+                _ ->
+                    """
 $ : String -> Declaration
 $ = I.Single identity "#"
 """
-                    ++ (if joinType == Space1 || joinType == Space2 then
-                            j " "
-                                ++ (if joinType == Space2 then
-                                        jj " "
+                        ++ (if joinType == Space1 || joinType == Space2 then
+                                j " "
+                                    ++ (if joinType == Space2 then
+                                            jj " "
 
-                                    else
-                                        ""
-                                   )
+                                        else
+                                            ""
+                                       )
 
-                        else if joinType == Comma1 then
-                            j ", "
+                            else if joinType == Comma1 then
+                                j ", "
 
-                        else if joinType == Comma2 then
-                            j " " ++ jj ", "
+                            else if joinType == Comma2 then
+                                j " " ++ jj ", "
 
-                        else
-                            ""
-                       )
+                            else
+                                ""
+                           )
               )
                 |> String.replace "$" (camelCase property)
                 |> String.replace "#" property
@@ -158,7 +169,8 @@ somethingFirst func str =
 
 sortList : List JoinType
 sortList =
-    [ Number
+    [ Integer
+    , Number
     , Comma2
     , Space2
     , Comma1
@@ -1118,34 +1130,32 @@ properties =
     , ( "mix-blend-mode"
       , None
       )
-
-    -- here
     , ( "nav-down"
-      , None
+      , Space1
       )
     , ( "nav-left"
-      , None
+      , Space1
       )
     , ( "nav-right"
-      , None
+      , Space1
       )
     , ( "nav-up"
-      , None
+      , Space1
       )
     , ( "object-fit"
       , None
       )
     , ( "object-position"
-      , None
+      , Space1
       )
     , ( "offset"
-      , None
+      , Space2
       )
     , ( "offset-after"
       , None
       )
     , ( "offset-anchor"
-      , None
+      , Space1
       )
     , ( "offset-before"
       , None
@@ -1157,10 +1167,10 @@ properties =
       , None
       )
     , ( "offset-path"
-      , None
+      , Space1
       )
     , ( "offset-position"
-      , None
+      , Space1
       )
     , ( "offset-rotate"
       , None
@@ -1172,13 +1182,13 @@ properties =
       , None
       )
     , ( "order"
-      , None
+      , Integer
       )
     , ( "orphans"
-      , None
+      , Integer
       )
     , ( "outline"
-      , None
+      , Space1
       )
     , ( "outline-color"
       , None
@@ -1193,16 +1203,16 @@ properties =
       , None
       )
     , ( "overflow"
-      , None
+      , Space1
       )
     , ( "overflow-anchor"
       , None
       )
     , ( "overflow-block"
-      , None
+      , Space1
       )
     , ( "overflow-inline"
-      , None
+      , Space1
       )
     , ( "overflow-wrap"
       , None
@@ -1214,7 +1224,7 @@ properties =
       , None
       )
     , ( "overscroll-behavior"
-      , None
+      , Space1
       )
     , ( "overscroll-behavior-block"
       , None
@@ -1228,6 +1238,8 @@ properties =
     , ( "overscroll-behavior-y"
       , None
       )
+
+    -- here
     , ( "padding"
       , None
       )
