@@ -1238,13 +1238,11 @@ properties =
     , ( "overscroll-behavior-y"
       , None
       )
-
-    -- here
     , ( "padding"
-      , None
+      , Space1
       )
     , ( "padding-block"
-      , None
+      , Space1
       )
     , ( "padding-block-end"
       , None
@@ -1256,7 +1254,7 @@ properties =
       , None
       )
     , ( "padding-inline"
-      , None
+      , Space1
       )
     , ( "padding-inline-end"
       , None
@@ -1286,7 +1284,7 @@ properties =
       , None
       )
     , ( "pause"
-      , None
+      , Space1
       )
     , ( "pause-after"
       , None
@@ -1298,7 +1296,7 @@ properties =
       , None
       )
     , ( "perspective-origin"
-      , None
+      , Space1
       )
     , ( "pitch"
       , None
@@ -1307,16 +1305,16 @@ properties =
       , None
       )
     , ( "place-content"
-      , None
+      , Space1
       )
     , ( "place-items"
-      , None
+      , Space1
       )
     , ( "place-self"
-      , None
+      , Space1
       )
     , ( "play-during"
-      , None
+      , Space1
       )
     , ( "pointer-events"
       , None
@@ -1325,7 +1323,7 @@ properties =
       , None
       )
     , ( "quotes"
-      , None
+      , Space2
       )
     , ( "region-fragment"
       , None
@@ -1334,7 +1332,7 @@ properties =
       , None
       )
     , ( "rest"
-      , None
+      , Space1
       )
     , ( "rest-after"
       , None
@@ -1349,23 +1347,25 @@ properties =
       , None
       )
     , ( "rotate"
-      , None
+      , Space1
       )
     , ( "row-gap"
       , None
       )
     , ( "ruby-align"
-      , None
+      , Space1
       )
     , ( "ruby-merge"
       , None
       )
     , ( "ruby-position"
-      , None
+      , Space1
       )
     , ( "running"
       , None
       )
+
+    -- here
     , ( "scale"
       , None
       )
