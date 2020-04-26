@@ -176,6 +176,16 @@ important declaration_ =
 -- Properties
 
 
+order : Int -> Declaration
+order =
+    I.Single identity "order" << String.fromInt
+
+
+orphans : Int -> Declaration
+orphans =
+    I.Single identity "orphans" << String.fromInt
+
+
 flexGrow : Float -> Declaration
 flexGrow =
     I.Single identity "flex-grow" << String.fromFloat
@@ -334,6 +344,21 @@ fontVariationSettingsJ =
 fontVariationSettingsJJ : List (List String) -> Declaration
 fontVariationSettingsJJ =
     I.Single identity "font-variation-settings" << String.join ", " << List.map (String.join " ")
+
+
+mask : String -> Declaration
+mask =
+    I.Single identity "mask"
+
+
+maskJ : List String -> Declaration
+maskJ =
+    I.Single identity "mask" << String.join " "
+
+
+maskJJ : List (List String) -> Declaration
+maskJJ =
+    I.Single identity "mask" << String.join ", " << List.map (String.join " ")
 
 
 transition : String -> Declaration
@@ -531,6 +556,81 @@ gridTemplateRowsJJ =
     I.Single identity "grid-template-rows" << String.join " " << List.map (String.join " ")
 
 
+markerPattern : String -> Declaration
+markerPattern =
+    I.Single identity "marker-pattern"
+
+
+markerPatternJ : List String -> Declaration
+markerPatternJ =
+    I.Single identity "marker-pattern" << String.join " "
+
+
+markerPatternJJ : List (List String) -> Declaration
+markerPatternJJ =
+    I.Single identity "marker-pattern" << String.join " " << List.map (String.join " ")
+
+
+maskBorder : String -> Declaration
+maskBorder =
+    I.Single identity "mask-border"
+
+
+maskBorderJ : List String -> Declaration
+maskBorderJ =
+    I.Single identity "mask-border" << String.join " "
+
+
+maskBorderJJ : List (List String) -> Declaration
+maskBorderJJ =
+    I.Single identity "mask-border" << String.join " " << List.map (String.join " ")
+
+
+maskBorderSlice : String -> Declaration
+maskBorderSlice =
+    I.Single identity "mask-border-slice"
+
+
+maskBorderSliceJ : List String -> Declaration
+maskBorderSliceJ =
+    I.Single identity "mask-border-slice" << String.join " "
+
+
+maskBorderSliceJJ : List (List String) -> Declaration
+maskBorderSliceJJ =
+    I.Single identity "mask-border-slice" << String.join " " << List.map (String.join " ")
+
+
+offset : String -> Declaration
+offset =
+    I.Single identity "offset"
+
+
+offsetJ : List String -> Declaration
+offsetJ =
+    I.Single identity "offset" << String.join " "
+
+
+offsetJJ : List (List String) -> Declaration
+offsetJJ =
+    I.Single identity "offset" << String.join " " << List.map (String.join " ")
+
+
+quotes : String -> Declaration
+quotes =
+    I.Single identity "quotes"
+
+
+quotesJ : List String -> Declaration
+quotesJ =
+    I.Single identity "quotes" << String.join " "
+
+
+quotesJJ : List (List String) -> Declaration
+quotesJJ =
+    I.Single identity "quotes" << String.join " " << List.map (String.join " ")
+
+
 animationDelay : String -> Declaration
 animationDelay =
     I.Single identity "animation-delay"
@@ -669,6 +769,86 @@ fontFamily =
 fontFamilyJ : List String -> Declaration
 fontFamilyJ =
     I.Single identity "font-family" << String.join ", "
+
+
+maskClip : String -> Declaration
+maskClip =
+    I.Single identity "mask-clip"
+
+
+maskClipJ : List String -> Declaration
+maskClipJ =
+    I.Single identity "mask-clip" << String.join ", "
+
+
+maskComposite : String -> Declaration
+maskComposite =
+    I.Single identity "mask-composite"
+
+
+maskCompositeJ : List String -> Declaration
+maskCompositeJ =
+    I.Single identity "mask-composite" << String.join ", "
+
+
+maskImage : String -> Declaration
+maskImage =
+    I.Single identity "mask-image"
+
+
+maskImageJ : List String -> Declaration
+maskImageJ =
+    I.Single identity "mask-image" << String.join ", "
+
+
+maskMode : String -> Declaration
+maskMode =
+    I.Single identity "mask-mode"
+
+
+maskModeJ : List String -> Declaration
+maskModeJ =
+    I.Single identity "mask-mode" << String.join ", "
+
+
+maskOrigin : String -> Declaration
+maskOrigin =
+    I.Single identity "mask-origin"
+
+
+maskOriginJ : List String -> Declaration
+maskOriginJ =
+    I.Single identity "mask-origin" << String.join ", "
+
+
+maskPosition : String -> Declaration
+maskPosition =
+    I.Single identity "mask-position"
+
+
+maskPositionJ : List String -> Declaration
+maskPositionJ =
+    I.Single identity "mask-position" << String.join ", "
+
+
+maskRepeat : String -> Declaration
+maskRepeat =
+    I.Single identity "mask-repeat"
+
+
+maskRepeatJ : List String -> Declaration
+maskRepeatJ =
+    I.Single identity "mask-repeat" << String.join ", "
+
+
+maskSize : String -> Declaration
+maskSize =
+    I.Single identity "mask-size"
+
+
+maskSizeJ : List String -> Declaration
+maskSizeJ =
+    I.Single identity "mask-size" << String.join ", "
 
 
 transitionDelay : String -> Declaration
@@ -1591,6 +1771,356 @@ listStyleJ =
     I.Single identity "list-style" << String.join " "
 
 
+margin : String -> Declaration
+margin =
+    I.Single identity "margin"
+
+
+marginJ : List String -> Declaration
+marginJ =
+    I.Single identity "margin" << String.join " "
+
+
+marginBlock : String -> Declaration
+marginBlock =
+    I.Single identity "margin-block"
+
+
+marginBlockJ : List String -> Declaration
+marginBlockJ =
+    I.Single identity "margin-block" << String.join " "
+
+
+marginInline : String -> Declaration
+marginInline =
+    I.Single identity "margin-inline"
+
+
+marginInlineJ : List String -> Declaration
+marginInlineJ =
+    I.Single identity "margin-inline" << String.join " "
+
+
+marker : String -> Declaration
+marker =
+    I.Single identity "marker"
+
+
+markerJ : List String -> Declaration
+markerJ =
+    I.Single identity "marker" << String.join " "
+
+
+markerKnockoutLeft : String -> Declaration
+markerKnockoutLeft =
+    I.Single identity "marker-knockout-left"
+
+
+markerKnockoutLeftJ : List String -> Declaration
+markerKnockoutLeftJ =
+    I.Single identity "marker-knockout-left" << String.join " "
+
+
+markerKnockoutRight : String -> Declaration
+markerKnockoutRight =
+    I.Single identity "marker-knockout-right"
+
+
+markerKnockoutRightJ : List String -> Declaration
+markerKnockoutRightJ =
+    I.Single identity "marker-knockout-right" << String.join " "
+
+
+maskBorderOutset : String -> Declaration
+maskBorderOutset =
+    I.Single identity "mask-border-outset"
+
+
+maskBorderOutsetJ : List String -> Declaration
+maskBorderOutsetJ =
+    I.Single identity "mask-border-outset" << String.join " "
+
+
+maskBorderRepeat : String -> Declaration
+maskBorderRepeat =
+    I.Single identity "mask-border-repeat"
+
+
+maskBorderRepeatJ : List String -> Declaration
+maskBorderRepeatJ =
+    I.Single identity "mask-border-repeat" << String.join " "
+
+
+maskBorderWidth : String -> Declaration
+maskBorderWidth =
+    I.Single identity "mask-border-width"
+
+
+maskBorderWidthJ : List String -> Declaration
+maskBorderWidthJ =
+    I.Single identity "mask-border-width" << String.join " "
+
+
+navDown : String -> Declaration
+navDown =
+    I.Single identity "nav-down"
+
+
+navDownJ : List String -> Declaration
+navDownJ =
+    I.Single identity "nav-down" << String.join " "
+
+
+navLeft : String -> Declaration
+navLeft =
+    I.Single identity "nav-left"
+
+
+navLeftJ : List String -> Declaration
+navLeftJ =
+    I.Single identity "nav-left" << String.join " "
+
+
+navRight : String -> Declaration
+navRight =
+    I.Single identity "nav-right"
+
+
+navRightJ : List String -> Declaration
+navRightJ =
+    I.Single identity "nav-right" << String.join " "
+
+
+navUp : String -> Declaration
+navUp =
+    I.Single identity "nav-up"
+
+
+navUpJ : List String -> Declaration
+navUpJ =
+    I.Single identity "nav-up" << String.join " "
+
+
+objectPosition : String -> Declaration
+objectPosition =
+    I.Single identity "object-position"
+
+
+objectPositionJ : List String -> Declaration
+objectPositionJ =
+    I.Single identity "object-position" << String.join " "
+
+
+offsetAnchor : String -> Declaration
+offsetAnchor =
+    I.Single identity "offset-anchor"
+
+
+offsetAnchorJ : List String -> Declaration
+offsetAnchorJ =
+    I.Single identity "offset-anchor" << String.join " "
+
+
+offsetPath : String -> Declaration
+offsetPath =
+    I.Single identity "offset-path"
+
+
+offsetPathJ : List String -> Declaration
+offsetPathJ =
+    I.Single identity "offset-path" << String.join " "
+
+
+offsetPosition : String -> Declaration
+offsetPosition =
+    I.Single identity "offset-position"
+
+
+offsetPositionJ : List String -> Declaration
+offsetPositionJ =
+    I.Single identity "offset-position" << String.join " "
+
+
+outline : String -> Declaration
+outline =
+    I.Single identity "outline"
+
+
+outlineJ : List String -> Declaration
+outlineJ =
+    I.Single identity "outline" << String.join " "
+
+
+overflow : String -> Declaration
+overflow =
+    I.Single identity "overflow"
+
+
+overflowJ : List String -> Declaration
+overflowJ =
+    I.Single identity "overflow" << String.join " "
+
+
+overflowBlock : String -> Declaration
+overflowBlock =
+    I.Single identity "overflow-block"
+
+
+overflowBlockJ : List String -> Declaration
+overflowBlockJ =
+    I.Single identity "overflow-block" << String.join " "
+
+
+overflowInline : String -> Declaration
+overflowInline =
+    I.Single identity "overflow-inline"
+
+
+overflowInlineJ : List String -> Declaration
+overflowInlineJ =
+    I.Single identity "overflow-inline" << String.join " "
+
+
+overscrollBehavior : String -> Declaration
+overscrollBehavior =
+    I.Single identity "overscroll-behavior"
+
+
+overscrollBehaviorJ : List String -> Declaration
+overscrollBehaviorJ =
+    I.Single identity "overscroll-behavior" << String.join " "
+
+
+padding : String -> Declaration
+padding =
+    I.Single identity "padding"
+
+
+paddingJ : List String -> Declaration
+paddingJ =
+    I.Single identity "padding" << String.join " "
+
+
+paddingBlock : String -> Declaration
+paddingBlock =
+    I.Single identity "padding-block"
+
+
+paddingBlockJ : List String -> Declaration
+paddingBlockJ =
+    I.Single identity "padding-block" << String.join " "
+
+
+paddingInline : String -> Declaration
+paddingInline =
+    I.Single identity "padding-inline"
+
+
+paddingInlineJ : List String -> Declaration
+paddingInlineJ =
+    I.Single identity "padding-inline" << String.join " "
+
+
+pause : String -> Declaration
+pause =
+    I.Single identity "pause"
+
+
+pauseJ : List String -> Declaration
+pauseJ =
+    I.Single identity "pause" << String.join " "
+
+
+perspectiveOrigin : String -> Declaration
+perspectiveOrigin =
+    I.Single identity "perspective-origin"
+
+
+perspectiveOriginJ : List String -> Declaration
+perspectiveOriginJ =
+    I.Single identity "perspective-origin" << String.join " "
+
+
+placeContent : String -> Declaration
+placeContent =
+    I.Single identity "place-content"
+
+
+placeContentJ : List String -> Declaration
+placeContentJ =
+    I.Single identity "place-content" << String.join " "
+
+
+placeItems : String -> Declaration
+placeItems =
+    I.Single identity "place-items"
+
+
+placeItemsJ : List String -> Declaration
+placeItemsJ =
+    I.Single identity "place-items" << String.join " "
+
+
+placeSelf : String -> Declaration
+placeSelf =
+    I.Single identity "place-self"
+
+
+placeSelfJ : List String -> Declaration
+placeSelfJ =
+    I.Single identity "place-self" << String.join " "
+
+
+playDuring : String -> Declaration
+playDuring =
+    I.Single identity "play-during"
+
+
+playDuringJ : List String -> Declaration
+playDuringJ =
+    I.Single identity "play-during" << String.join " "
+
+
+rest : String -> Declaration
+rest =
+    I.Single identity "rest"
+
+
+restJ : List String -> Declaration
+restJ =
+    I.Single identity "rest" << String.join " "
+
+
+rotate : String -> Declaration
+rotate =
+    I.Single identity "rotate"
+
+
+rotateJ : List String -> Declaration
+rotateJ =
+    I.Single identity "rotate" << String.join " "
+
+
+rubyAlign : String -> Declaration
+rubyAlign =
+    I.Single identity "ruby-align"
+
+
+rubyAlignJ : List String -> Declaration
+rubyAlignJ =
+    I.Single identity "ruby-align" << String.join " "
+
+
+rubyPosition : String -> Declaration
+rubyPosition =
+    I.Single identity "ruby-position"
+
+
+rubyPositionJ : List String -> Declaration
+rubyPositionJ =
+    I.Single identity "ruby-position" << String.join " "
+
+
 transform : String -> Declaration
 transform =
     I.Single identity "transform"
@@ -2256,16 +2786,6 @@ listStyleType =
     I.Single identity "list-style-type"
 
 
-margin : String -> Declaration
-margin =
-    I.Single identity "margin"
-
-
-marginBlock : String -> Declaration
-marginBlock =
-    I.Single identity "margin-block"
-
-
 marginBlockEnd : String -> Declaration
 marginBlockEnd =
     I.Single identity "margin-block-end"
@@ -2284,11 +2804,6 @@ marginBottom =
 marginBreak : String -> Declaration
 marginBreak =
     I.Single identity "margin-break"
-
-
-marginInline : String -> Declaration
-marginInline =
-    I.Single identity "margin-inline"
 
 
 marginInlineEnd : String -> Declaration
@@ -2321,34 +2836,14 @@ marginTrim =
     I.Single identity "margin-trim"
 
 
-marker : String -> Declaration
-marker =
-    I.Single identity "marker"
-
-
 markerEnd : String -> Declaration
 markerEnd =
     I.Single identity "marker-end"
 
 
-markerKnockoutLeft : String -> Declaration
-markerKnockoutLeft =
-    I.Single identity "marker-knockout-left"
-
-
-markerKnockoutRight : String -> Declaration
-markerKnockoutRight =
-    I.Single identity "marker-knockout-right"
-
-
 markerMid : String -> Declaration
 markerMid =
     I.Single identity "marker-mid"
-
-
-markerPattern : String -> Declaration
-markerPattern =
-    I.Single identity "marker-pattern"
 
 
 markerSegment : String -> Declaration
@@ -2366,84 +2861,14 @@ markerStart =
     I.Single identity "marker-start"
 
 
-mask : String -> Declaration
-mask =
-    I.Single identity "mask"
-
-
-maskBorder : String -> Declaration
-maskBorder =
-    I.Single identity "mask-border"
-
-
 maskBorderMode : String -> Declaration
 maskBorderMode =
     I.Single identity "mask-border-mode"
 
 
-maskBorderOutset : String -> Declaration
-maskBorderOutset =
-    I.Single identity "mask-border-outset"
-
-
-maskBorderRepeat : String -> Declaration
-maskBorderRepeat =
-    I.Single identity "mask-border-repeat"
-
-
-maskBorderSlice : String -> Declaration
-maskBorderSlice =
-    I.Single identity "mask-border-slice"
-
-
 maskBorderSource : String -> Declaration
 maskBorderSource =
     I.Single identity "mask-border-source"
-
-
-maskBorderWidth : String -> Declaration
-maskBorderWidth =
-    I.Single identity "mask-border-width"
-
-
-maskClip : String -> Declaration
-maskClip =
-    I.Single identity "mask-clip"
-
-
-maskComposite : String -> Declaration
-maskComposite =
-    I.Single identity "mask-composite"
-
-
-maskImage : String -> Declaration
-maskImage =
-    I.Single identity "mask-image"
-
-
-maskMode : String -> Declaration
-maskMode =
-    I.Single identity "mask-mode"
-
-
-maskOrigin : String -> Declaration
-maskOrigin =
-    I.Single identity "mask-origin"
-
-
-maskPosition : String -> Declaration
-maskPosition =
-    I.Single identity "mask-position"
-
-
-maskRepeat : String -> Declaration
-maskRepeat =
-    I.Single identity "mask-repeat"
-
-
-maskSize : String -> Declaration
-maskSize =
-    I.Single identity "mask-size"
 
 
 maskType : String -> Declaration
@@ -2501,49 +2926,14 @@ mixBlendMode =
     I.Single identity "mix-blend-mode"
 
 
-navDown : String -> Declaration
-navDown =
-    I.Single identity "nav-down"
-
-
-navLeft : String -> Declaration
-navLeft =
-    I.Single identity "nav-left"
-
-
-navRight : String -> Declaration
-navRight =
-    I.Single identity "nav-right"
-
-
-navUp : String -> Declaration
-navUp =
-    I.Single identity "nav-up"
-
-
 objectFit : String -> Declaration
 objectFit =
     I.Single identity "object-fit"
 
 
-objectPosition : String -> Declaration
-objectPosition =
-    I.Single identity "object-position"
-
-
-offset : String -> Declaration
-offset =
-    I.Single identity "offset"
-
-
 offsetAfter : String -> Declaration
 offsetAfter =
     I.Single identity "offset-after"
-
-
-offsetAnchor : String -> Declaration
-offsetAnchor =
-    I.Single identity "offset-anchor"
 
 
 offsetBefore : String -> Declaration
@@ -2561,16 +2951,6 @@ offsetEnd =
     I.Single identity "offset-end"
 
 
-offsetPath : String -> Declaration
-offsetPath =
-    I.Single identity "offset-path"
-
-
-offsetPosition : String -> Declaration
-offsetPosition =
-    I.Single identity "offset-position"
-
-
 offsetRotate : String -> Declaration
 offsetRotate =
     I.Single identity "offset-rotate"
@@ -2584,21 +2964,6 @@ offsetStart =
 opacity : String -> Declaration
 opacity =
     I.Single identity "opacity"
-
-
-order : String -> Declaration
-order =
-    I.Single identity "order"
-
-
-orphans : String -> Declaration
-orphans =
-    I.Single identity "orphans"
-
-
-outline : String -> Declaration
-outline =
-    I.Single identity "outline"
 
 
 outlineColor : String -> Declaration
@@ -2621,24 +2986,9 @@ outlineWidth =
     I.Single identity "outline-width"
 
 
-overflow : String -> Declaration
-overflow =
-    I.Single identity "overflow"
-
-
 overflowAnchor : String -> Declaration
 overflowAnchor =
     I.Single identity "overflow-anchor"
-
-
-overflowBlock : String -> Declaration
-overflowBlock =
-    I.Single identity "overflow-block"
-
-
-overflowInline : String -> Declaration
-overflowInline =
-    I.Single identity "overflow-inline"
 
 
 overflowWrap : String -> Declaration
@@ -2654,11 +3004,6 @@ overflowX =
 overflowY : String -> Declaration
 overflowY =
     I.Single identity "overflow-y"
-
-
-overscrollBehavior : String -> Declaration
-overscrollBehavior =
-    I.Single identity "overscroll-behavior"
 
 
 overscrollBehaviorBlock : String -> Declaration
@@ -2681,16 +3026,6 @@ overscrollBehaviorY =
     I.Single identity "overscroll-behavior-y"
 
 
-padding : String -> Declaration
-padding =
-    I.Single identity "padding"
-
-
-paddingBlock : String -> Declaration
-paddingBlock =
-    I.Single identity "padding-block"
-
-
 paddingBlockEnd : String -> Declaration
 paddingBlockEnd =
     I.Single identity "padding-block-end"
@@ -2704,11 +3039,6 @@ paddingBlockStart =
 paddingBottom : String -> Declaration
 paddingBottom =
     I.Single identity "padding-bottom"
-
-
-paddingInline : String -> Declaration
-paddingInline =
-    I.Single identity "padding-inline"
 
 
 paddingInlineEnd : String -> Declaration
@@ -2756,11 +3086,6 @@ pageBreakInside =
     I.Single identity "page-break-inside"
 
 
-pause : String -> Declaration
-pause =
-    I.Single identity "pause"
-
-
 pauseAfter : String -> Declaration
 pauseAfter =
     I.Single identity "pause-after"
@@ -2776,11 +3101,6 @@ perspective =
     I.Single identity "perspective"
 
 
-perspectiveOrigin : String -> Declaration
-perspectiveOrigin =
-    I.Single identity "perspective-origin"
-
-
 pitch : String -> Declaration
 pitch =
     I.Single identity "pitch"
@@ -2789,26 +3109,6 @@ pitch =
 pitchRange : String -> Declaration
 pitchRange =
     I.Single identity "pitch-range"
-
-
-placeContent : String -> Declaration
-placeContent =
-    I.Single identity "place-content"
-
-
-placeItems : String -> Declaration
-placeItems =
-    I.Single identity "place-items"
-
-
-placeSelf : String -> Declaration
-placeSelf =
-    I.Single identity "place-self"
-
-
-playDuring : String -> Declaration
-playDuring =
-    I.Single identity "play-during"
 
 
 pointerEvents : String -> Declaration
@@ -2821,11 +3121,6 @@ position =
     I.Single identity "position"
 
 
-quotes : String -> Declaration
-quotes =
-    I.Single identity "quotes"
-
-
 regionFragment : String -> Declaration
 regionFragment =
     I.Single identity "region-fragment"
@@ -2834,11 +3129,6 @@ regionFragment =
 resize : String -> Declaration
 resize =
     I.Single identity "resize"
-
-
-rest : String -> Declaration
-rest =
-    I.Single identity "rest"
 
 
 restAfter : String -> Declaration
@@ -2861,29 +3151,14 @@ right =
     I.Single identity "right"
 
 
-rotate : String -> Declaration
-rotate =
-    I.Single identity "rotate"
-
-
 rowGap : String -> Declaration
 rowGap =
     I.Single identity "row-gap"
 
 
-rubyAlign : String -> Declaration
-rubyAlign =
-    I.Single identity "ruby-align"
-
-
 rubyMerge : String -> Declaration
 rubyMerge =
     I.Single identity "ruby-merge"
-
-
-rubyPosition : String -> Declaration
-rubyPosition =
-    I.Single identity "ruby-position"
 
 
 running : String -> Declaration
