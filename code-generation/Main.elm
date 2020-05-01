@@ -1364,19 +1364,17 @@ properties =
     , ( "running"
       , None
       )
-
-    -- here
     , ( "scale"
-      , None
+      , Space1
       )
     , ( "scroll-behavior"
       , None
       )
     , ( "scroll-margin"
-      , None
+      , Space1
       )
     , ( "scroll-margin-block"
-      , None
+      , Space1
       )
     , ( "scroll-margin-block-end"
       , None
@@ -1388,7 +1386,7 @@ properties =
       , None
       )
     , ( "scroll-margin-inline"
-      , None
+      , Space1
       )
     , ( "scroll-margin-inline-end"
       , None
@@ -1406,10 +1404,10 @@ properties =
       , None
       )
     , ( "scroll-padding"
-      , None
+      , Space1
       )
     , ( "scroll-padding-block"
-      , None
+      , Space1
       )
     , ( "scroll-padding-block-end"
       , None
@@ -1421,7 +1419,7 @@ properties =
       , None
       )
     , ( "scroll-padding-inline"
-      , None
+      , Space1
       )
     , ( "scroll-padding-inline-end"
       , None
@@ -1439,34 +1437,34 @@ properties =
       , None
       )
     , ( "scroll-snap-align"
-      , None
+      , Space1
       )
     , ( "scroll-snap-stop"
       , None
       )
     , ( "scroll-snap-type"
-      , None
+      , Space1
       )
     , ( "scrollbar-color"
-      , None
+      , Space1
       )
     , ( "scrollbar-gutter"
-      , None
+      , Space1
       )
     , ( "scrollbar-width"
       , None
       )
     , ( "shape-image-threshold"
-      , None
+      , Number
       )
     , ( "shape-inside"
-      , None
+      , Space1
       )
     , ( "shape-margin"
       , None
       )
     , ( "shape-outside"
-      , None
+      , Space1
       )
     , ( "spatial-navigation-action"
       , None
@@ -1481,7 +1479,7 @@ properties =
       , None
       )
     , ( "speak-as"
-      , None
+      , Space1
       )
     , ( "speak-header"
       , None
@@ -1499,10 +1497,10 @@ properties =
       , None
       )
     , ( "string-set"
-      , None
+      , Comma2
       )
     , ( "stroke"
-      , None
+      , Comma2
       )
     , ( "stroke-align"
       , None
@@ -1514,19 +1512,19 @@ properties =
       , None
       )
     , ( "stroke-color"
-      , None
+      , Comma1
       )
     , ( "stroke-dash-corner"
       , None
       )
     , ( "stroke-dash-justify"
-      , None
+      , Space1
       )
     , ( "stroke-dashadjust"
-      , None
+      , Space1
       )
     , ( "stroke-dasharray"
-      , None
+      , Comma2
       )
     , ( "stroke-dashcorner"
       , None
@@ -1535,16 +1533,16 @@ properties =
       , None
       )
     , ( "stroke-image"
-      , None
+      , Comma1
       )
     , ( "stroke-linecap"
       , None
       )
     , ( "stroke-linejoin"
-      , None
+      , Space1
       )
     , ( "stroke-miterlimit"
-      , None
+      , Number
       )
     , ( "stroke-opacity"
       , None
@@ -1553,17 +1551,19 @@ properties =
       , None
       )
     , ( "stroke-position"
-      , None
+      , Comma2
       )
     , ( "stroke-repeat"
-      , None
+      , Comma2
       )
     , ( "stroke-size"
-      , None
+      , Comma2
       )
     , ( "stroke-width"
-      , None
+      , Comma1
       )
+
+    -- here
     , ( "tab-size"
       , None
       )
