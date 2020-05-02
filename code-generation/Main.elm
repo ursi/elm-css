@@ -1727,19 +1727,17 @@ properties =
     , ( "volume"
       , None
       )
-
-    -- here
     , ( "white-space"
       , None
       )
     , ( "widows"
-      , None
+      , Integer
       )
     , ( "width"
       , None
       )
     , ( "will-change"
-      , None
+      , Comma1
       )
     , ( "word-boundary-detection"
       , None
