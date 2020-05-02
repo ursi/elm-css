@@ -1562,8 +1562,6 @@ properties =
     , ( "stroke-width"
       , Comma1
       )
-
-    -- here
     , ( "tab-size"
       , None
       )
@@ -1580,19 +1578,19 @@ properties =
       , None
       )
     , ( "text-combine-upright"
-      , None
+      , Space1
       )
     , ( "text-decoration"
-      , None
+      , Space2
       )
     , ( "text-decoration-color"
       , None
       )
     , ( "text-decoration-line"
-      , None
+      , Space1
       )
     , ( "text-decoration-skip"
-      , None
+      , Space1
       )
     , ( "text-decoration-skip-ink"
       , None
@@ -1604,25 +1602,25 @@ properties =
       , None
       )
     , ( "text-emphasis"
-      , None
+      , Space2
       )
     , ( "text-emphasis-color"
       , None
       )
     , ( "text-emphasis-position"
-      , None
+      , Space1
       )
     , ( "text-emphasis-skip"
-      , None
+      , Space1
       )
     , ( "text-emphasis-style"
-      , None
+      , Space1
       )
     , ( "text-group-align"
       , None
       )
     , ( "text-indent"
-      , None
+      , Space1
       )
     , ( "text-justify"
       , None
@@ -1634,25 +1632,25 @@ properties =
       , None
       )
     , ( "text-shadow"
-      , None
+      , Comma2
       )
     , ( "text-space-collapse"
       , None
       )
     , ( "text-space-trim"
-      , None
+      , Space1
       )
     , ( "text-spacing"
-      , None
+      , Space1
       )
     , ( "text-transform"
-      , None
+      , Space1
       )
     , ( "text-underline-offset"
       , None
       )
     , ( "text-underline-position"
-      , None
+      , Space1
       )
     , ( "text-wrap"
       , None
@@ -1667,7 +1665,7 @@ properties =
       , None
       )
     , ( "transform-origin"
-      , None
+      , Space1
       )
     , ( "transform-style"
       , None
@@ -1688,8 +1686,10 @@ properties =
       , Comma1
       )
     , ( "translate"
-      , None
+      , Space1
       )
+
+    -- here
     , ( "unicode-bidi"
       , None
       )
