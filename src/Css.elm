@@ -186,6 +186,11 @@ orphans =
     I.Single identity "orphans" << String.fromInt
 
 
+widows : Int -> Declaration
+widows =
+    I.Single identity "widows" << String.fromInt
+
+
 flexGrow : Float -> Declaration
 flexGrow =
     I.Single identity "flex-grow" << String.fromFloat
@@ -194,6 +199,16 @@ flexGrow =
 flexShrink : Float -> Declaration
 flexShrink =
     I.Single identity "flex-shrink" << String.fromFloat
+
+
+shapeImageThreshold : Float -> Declaration
+shapeImageThreshold =
+    I.Single identity "shape-image-threshold" << String.fromFloat
+
+
+strokeMiterlimit : Float -> Declaration
+strokeMiterlimit =
+    I.Single identity "stroke-miterlimit" << String.fromFloat
 
 
 animation : String -> Declaration
@@ -361,6 +376,111 @@ maskJJ =
     I.Single identity "mask" << String.join ", " << List.map (String.join " ")
 
 
+stringSet : String -> Declaration
+stringSet =
+    I.Single identity "string-set"
+
+
+stringSetJ : List String -> Declaration
+stringSetJ =
+    I.Single identity "string-set" << String.join " "
+
+
+stringSetJJ : List (List String) -> Declaration
+stringSetJJ =
+    I.Single identity "string-set" << String.join ", " << List.map (String.join " ")
+
+
+stroke : String -> Declaration
+stroke =
+    I.Single identity "stroke"
+
+
+strokeJ : List String -> Declaration
+strokeJ =
+    I.Single identity "stroke" << String.join " "
+
+
+strokeJJ : List (List String) -> Declaration
+strokeJJ =
+    I.Single identity "stroke" << String.join ", " << List.map (String.join " ")
+
+
+strokeDasharray : String -> Declaration
+strokeDasharray =
+    I.Single identity "stroke-dasharray"
+
+
+strokeDasharrayJ : List String -> Declaration
+strokeDasharrayJ =
+    I.Single identity "stroke-dasharray" << String.join " "
+
+
+strokeDasharrayJJ : List (List String) -> Declaration
+strokeDasharrayJJ =
+    I.Single identity "stroke-dasharray" << String.join ", " << List.map (String.join " ")
+
+
+strokePosition : String -> Declaration
+strokePosition =
+    I.Single identity "stroke-position"
+
+
+strokePositionJ : List String -> Declaration
+strokePositionJ =
+    I.Single identity "stroke-position" << String.join " "
+
+
+strokePositionJJ : List (List String) -> Declaration
+strokePositionJJ =
+    I.Single identity "stroke-position" << String.join ", " << List.map (String.join " ")
+
+
+strokeRepeat : String -> Declaration
+strokeRepeat =
+    I.Single identity "stroke-repeat"
+
+
+strokeRepeatJ : List String -> Declaration
+strokeRepeatJ =
+    I.Single identity "stroke-repeat" << String.join " "
+
+
+strokeRepeatJJ : List (List String) -> Declaration
+strokeRepeatJJ =
+    I.Single identity "stroke-repeat" << String.join ", " << List.map (String.join " ")
+
+
+strokeSize : String -> Declaration
+strokeSize =
+    I.Single identity "stroke-size"
+
+
+strokeSizeJ : List String -> Declaration
+strokeSizeJ =
+    I.Single identity "stroke-size" << String.join " "
+
+
+strokeSizeJJ : List (List String) -> Declaration
+strokeSizeJJ =
+    I.Single identity "stroke-size" << String.join ", " << List.map (String.join " ")
+
+
+textShadow : String -> Declaration
+textShadow =
+    I.Single identity "text-shadow"
+
+
+textShadowJ : List String -> Declaration
+textShadowJ =
+    I.Single identity "text-shadow" << String.join " "
+
+
+textShadowJJ : List (List String) -> Declaration
+textShadowJJ =
+    I.Single identity "text-shadow" << String.join ", " << List.map (String.join " ")
+
+
 transition : String -> Declaration
 transition =
     I.Single identity "transition"
@@ -374,6 +494,21 @@ transitionJ =
 transitionJJ : List (List String) -> Declaration
 transitionJJ =
     I.Single identity "transition" << String.join ", " << List.map (String.join " ")
+
+
+voiceFamily : String -> Declaration
+voiceFamily =
+    I.Single identity "voice-family"
+
+
+voiceFamilyJ : List String -> Declaration
+voiceFamilyJ =
+    I.Single identity "voice-family" << String.join " "
+
+
+voiceFamilyJJ : List (List String) -> Declaration
+voiceFamilyJJ =
+    I.Single identity "voice-family" << String.join ", " << List.map (String.join " ")
 
 
 counterIncrement : String -> Declaration
@@ -631,6 +766,36 @@ quotesJJ =
     I.Single identity "quotes" << String.join " " << List.map (String.join " ")
 
 
+textDecoration : String -> Declaration
+textDecoration =
+    I.Single identity "text-decoration"
+
+
+textDecorationJ : List String -> Declaration
+textDecorationJ =
+    I.Single identity "text-decoration" << String.join " "
+
+
+textDecorationJJ : List (List String) -> Declaration
+textDecorationJJ =
+    I.Single identity "text-decoration" << String.join " " << List.map (String.join " ")
+
+
+textEmphasis : String -> Declaration
+textEmphasis =
+    I.Single identity "text-emphasis"
+
+
+textEmphasisJ : List String -> Declaration
+textEmphasisJ =
+    I.Single identity "text-emphasis" << String.join " "
+
+
+textEmphasisJJ : List (List String) -> Declaration
+textEmphasisJJ =
+    I.Single identity "text-emphasis" << String.join " " << List.map (String.join " ")
+
+
 animationDelay : String -> Declaration
 animationDelay =
     I.Single identity "animation-delay"
@@ -851,6 +1016,36 @@ maskSizeJ =
     I.Single identity "mask-size" << String.join ", "
 
 
+strokeColor : String -> Declaration
+strokeColor =
+    I.Single identity "stroke-color"
+
+
+strokeColorJ : List String -> Declaration
+strokeColorJ =
+    I.Single identity "stroke-color" << String.join ", "
+
+
+strokeImage : String -> Declaration
+strokeImage =
+    I.Single identity "stroke-image"
+
+
+strokeImageJ : List String -> Declaration
+strokeImageJ =
+    I.Single identity "stroke-image" << String.join ", "
+
+
+strokeWidth : String -> Declaration
+strokeWidth =
+    I.Single identity "stroke-width"
+
+
+strokeWidthJ : List String -> Declaration
+strokeWidthJ =
+    I.Single identity "stroke-width" << String.join ", "
+
+
 transitionDelay : String -> Declaration
 transitionDelay =
     I.Single identity "transition-delay"
@@ -889,6 +1084,16 @@ transitionTimingFunction =
 transitionTimingFunctionJ : List String -> Declaration
 transitionTimingFunctionJ =
     I.Single identity "transition-timing-function" << String.join ", "
+
+
+willChange : String -> Declaration
+willChange =
+    I.Single identity "will-change"
+
+
+willChangeJ : List String -> Declaration
+willChangeJ =
+    I.Single identity "will-change" << String.join ", "
 
 
 alignContent : String -> Declaration
@@ -2121,6 +2326,286 @@ rubyPositionJ =
     I.Single identity "ruby-position" << String.join " "
 
 
+scale : String -> Declaration
+scale =
+    I.Single identity "scale"
+
+
+scaleJ : List String -> Declaration
+scaleJ =
+    I.Single identity "scale" << String.join " "
+
+
+scrollMargin : String -> Declaration
+scrollMargin =
+    I.Single identity "scroll-margin"
+
+
+scrollMarginJ : List String -> Declaration
+scrollMarginJ =
+    I.Single identity "scroll-margin" << String.join " "
+
+
+scrollMarginBlock : String -> Declaration
+scrollMarginBlock =
+    I.Single identity "scroll-margin-block"
+
+
+scrollMarginBlockJ : List String -> Declaration
+scrollMarginBlockJ =
+    I.Single identity "scroll-margin-block" << String.join " "
+
+
+scrollMarginInline : String -> Declaration
+scrollMarginInline =
+    I.Single identity "scroll-margin-inline"
+
+
+scrollMarginInlineJ : List String -> Declaration
+scrollMarginInlineJ =
+    I.Single identity "scroll-margin-inline" << String.join " "
+
+
+scrollPadding : String -> Declaration
+scrollPadding =
+    I.Single identity "scroll-padding"
+
+
+scrollPaddingJ : List String -> Declaration
+scrollPaddingJ =
+    I.Single identity "scroll-padding" << String.join " "
+
+
+scrollPaddingBlock : String -> Declaration
+scrollPaddingBlock =
+    I.Single identity "scroll-padding-block"
+
+
+scrollPaddingBlockJ : List String -> Declaration
+scrollPaddingBlockJ =
+    I.Single identity "scroll-padding-block" << String.join " "
+
+
+scrollPaddingInline : String -> Declaration
+scrollPaddingInline =
+    I.Single identity "scroll-padding-inline"
+
+
+scrollPaddingInlineJ : List String -> Declaration
+scrollPaddingInlineJ =
+    I.Single identity "scroll-padding-inline" << String.join " "
+
+
+scrollSnapAlign : String -> Declaration
+scrollSnapAlign =
+    I.Single identity "scroll-snap-align"
+
+
+scrollSnapAlignJ : List String -> Declaration
+scrollSnapAlignJ =
+    I.Single identity "scroll-snap-align" << String.join " "
+
+
+scrollSnapType : String -> Declaration
+scrollSnapType =
+    I.Single identity "scroll-snap-type"
+
+
+scrollSnapTypeJ : List String -> Declaration
+scrollSnapTypeJ =
+    I.Single identity "scroll-snap-type" << String.join " "
+
+
+scrollbarColor : String -> Declaration
+scrollbarColor =
+    I.Single identity "scrollbar-color"
+
+
+scrollbarColorJ : List String -> Declaration
+scrollbarColorJ =
+    I.Single identity "scrollbar-color" << String.join " "
+
+
+scrollbarGutter : String -> Declaration
+scrollbarGutter =
+    I.Single identity "scrollbar-gutter"
+
+
+scrollbarGutterJ : List String -> Declaration
+scrollbarGutterJ =
+    I.Single identity "scrollbar-gutter" << String.join " "
+
+
+shapeInside : String -> Declaration
+shapeInside =
+    I.Single identity "shape-inside"
+
+
+shapeInsideJ : List String -> Declaration
+shapeInsideJ =
+    I.Single identity "shape-inside" << String.join " "
+
+
+shapeOutside : String -> Declaration
+shapeOutside =
+    I.Single identity "shape-outside"
+
+
+shapeOutsideJ : List String -> Declaration
+shapeOutsideJ =
+    I.Single identity "shape-outside" << String.join " "
+
+
+speakAs : String -> Declaration
+speakAs =
+    I.Single identity "speak-as"
+
+
+speakAsJ : List String -> Declaration
+speakAsJ =
+    I.Single identity "speak-as" << String.join " "
+
+
+strokeDashJustify : String -> Declaration
+strokeDashJustify =
+    I.Single identity "stroke-dash-justify"
+
+
+strokeDashJustifyJ : List String -> Declaration
+strokeDashJustifyJ =
+    I.Single identity "stroke-dash-justify" << String.join " "
+
+
+strokeDashadjust : String -> Declaration
+strokeDashadjust =
+    I.Single identity "stroke-dashadjust"
+
+
+strokeDashadjustJ : List String -> Declaration
+strokeDashadjustJ =
+    I.Single identity "stroke-dashadjust" << String.join " "
+
+
+strokeLinejoin : String -> Declaration
+strokeLinejoin =
+    I.Single identity "stroke-linejoin"
+
+
+strokeLinejoinJ : List String -> Declaration
+strokeLinejoinJ =
+    I.Single identity "stroke-linejoin" << String.join " "
+
+
+textCombineUpright : String -> Declaration
+textCombineUpright =
+    I.Single identity "text-combine-upright"
+
+
+textCombineUprightJ : List String -> Declaration
+textCombineUprightJ =
+    I.Single identity "text-combine-upright" << String.join " "
+
+
+textDecorationLine : String -> Declaration
+textDecorationLine =
+    I.Single identity "text-decoration-line"
+
+
+textDecorationLineJ : List String -> Declaration
+textDecorationLineJ =
+    I.Single identity "text-decoration-line" << String.join " "
+
+
+textDecorationSkip : String -> Declaration
+textDecorationSkip =
+    I.Single identity "text-decoration-skip"
+
+
+textDecorationSkipJ : List String -> Declaration
+textDecorationSkipJ =
+    I.Single identity "text-decoration-skip" << String.join " "
+
+
+textEmphasisPosition : String -> Declaration
+textEmphasisPosition =
+    I.Single identity "text-emphasis-position"
+
+
+textEmphasisPositionJ : List String -> Declaration
+textEmphasisPositionJ =
+    I.Single identity "text-emphasis-position" << String.join " "
+
+
+textEmphasisSkip : String -> Declaration
+textEmphasisSkip =
+    I.Single identity "text-emphasis-skip"
+
+
+textEmphasisSkipJ : List String -> Declaration
+textEmphasisSkipJ =
+    I.Single identity "text-emphasis-skip" << String.join " "
+
+
+textEmphasisStyle : String -> Declaration
+textEmphasisStyle =
+    I.Single identity "text-emphasis-style"
+
+
+textEmphasisStyleJ : List String -> Declaration
+textEmphasisStyleJ =
+    I.Single identity "text-emphasis-style" << String.join " "
+
+
+textIndent : String -> Declaration
+textIndent =
+    I.Single identity "text-indent"
+
+
+textIndentJ : List String -> Declaration
+textIndentJ =
+    I.Single identity "text-indent" << String.join " "
+
+
+textSpaceTrim : String -> Declaration
+textSpaceTrim =
+    I.Single identity "text-space-trim"
+
+
+textSpaceTrimJ : List String -> Declaration
+textSpaceTrimJ =
+    I.Single identity "text-space-trim" << String.join " "
+
+
+textSpacing : String -> Declaration
+textSpacing =
+    I.Single identity "text-spacing"
+
+
+textSpacingJ : List String -> Declaration
+textSpacingJ =
+    I.Single identity "text-spacing" << String.join " "
+
+
+textTransform : String -> Declaration
+textTransform =
+    I.Single identity "text-transform"
+
+
+textTransformJ : List String -> Declaration
+textTransformJ =
+    I.Single identity "text-transform" << String.join " "
+
+
+textUnderlinePosition : String -> Declaration
+textUnderlinePosition =
+    I.Single identity "text-underline-position"
+
+
+textUnderlinePositionJ : List String -> Declaration
+textUnderlinePositionJ =
+    I.Single identity "text-underline-position" << String.join " "
+
+
 transform : String -> Declaration
 transform =
     I.Single identity "transform"
@@ -2129,6 +2614,76 @@ transform =
 transformJ : List String -> Declaration
 transformJ =
     I.Single identity "transform" << String.join " "
+
+
+transformOrigin : String -> Declaration
+transformOrigin =
+    I.Single identity "transform-origin"
+
+
+transformOriginJ : List String -> Declaration
+transformOriginJ =
+    I.Single identity "transform-origin" << String.join " "
+
+
+translate : String -> Declaration
+translate =
+    I.Single identity "translate"
+
+
+translateJ : List String -> Declaration
+translateJ =
+    I.Single identity "translate" << String.join " "
+
+
+verticalAlign : String -> Declaration
+verticalAlign =
+    I.Single identity "vertical-align"
+
+
+verticalAlignJ : List String -> Declaration
+verticalAlignJ =
+    I.Single identity "vertical-align" << String.join " "
+
+
+voicePitch : String -> Declaration
+voicePitch =
+    I.Single identity "voice-pitch"
+
+
+voicePitchJ : List String -> Declaration
+voicePitchJ =
+    I.Single identity "voice-pitch" << String.join " "
+
+
+voiceRange : String -> Declaration
+voiceRange =
+    I.Single identity "voice-range"
+
+
+voiceRangeJ : List String -> Declaration
+voiceRangeJ =
+    I.Single identity "voice-range" << String.join " "
+
+
+voiceRate : String -> Declaration
+voiceRate =
+    I.Single identity "voice-rate"
+
+
+voiceRateJ : List String -> Declaration
+voiceRateJ =
+    I.Single identity "voice-rate" << String.join " "
+
+
+voiceVolume : String -> Declaration
+voiceVolume =
+    I.Single identity "voice-volume"
+
+
+voiceVolumeJ : List String -> Declaration
+voiceVolumeJ =
+    I.Single identity "voice-volume" << String.join " "
 
 
 alignmentBaseline : String -> Declaration
@@ -3166,24 +3721,9 @@ running =
     I.Single identity "running"
 
 
-scale : String -> Declaration
-scale =
-    I.Single identity "scale"
-
-
 scrollBehavior : String -> Declaration
 scrollBehavior =
     I.Single identity "scroll-behavior"
-
-
-scrollMargin : String -> Declaration
-scrollMargin =
-    I.Single identity "scroll-margin"
-
-
-scrollMarginBlock : String -> Declaration
-scrollMarginBlock =
-    I.Single identity "scroll-margin-block"
 
 
 scrollMarginBlockEnd : String -> Declaration
@@ -3199,11 +3739,6 @@ scrollMarginBlockStart =
 scrollMarginBottom : String -> Declaration
 scrollMarginBottom =
     I.Single identity "scroll-margin-bottom"
-
-
-scrollMarginInline : String -> Declaration
-scrollMarginInline =
-    I.Single identity "scroll-margin-inline"
 
 
 scrollMarginInlineEnd : String -> Declaration
@@ -3231,16 +3766,6 @@ scrollMarginTop =
     I.Single identity "scroll-margin-top"
 
 
-scrollPadding : String -> Declaration
-scrollPadding =
-    I.Single identity "scroll-padding"
-
-
-scrollPaddingBlock : String -> Declaration
-scrollPaddingBlock =
-    I.Single identity "scroll-padding-block"
-
-
 scrollPaddingBlockEnd : String -> Declaration
 scrollPaddingBlockEnd =
     I.Single identity "scroll-padding-block-end"
@@ -3254,11 +3779,6 @@ scrollPaddingBlockStart =
 scrollPaddingBottom : String -> Declaration
 scrollPaddingBottom =
     I.Single identity "scroll-padding-bottom"
-
-
-scrollPaddingInline : String -> Declaration
-scrollPaddingInline =
-    I.Single identity "scroll-padding-inline"
 
 
 scrollPaddingInlineEnd : String -> Declaration
@@ -3286,29 +3806,9 @@ scrollPaddingTop =
     I.Single identity "scroll-padding-top"
 
 
-scrollSnapAlign : String -> Declaration
-scrollSnapAlign =
-    I.Single identity "scroll-snap-align"
-
-
 scrollSnapStop : String -> Declaration
 scrollSnapStop =
     I.Single identity "scroll-snap-stop"
-
-
-scrollSnapType : String -> Declaration
-scrollSnapType =
-    I.Single identity "scroll-snap-type"
-
-
-scrollbarColor : String -> Declaration
-scrollbarColor =
-    I.Single identity "scrollbar-color"
-
-
-scrollbarGutter : String -> Declaration
-scrollbarGutter =
-    I.Single identity "scrollbar-gutter"
 
 
 scrollbarWidth : String -> Declaration
@@ -3316,24 +3816,9 @@ scrollbarWidth =
     I.Single identity "scrollbar-width"
 
 
-shapeImageThreshold : String -> Declaration
-shapeImageThreshold =
-    I.Single identity "shape-image-threshold"
-
-
-shapeInside : String -> Declaration
-shapeInside =
-    I.Single identity "shape-inside"
-
-
 shapeMargin : String -> Declaration
 shapeMargin =
     I.Single identity "shape-margin"
-
-
-shapeOutside : String -> Declaration
-shapeOutside =
-    I.Single identity "shape-outside"
 
 
 spatialNavigationAction : String -> Declaration
@@ -3354,11 +3839,6 @@ spatialNavigationFunction =
 speak : String -> Declaration
 speak =
     I.Single identity "speak"
-
-
-speakAs : String -> Declaration
-speakAs =
-    I.Single identity "speak-as"
 
 
 speakHeader : String -> Declaration
@@ -3386,16 +3866,6 @@ stress =
     I.Single identity "stress"
 
 
-stringSet : String -> Declaration
-stringSet =
-    I.Single identity "string-set"
-
-
-stroke : String -> Declaration
-stroke =
-    I.Single identity "stroke"
-
-
 strokeAlign : String -> Declaration
 strokeAlign =
     I.Single identity "stroke-align"
@@ -3411,29 +3881,9 @@ strokeBreak =
     I.Single identity "stroke-break"
 
 
-strokeColor : String -> Declaration
-strokeColor =
-    I.Single identity "stroke-color"
-
-
 strokeDashCorner : String -> Declaration
 strokeDashCorner =
     I.Single identity "stroke-dash-corner"
-
-
-strokeDashJustify : String -> Declaration
-strokeDashJustify =
-    I.Single identity "stroke-dash-justify"
-
-
-strokeDashadjust : String -> Declaration
-strokeDashadjust =
-    I.Single identity "stroke-dashadjust"
-
-
-strokeDasharray : String -> Declaration
-strokeDasharray =
-    I.Single identity "stroke-dasharray"
 
 
 strokeDashcorner : String -> Declaration
@@ -3446,24 +3896,9 @@ strokeDashoffset =
     I.Single identity "stroke-dashoffset"
 
 
-strokeImage : String -> Declaration
-strokeImage =
-    I.Single identity "stroke-image"
-
-
 strokeLinecap : String -> Declaration
 strokeLinecap =
     I.Single identity "stroke-linecap"
-
-
-strokeLinejoin : String -> Declaration
-strokeLinejoin =
-    I.Single identity "stroke-linejoin"
-
-
-strokeMiterlimit : String -> Declaration
-strokeMiterlimit =
-    I.Single identity "stroke-miterlimit"
 
 
 strokeOpacity : String -> Declaration
@@ -3474,26 +3909,6 @@ strokeOpacity =
 strokeOrigin : String -> Declaration
 strokeOrigin =
     I.Single identity "stroke-origin"
-
-
-strokePosition : String -> Declaration
-strokePosition =
-    I.Single identity "stroke-position"
-
-
-strokeRepeat : String -> Declaration
-strokeRepeat =
-    I.Single identity "stroke-repeat"
-
-
-strokeSize : String -> Declaration
-strokeSize =
-    I.Single identity "stroke-size"
-
-
-strokeWidth : String -> Declaration
-strokeWidth =
-    I.Single identity "stroke-width"
 
 
 tabSize : String -> Declaration
@@ -3521,29 +3936,9 @@ textAlignLast =
     I.Single identity "text-align-last"
 
 
-textCombineUpright : String -> Declaration
-textCombineUpright =
-    I.Single identity "text-combine-upright"
-
-
-textDecoration : String -> Declaration
-textDecoration =
-    I.Single identity "text-decoration"
-
-
 textDecorationColor : String -> Declaration
 textDecorationColor =
     I.Single identity "text-decoration-color"
-
-
-textDecorationLine : String -> Declaration
-textDecorationLine =
-    I.Single identity "text-decoration-line"
-
-
-textDecorationSkip : String -> Declaration
-textDecorationSkip =
-    I.Single identity "text-decoration-skip"
 
 
 textDecorationSkipInk : String -> Declaration
@@ -3561,39 +3956,14 @@ textDecorationWidth =
     I.Single identity "text-decoration-width"
 
 
-textEmphasis : String -> Declaration
-textEmphasis =
-    I.Single identity "text-emphasis"
-
-
 textEmphasisColor : String -> Declaration
 textEmphasisColor =
     I.Single identity "text-emphasis-color"
 
 
-textEmphasisPosition : String -> Declaration
-textEmphasisPosition =
-    I.Single identity "text-emphasis-position"
-
-
-textEmphasisSkip : String -> Declaration
-textEmphasisSkip =
-    I.Single identity "text-emphasis-skip"
-
-
-textEmphasisStyle : String -> Declaration
-textEmphasisStyle =
-    I.Single identity "text-emphasis-style"
-
-
 textGroupAlign : String -> Declaration
 textGroupAlign =
     I.Single identity "text-group-align"
-
-
-textIndent : String -> Declaration
-textIndent =
-    I.Single identity "text-indent"
 
 
 textJustify : String -> Declaration
@@ -3611,39 +3981,14 @@ textOverflow =
     I.Single identity "text-overflow"
 
 
-textShadow : String -> Declaration
-textShadow =
-    I.Single identity "text-shadow"
-
-
 textSpaceCollapse : String -> Declaration
 textSpaceCollapse =
     I.Single identity "text-space-collapse"
 
 
-textSpaceTrim : String -> Declaration
-textSpaceTrim =
-    I.Single identity "text-space-trim"
-
-
-textSpacing : String -> Declaration
-textSpacing =
-    I.Single identity "text-spacing"
-
-
-textTransform : String -> Declaration
-textTransform =
-    I.Single identity "text-transform"
-
-
 textUnderlineOffset : String -> Declaration
 textUnderlineOffset =
     I.Single identity "text-underline-offset"
-
-
-textUnderlinePosition : String -> Declaration
-textUnderlinePosition =
-    I.Single identity "text-underline-position"
 
 
 textWrap : String -> Declaration
@@ -3661,19 +4006,9 @@ transformBox =
     I.Single identity "transform-box"
 
 
-transformOrigin : String -> Declaration
-transformOrigin =
-    I.Single identity "transform-origin"
-
-
 transformStyle : String -> Declaration
 transformStyle =
     I.Single identity "transform-style"
-
-
-translate : String -> Declaration
-translate =
-    I.Single identity "translate"
 
 
 unicodeBidi : String -> Declaration
@@ -3684,11 +4019,6 @@ unicodeBidi =
 userSelect : String -> Declaration
 userSelect =
     I.Single identity "user-select"
-
-
-verticalAlign : String -> Declaration
-verticalAlign =
-    I.Single identity "vertical-align"
 
 
 visibility : String -> Declaration
@@ -3706,34 +4036,9 @@ voiceDuration =
     I.Single identity "voice-duration"
 
 
-voiceFamily : String -> Declaration
-voiceFamily =
-    I.Single identity "voice-family"
-
-
-voicePitch : String -> Declaration
-voicePitch =
-    I.Single identity "voice-pitch"
-
-
-voiceRange : String -> Declaration
-voiceRange =
-    I.Single identity "voice-range"
-
-
-voiceRate : String -> Declaration
-voiceRate =
-    I.Single identity "voice-rate"
-
-
 voiceStress : String -> Declaration
 voiceStress =
     I.Single identity "voice-stress"
-
-
-voiceVolume : String -> Declaration
-voiceVolume =
-    I.Single identity "voice-volume"
 
 
 volume : String -> Declaration
@@ -3746,19 +4051,9 @@ whiteSpace =
     I.Single identity "white-space"
 
 
-widows : String -> Declaration
-widows =
-    I.Single identity "widows"
-
-
 width : String -> Declaration
 width =
     I.Single identity "width"
-
-
-willChange : String -> Declaration
-willChange =
-    I.Single identity "will-change"
 
 
 wordBoundaryDetection : String -> Declaration
