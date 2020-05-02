@@ -1688,8 +1688,6 @@ properties =
     , ( "translate"
       , Space1
       )
-
-    -- here
     , ( "unicode-bidi"
       , None
       )
@@ -1697,7 +1695,7 @@ properties =
       , None
       )
     , ( "vertical-align"
-      , None
+      , Space1
       )
     , ( "visibility"
       , None
@@ -1709,26 +1707,28 @@ properties =
       , None
       )
     , ( "voice-family"
-      , None
+      , Comma2
       )
     , ( "voice-pitch"
-      , None
+      , Space1
       )
     , ( "voice-range"
-      , None
+      , Space1
       )
     , ( "voice-rate"
-      , None
+      , Space1
       )
     , ( "voice-stress"
       , None
       )
     , ( "voice-volume"
-      , None
+      , Space1
       )
     , ( "volume"
       , None
       )
+
+    -- here
     , ( "white-space"
       , None
       )
