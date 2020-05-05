@@ -176,41 +176,6 @@ important declaration_ =
 -- Properties
 
 
-order : Int -> Declaration
-order =
-    I.Single identity "order" << String.fromInt
-
-
-orphans : Int -> Declaration
-orphans =
-    I.Single identity "orphans" << String.fromInt
-
-
-widows : Int -> Declaration
-widows =
-    I.Single identity "widows" << String.fromInt
-
-
-flexGrow : Float -> Declaration
-flexGrow =
-    I.Single identity "flex-grow" << String.fromFloat
-
-
-flexShrink : Float -> Declaration
-flexShrink =
-    I.Single identity "flex-shrink" << String.fromFloat
-
-
-shapeImageThreshold : Float -> Declaration
-shapeImageThreshold =
-    I.Single identity "shape-image-threshold" << String.fromFloat
-
-
-strokeMiterlimit : Float -> Declaration
-strokeMiterlimit =
-    I.Single identity "stroke-miterlimit" << String.fromFloat
-
-
 animation : String -> Declaration
 animation =
     I.Single identity "animation"
@@ -3076,6 +3041,16 @@ flexDirection =
     I.Single identity "flex-direction"
 
 
+flexGrow : String -> Declaration
+flexGrow =
+    I.Single identity "flex-grow"
+
+
+flexShrink : String -> Declaration
+flexShrink =
+    I.Single identity "flex-shrink"
+
+
 flexWrap : String -> Declaration
 flexWrap =
     I.Single identity "flex-wrap"
@@ -3521,6 +3496,16 @@ opacity =
     I.Single identity "opacity"
 
 
+order : String -> Declaration
+order =
+    I.Single identity "order"
+
+
+orphans : String -> Declaration
+orphans =
+    I.Single identity "orphans"
+
+
 outlineColor : String -> Declaration
 outlineColor =
     I.Single identity "outline-color"
@@ -3816,6 +3801,11 @@ scrollbarWidth =
     I.Single identity "scrollbar-width"
 
 
+shapeImageThreshold : String -> Declaration
+shapeImageThreshold =
+    I.Single identity "shape-image-threshold"
+
+
 shapeMargin : String -> Declaration
 shapeMargin =
     I.Single identity "shape-margin"
@@ -3899,6 +3889,11 @@ strokeDashoffset =
 strokeLinecap : String -> Declaration
 strokeLinecap =
     I.Single identity "stroke-linecap"
+
+
+strokeMiterlimit : String -> Declaration
+strokeMiterlimit =
+    I.Single identity "stroke-miterlimit"
 
 
 strokeOpacity : String -> Declaration
@@ -4049,6 +4044,11 @@ volume =
 whiteSpace : String -> Declaration
 whiteSpace =
     I.Single identity "white-space"
+
+
+widows : String -> Declaration
+widows =
+    I.Single identity "widows"
 
 
 width : String -> Declaration

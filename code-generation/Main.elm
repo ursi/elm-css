@@ -20,8 +20,6 @@ type JoinType
     | Space2
     | Comma1
     | Comma2
-    | Number
-    | Integer
 
 
 view : Html ()
@@ -60,12 +58,6 @@ toTr ( property, joinType ) =
 
                     Comma2 ->
                         "Comma2"
-
-                    Number ->
-                        "Number"
-
-                    Integer ->
-                        "Integer"
                 )
             ]
         ]
@@ -80,42 +72,28 @@ generateCode : Property -> Html ()
 generateCode ( property, joinType ) =
     div []
         [ pre []
-            [ (case joinType of
-                Number ->
-                    """
-$ : Float -> Declaration
-$ = I.Single identity "#" << String.fromFloat
-"""
-
-                Integer ->
-                    """
-$ : Int -> Declaration
-$ = I.Single identity "#" << String.fromInt
-"""
-
-                _ ->
-                    """
+            [ ("""
 $ : String -> Declaration
 $ = I.Single identity "#"
 """
-                        ++ (if joinType == Space1 || joinType == Space2 then
-                                j " "
-                                    ++ (if joinType == Space2 then
-                                            jj " "
+                ++ (if joinType == Space1 || joinType == Space2 then
+                        j " "
+                            ++ (if joinType == Space2 then
+                                    jj " "
 
-                                        else
-                                            ""
-                                       )
+                                else
+                                    ""
+                               )
 
-                            else if joinType == Comma1 then
-                                j ", "
+                    else if joinType == Comma1 then
+                        j ", "
 
-                            else if joinType == Comma2 then
-                                j " " ++ jj ", "
+                    else if joinType == Comma2 then
+                        j " " ++ jj ", "
 
-                            else
-                                ""
-                           )
+                    else
+                        ""
+                   )
               )
                 |> String.replace "$" (camelCase property)
                 |> String.replace "#" property
@@ -169,9 +147,7 @@ somethingFirst func str =
 
 sortList : List JoinType
 sortList =
-    [ Integer
-    , Number
-    , Comma2
+    [ Comma2
     , Space2
     , Comma1
     , Space1
@@ -693,10 +669,10 @@ properties =
       , Space1
       )
     , ( "flex-grow"
-      , Number
+      , None
       )
     , ( "flex-shrink"
-      , Number
+      , None
       )
     , ( "flex-wrap"
       , None
@@ -1182,10 +1158,10 @@ properties =
       , None
       )
     , ( "order"
-      , Integer
+      , None
       )
     , ( "orphans"
-      , Integer
+      , None
       )
     , ( "outline"
       , Space1
@@ -1455,7 +1431,7 @@ properties =
       , None
       )
     , ( "shape-image-threshold"
-      , Number
+      , None
       )
     , ( "shape-inside"
       , Space1
@@ -1542,7 +1518,7 @@ properties =
       , Space1
       )
     , ( "stroke-miterlimit"
-      , Number
+      , None
       )
     , ( "stroke-opacity"
       , None
@@ -1731,7 +1707,7 @@ properties =
       , None
       )
     , ( "widows"
-      , Integer
+      , None
       )
     , ( "width"
       , None
