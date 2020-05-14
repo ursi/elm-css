@@ -14,8 +14,7 @@ import VirtualDom as V
 
 
 type Node msg
-    = Text String
-    | Node String (List (Attribute msg)) (List (Node msg))
+    = Node String (List (Attribute msg)) (List (Node msg))
     | NodeNS String String (List (Attribute msg)) (List (Node msg))
     | KeyedNode String (List (Attribute msg)) (List ( String, Node msg ))
     | KeyedNodeNS String String (List (Attribute msg)) (List ( String, Node msg ))
@@ -42,9 +41,6 @@ withStyles statments nodes =
 toHtml : Node msg -> V.Node msg
 toHtml node_ =
     case node_ of
-        Text str ->
-            V.text str
-
         Node tag attributes children ->
             toStyledNode Nothing Nothing tag attributes children
 
@@ -239,9 +235,6 @@ folderHelper :
     -> ( V.Node msg, Dict String String )
 folderHelper styleDict node_ =
     case node_ of
-        Text str ->
-            ( V.text str, styleDict )
-
         Node tag attributes children ->
             let
                 ( children_, newStyleDict ) =
@@ -417,7 +410,7 @@ type alias Attribute msg =
 
 text : String -> Html msg
 text =
-    Text
+    VNode << V.text
 
 
 node : String -> List (Attribute msg) -> List (Node msg) -> Node msg
