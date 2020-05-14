@@ -6,92 +6,22 @@ import Dict exposing (Dict)
 import Html.Attributes as A
 import Murmur3
 import VirtualDom as V
-
-
-
--- TODO maybe separate some of this into it's own virtual dom library like rtfeldman/elm-css'
--- or maybe move it to Css.Internal
-
-
-type Node msg
-    = Node String (List (Attribute msg)) (List (Node msg))
-    | NodeNS String String (List (Attribute msg)) (List (Node msg))
-    | KeyedNode String (List (Attribute msg)) (List ( String, Node msg ))
-    | KeyedNodeNS String String (List (Attribute msg)) (List ( String, Node msg ))
-    | StyledNode String (List Declaration) (List (Attribute msg)) (List (Node msg))
-    | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
-    | StyledKeyedNode String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
-    | StyledKeyedNodeNS String String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
-    | VNode (V.Node msg)
+import VirtualDom.Styled as VS exposing (Node)
 
 
 withStyles : List Statement -> List (Node msg) -> List (V.Node msg)
-withStyles statments nodes =
-    let
-        ( nodes_, styleDict ) =
-            List.foldr
-                folder
-                ( [], Dict.empty )
-                nodes
-    in
-    (G.toStyleNode statments <| toStyleNodes styleDict)
-        :: nodes_
+withStyles =
+    VS.withStyles
 
 
 toHtml : Node msg -> V.Node msg
-toHtml node_ =
-    case node_ of
-        Node tag attributes children ->
-            toStyledNode Nothing Nothing tag attributes children
-
-        NodeNS ns tag attributes children ->
-            toStyledNode Nothing (Just ns) tag attributes children
-
-        KeyedNode tag attributes children ->
-            toStyledKeyedNode Nothing Nothing tag attributes children
-
-        KeyedNodeNS ns tag attributes children ->
-            toStyledKeyedNode Nothing (Just ns) tag attributes children
-
-        StyledNode tag declarations attributes children ->
-            toStyledNode
-                (getHashAndString declarations)
-                Nothing
-                tag
-                attributes
-                children
-
-        StyledNodeNS ns tag declarations attributes children ->
-            toStyledNode
-                (getHashAndString declarations)
-                (Just ns)
-                tag
-                attributes
-                children
-
-        StyledKeyedNode tag declarations attributes children ->
-            toStyledKeyedNode
-                (getHashAndString declarations)
-                Nothing
-                tag
-                attributes
-                children
-
-        StyledKeyedNodeNS ns tag declarations attributes children ->
-            toStyledKeyedNode
-                (getHashAndString declarations)
-                (Just ns)
-                tag
-                attributes
-                children
-
-        VNode vNode ->
-            vNode
+toHtml =
+    VS.toNode
 
 
 fromHtml : V.Node msg -> Node msg
 fromHtml =
-    VNode
+    VS.VNode
 
 
 toStyledNode :
@@ -101,27 +31,8 @@ toStyledNode :
     -> List (Attribute msg)
     -> List (Node msg)
     -> V.Node msg
-toStyledNode maybeHashAndString maybeNS tag attributes children =
-    let
-        ( dict, newAttributes ) =
-            toStyledNodeHelper maybeHashAndString attributes
-
-        ( children_, styleDict ) =
-            List.foldr
-                folder
-                ( [], dict )
-                children
-    in
-    (case maybeNS of
-        Just ns ->
-            V.nodeNS ns
-
-        Nothing ->
-            V.node
-    )
-        tag
-        newAttributes
-        (addStyleNodes styleDict children_)
+toStyledNode =
+    VS.toStyledNode
 
 
 toStyledKeyedNode :
@@ -131,273 +42,8 @@ toStyledKeyedNode :
     -> List (Attribute msg)
     -> List ( String, Node msg )
     -> V.Node msg
-toStyledKeyedNode maybeHashAndString maybeNS tag attributes children =
-    let
-        ( dict, newAttributes ) =
-            toStyledNodeHelper maybeHashAndString attributes
-
-        ( children_, styleDict ) =
-            List.foldr
-                folder
-                ( [], dict )
-                (List.map Tuple.second children)
-    in
-    (case maybeNS of
-        Just ns ->
-            V.keyedNodeNS ns
-
-        Nothing ->
-            V.keyedNode
-    )
-        tag
-        newAttributes
-        (addKeyedStyleNodes
-            styleDict
-            (copyIds children children_)
-        )
-
-
-copyIds : List ( String, Node msg ) -> List (V.Node msg) -> List ( String, V.Node msg )
-copyIds keyed unkeyed =
-    List.map2
-        (\( id, _ ) child -> ( id, child ))
-        keyed
-        unkeyed
-
-
-toStyledNodeHelper :
-    Maybe ( String, String )
-    -> List (Attribute msg)
-    -> ( Dict String String, List (Attribute msg) )
-toStyledNodeHelper maybeHashAndString attributes =
-    case maybeHashAndString of
-        Just ( hash, decsStr ) ->
-            ( Dict.singleton hash decsStr
-            , addClass hash attributes
-            )
-
-        Nothing ->
-            ( Dict.empty
-            , attributes
-            )
-
-
-addStyleNodes : Dict String String -> List (V.Node msg) -> List (V.Node msg)
-addStyleNodes styleDict nodes =
-    let
-        styleNodes =
-            toStyleNodes styleDict
-    in
-    if List.isEmpty styleNodes then
-        nodes
-
-    else
-        V.keyedNode "style" [] styleNodes :: nodes
-
-
-
--- TODO: don't use an arbitrary string, maybe use a hash
-
-
-addKeyedStyleNodes : Dict String String -> List ( String, V.Node msg ) -> List ( String, V.Node msg )
-addKeyedStyleNodes styleDict nodes =
-    let
-        styleNodes =
-            toStyleNodes styleDict
-    in
-    if List.isEmpty styleNodes then
-        nodes
-
-    else
-        ( "elm-css node", V.keyedNode "style" [] styleNodes ) :: nodes
-
-
-addClass : String -> List (Attribute msg) -> List (Attribute msg)
-addClass =
-    (::) << A.class << (++) "_"
-
-
-folder :
-    Node msg
-    -> ( List (V.Node msg), Dict String String )
-    -> ( List (V.Node msg), Dict String String )
-folder node_ ( children, styleDict ) =
-    let
-        ( newNode, newStyleDict ) =
-            folderHelper styleDict node_
-    in
-    ( newNode :: children, newStyleDict )
-
-
-folderHelper :
-    Dict String String
-    -> Node msg
-    -> ( V.Node msg, Dict String String )
-folderHelper styleDict node_ =
-    case node_ of
-        Node tag attributes children ->
-            let
-                ( children_, newStyleDict ) =
-                    List.foldr
-                        folder
-                        ( [], styleDict )
-                        children
-            in
-            ( V.node tag attributes children_, newStyleDict )
-
-        NodeNS ns tag attributes children ->
-            let
-                ( children_, newStyleDict ) =
-                    List.foldr
-                        folder
-                        ( [], styleDict )
-                        children
-            in
-            ( V.nodeNS ns tag attributes children_, newStyleDict )
-
-        KeyedNode tag attributes children ->
-            let
-                ( children_, newStyleDict ) =
-                    List.foldr
-                        folder
-                        ( [], styleDict )
-                        (List.map Tuple.second children)
-            in
-            ( V.keyedNode tag
-                attributes
-                (copyIds children children_)
-            , newStyleDict
-            )
-
-        KeyedNodeNS ns tag attributes children ->
-            let
-                ( children_, newStyleDict ) =
-                    List.foldr
-                        folder
-                        ( [], styleDict )
-                        (List.map Tuple.second children)
-            in
-            ( V.keyedNodeNS
-                ns
-                tag
-                attributes
-                (copyIds children children_)
-            , newStyleDict
-            )
-
-        StyledNode tag declarations attributes children ->
-            let
-                ( newAttributes, ( children_, newStyleDict ) ) =
-                    folderHelperHelper
-                        (getHashAndString declarations)
-                        attributes
-                        children
-                        styleDict
-            in
-            ( V.node tag newAttributes children_, newStyleDict )
-
-        StyledNodeNS ns tag declarations attributes children ->
-            let
-                ( newAttributes, ( children_, newStyleDict ) ) =
-                    folderHelperHelper
-                        (getHashAndString declarations)
-                        attributes
-                        children
-                        styleDict
-            in
-            ( V.nodeNS ns tag newAttributes children_, newStyleDict )
-
-        StyledKeyedNode tag declarations attributes children ->
-            let
-                ( newAttributes, ( children_, newStyleDict ) ) =
-                    folderHelperHelper
-                        (getHashAndString declarations)
-                        attributes
-                        (List.map Tuple.second children)
-                        styleDict
-            in
-            ( V.keyedNode tag
-                attributes
-                (copyIds children children_)
-            , newStyleDict
-            )
-
-        StyledKeyedNodeNS ns tag declarations attributes children ->
-            let
-                ( newAttributes, ( children_, newStyleDict ) ) =
-                    folderHelperHelper
-                        (getHashAndString declarations)
-                        attributes
-                        (List.map Tuple.second children)
-                        styleDict
-            in
-            ( V.keyedNodeNS
-                ns
-                tag
-                attributes
-                (copyIds children children_)
-            , newStyleDict
-            )
-
-        VNode vNode ->
-            ( vNode, styleDict )
-
-
-folderHelperHelper :
-    Maybe ( String, String )
-    -> List (Attribute msg)
-    -> List (Node msg)
-    -> Dict String String
-    -> ( List (Attribute msg), ( List (V.Node msg), Dict String String ) )
-folderHelperHelper maybeHashAndString attributes nodes styleDict =
-    case maybeHashAndString of
-        Just ( hash, decsStr ) ->
-            ( addClass hash attributes
-            , List.foldr folder
-                ( [], Dict.insert hash decsStr styleDict )
-                nodes
-            )
-
-        Nothing ->
-            ( attributes
-            , List.foldr folder
-                ( [], styleDict )
-                nodes
-            )
-
-
-toStyleNodes : Dict String String -> List ( String, V.Node msg )
-toStyleNodes =
-    Dict.toList
-        >> List.map
-            (\( hash, ruleTemplate ) ->
-                ( hash
-                , V.node "style"
-                    []
-                    [ V.text <|
-                        String.replace
-                            I.tmpClass
-                            ("._" ++ hash)
-                            ruleTemplate
-                    ]
-                )
-            )
-
-
-getHashAndString : List Declaration -> Maybe ( String, String )
-getHashAndString declarations =
-    let
-        maybeDecStr =
-            I.toString declarations
-    in
-    Maybe.map
-        (\decsStr ->
-            ( String.fromInt <|
-                Murmur3.hashString I.seed decsStr
-            , decsStr
-            )
-        )
-        maybeDecStr
+toStyledKeyedNode =
+    VS.toStyledKeyedNode
 
 
 type alias Html msg =
@@ -410,1049 +56,979 @@ type alias Attribute msg =
 
 text : String -> Html msg
 text =
-    VNode << V.text
+    VS.VNode << V.text
 
 
 node : String -> List (Attribute msg) -> List (Node msg) -> Node msg
 node =
-    Node
+    VS.Node
 
 
 nodeS : String -> List Declaration -> List (Attribute msg) -> List (Node msg) -> Node msg
 nodeS =
-    StyledNode
+    VS.StyledNode
 
 
 map : (a -> msg) -> Node a -> Node msg
-map toMsg node_ =
-    case node_ of
-        Node tag attributes children ->
-            Node
-                tag
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map (map toMsg) children)
-
-        NodeNS ns tag attributes children ->
-            NodeNS
-                ns
-                tag
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map (map toMsg) children)
-
-        KeyedNode tag attributes children ->
-            KeyedNode
-                tag
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map
-                    (\( id, child ) -> ( id, map toMsg child ))
-                    children
-                )
-
-        KeyedNodeNS ns tag attributes children ->
-            KeyedNodeNS
-                ns
-                tag
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map
-                    (\( id, child ) -> ( id, map toMsg child ))
-                    children
-                )
-
-        StyledNode tag declarations attributes children ->
-            StyledNode
-                tag
-                declarations
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map (map toMsg) children)
-
-        StyledNodeNS ns tag declarations attributes children ->
-            StyledNodeNS
-                ns
-                tag
-                declarations
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map (map toMsg) children)
-
-        StyledKeyedNode tag declarations attributes children ->
-            StyledKeyedNode
-                tag
-                declarations
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map
-                    (\( id, child ) -> ( id, map toMsg child ))
-                    children
-                )
-
-        StyledKeyedNodeNS ns tag declarations attributes children ->
-            StyledKeyedNodeNS
-                ns
-                tag
-                declarations
-                (List.map (V.mapAttribute toMsg) attributes)
-                (List.map
-                    (\( id, child ) -> ( id, map toMsg child ))
-                    children
-                )
-
-        VNode vNode ->
-            VNode <| V.map toMsg vNode
+map =
+    VS.map
 
 
 h1 : List (Attribute msg) -> List (Html msg) -> Html msg
 h1 =
-    Node "h1"
+    VS.Node "h1"
 
 
 h1S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h1S =
-    StyledNode "h1"
+    VS.StyledNode "h1"
 
 
 h2 : List (Attribute msg) -> List (Html msg) -> Html msg
 h2 =
-    Node "h2"
+    VS.Node "h2"
 
 
 h2S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h2S =
-    StyledNode "h2"
+    VS.StyledNode "h2"
 
 
 h3 : List (Attribute msg) -> List (Html msg) -> Html msg
 h3 =
-    Node "h3"
+    VS.Node "h3"
 
 
 h3S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h3S =
-    StyledNode "h3"
+    VS.StyledNode "h3"
 
 
 h4 : List (Attribute msg) -> List (Html msg) -> Html msg
 h4 =
-    Node "h4"
+    VS.Node "h4"
 
 
 h4S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h4S =
-    StyledNode "h4"
+    VS.StyledNode "h4"
 
 
 h5 : List (Attribute msg) -> List (Html msg) -> Html msg
 h5 =
-    Node "h5"
+    VS.Node "h5"
 
 
 h5S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h5S =
-    StyledNode "h5"
+    VS.StyledNode "h5"
 
 
 h6 : List (Attribute msg) -> List (Html msg) -> Html msg
 h6 =
-    Node "h6"
+    VS.Node "h6"
 
 
 h6S : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 h6S =
-    StyledNode "h6"
+    VS.StyledNode "h6"
 
 
 div : List (Attribute msg) -> List (Html msg) -> Html msg
 div =
-    Node "div"
+    VS.Node "div"
 
 
 divS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 divS =
-    StyledNode "div"
+    VS.StyledNode "div"
 
 
 p : List (Attribute msg) -> List (Html msg) -> Html msg
 p =
-    Node "p"
+    VS.Node "p"
 
 
 pS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 pS =
-    StyledNode "p"
+    VS.StyledNode "p"
 
 
 hr : List (Attribute msg) -> List (Html msg) -> Html msg
 hr =
-    Node "hr"
+    VS.Node "hr"
 
 
 hrS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 hrS =
-    StyledNode "hr"
+    VS.StyledNode "hr"
 
 
 pre : List (Attribute msg) -> List (Html msg) -> Html msg
 pre =
-    Node "pre"
+    VS.Node "pre"
 
 
 preS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 preS =
-    StyledNode "pre"
+    VS.StyledNode "pre"
 
 
 blockquote : List (Attribute msg) -> List (Html msg) -> Html msg
 blockquote =
-    Node "blockquote"
+    VS.Node "blockquote"
 
 
 blockquoteS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 blockquoteS =
-    StyledNode "blockquote"
+    VS.StyledNode "blockquote"
 
 
 span : List (Attribute msg) -> List (Html msg) -> Html msg
 span =
-    Node "span"
+    VS.Node "span"
 
 
 spanS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 spanS =
-    StyledNode "span"
+    VS.StyledNode "span"
 
 
 a : List (Attribute msg) -> List (Html msg) -> Html msg
 a =
-    Node "a"
+    VS.Node "a"
 
 
 aS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 aS =
-    StyledNode "a"
+    VS.StyledNode "a"
 
 
 code : List (Attribute msg) -> List (Html msg) -> Html msg
 code =
-    Node "code"
+    VS.Node "code"
 
 
 codeS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 codeS =
-    StyledNode "code"
+    VS.StyledNode "code"
 
 
 em : List (Attribute msg) -> List (Html msg) -> Html msg
 em =
-    Node "em"
+    VS.Node "em"
 
 
 emS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 emS =
-    StyledNode "em"
+    VS.StyledNode "em"
 
 
 strong : List (Attribute msg) -> List (Html msg) -> Html msg
 strong =
-    Node "strong"
+    VS.Node "strong"
 
 
 strongS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 strongS =
-    StyledNode "strong"
+    VS.StyledNode "strong"
 
 
 i : List (Attribute msg) -> List (Html msg) -> Html msg
 i =
-    Node "i"
+    VS.Node "i"
 
 
 iS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 iS =
-    StyledNode "i"
+    VS.StyledNode "i"
 
 
 b : List (Attribute msg) -> List (Html msg) -> Html msg
 b =
-    Node "b"
+    VS.Node "b"
 
 
 bS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 bS =
-    StyledNode "b"
+    VS.StyledNode "b"
 
 
 u : List (Attribute msg) -> List (Html msg) -> Html msg
 u =
-    Node "u"
+    VS.Node "u"
 
 
 uS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 uS =
-    StyledNode "u"
+    VS.StyledNode "u"
 
 
 sub : List (Attribute msg) -> List (Html msg) -> Html msg
 sub =
-    Node "sub"
+    VS.Node "sub"
 
 
 subS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 subS =
-    StyledNode "sub"
+    VS.StyledNode "sub"
 
 
 sup : List (Attribute msg) -> List (Html msg) -> Html msg
 sup =
-    Node "sup"
+    VS.Node "sup"
 
 
 supS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 supS =
-    StyledNode "sup"
+    VS.StyledNode "sup"
 
 
 br : List (Attribute msg) -> List (Html msg) -> Html msg
 br =
-    Node "br"
+    VS.Node "br"
 
 
 brS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 brS =
-    StyledNode "br"
+    VS.StyledNode "br"
 
 
 ol : List (Attribute msg) -> List (Html msg) -> Html msg
 ol =
-    Node "ol"
+    VS.Node "ol"
 
 
 olS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 olS =
-    StyledNode "ol"
+    VS.StyledNode "ol"
 
 
 ul : List (Attribute msg) -> List (Html msg) -> Html msg
 ul =
-    Node "ul"
+    VS.Node "ul"
 
 
 ulS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 ulS =
-    StyledNode "ul"
+    VS.StyledNode "ul"
 
 
 li : List (Attribute msg) -> List (Html msg) -> Html msg
 li =
-    Node "li"
+    VS.Node "li"
 
 
 liS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 liS =
-    StyledNode "li"
+    VS.StyledNode "li"
 
 
 dl : List (Attribute msg) -> List (Html msg) -> Html msg
 dl =
-    Node "dl"
+    VS.Node "dl"
 
 
 dlS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 dlS =
-    StyledNode "dl"
+    VS.StyledNode "dl"
 
 
 dt : List (Attribute msg) -> List (Html msg) -> Html msg
 dt =
-    Node "dt"
+    VS.Node "dt"
 
 
 dtS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 dtS =
-    StyledNode "dt"
+    VS.StyledNode "dt"
 
 
 dd : List (Attribute msg) -> List (Html msg) -> Html msg
 dd =
-    Node "dd"
+    VS.Node "dd"
 
 
 ddS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 ddS =
-    StyledNode "dd"
+    VS.StyledNode "dd"
 
 
 img : List (Attribute msg) -> List (Html msg) -> Html msg
 img =
-    Node "img"
+    VS.Node "img"
 
 
 imgS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 imgS =
-    StyledNode "img"
+    VS.StyledNode "img"
 
 
 iframe : List (Attribute msg) -> List (Html msg) -> Html msg
 iframe =
-    Node "iframe"
+    VS.Node "iframe"
 
 
 iframeS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 iframeS =
-    StyledNode "iframe"
+    VS.StyledNode "iframe"
 
 
 canvas : List (Attribute msg) -> List (Html msg) -> Html msg
 canvas =
-    Node "canvas"
+    VS.Node "canvas"
 
 
 canvasS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 canvasS =
-    StyledNode "canvas"
+    VS.StyledNode "canvas"
 
 
 math : List (Attribute msg) -> List (Html msg) -> Html msg
 math =
-    Node "math"
+    VS.Node "math"
 
 
 mathS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 mathS =
-    StyledNode "math"
+    VS.StyledNode "math"
 
 
 form : List (Attribute msg) -> List (Html msg) -> Html msg
 form =
-    Node "form"
+    VS.Node "form"
 
 
 formS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 formS =
-    StyledNode "form"
+    VS.StyledNode "form"
 
 
 input : List (Attribute msg) -> List (Html msg) -> Html msg
 input =
-    Node "input"
+    VS.Node "input"
 
 
 inputS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 inputS =
-    StyledNode "input"
+    VS.StyledNode "input"
 
 
 textarea : List (Attribute msg) -> List (Html msg) -> Html msg
 textarea =
-    Node "textarea"
+    VS.Node "textarea"
 
 
 textareaS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 textareaS =
-    StyledNode "textarea"
+    VS.StyledNode "textarea"
 
 
 button : List (Attribute msg) -> List (Html msg) -> Html msg
 button =
-    Node "button"
+    VS.Node "button"
 
 
 buttonS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 buttonS =
-    StyledNode "button"
+    VS.StyledNode "button"
 
 
 select : List (Attribute msg) -> List (Html msg) -> Html msg
 select =
-    Node "select"
+    VS.Node "select"
 
 
 selectS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 selectS =
-    StyledNode "select"
+    VS.StyledNode "select"
 
 
 option : List (Attribute msg) -> List (Html msg) -> Html msg
 option =
-    Node "option"
+    VS.Node "option"
 
 
 optionS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 optionS =
-    StyledNode "option"
+    VS.StyledNode "option"
 
 
 section : List (Attribute msg) -> List (Html msg) -> Html msg
 section =
-    Node "section"
+    VS.Node "section"
 
 
 sectionS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 sectionS =
-    StyledNode "section"
+    VS.StyledNode "section"
 
 
 nav : List (Attribute msg) -> List (Html msg) -> Html msg
 nav =
-    Node "nav"
+    VS.Node "nav"
 
 
 navS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 navS =
-    StyledNode "nav"
+    VS.StyledNode "nav"
 
 
 article : List (Attribute msg) -> List (Html msg) -> Html msg
 article =
-    Node "article"
+    VS.Node "article"
 
 
 articleS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 articleS =
-    StyledNode "article"
+    VS.StyledNode "article"
 
 
 aside : List (Attribute msg) -> List (Html msg) -> Html msg
 aside =
-    Node "aside"
+    VS.Node "aside"
 
 
 asideS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 asideS =
-    StyledNode "aside"
+    VS.StyledNode "aside"
 
 
 header : List (Attribute msg) -> List (Html msg) -> Html msg
 header =
-    Node "header"
+    VS.Node "header"
 
 
 headerS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 headerS =
-    StyledNode "header"
+    VS.StyledNode "header"
 
 
 footer : List (Attribute msg) -> List (Html msg) -> Html msg
 footer =
-    Node "footer"
+    VS.Node "footer"
 
 
 footerS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 footerS =
-    StyledNode "footer"
+    VS.StyledNode "footer"
 
 
 address : List (Attribute msg) -> List (Html msg) -> Html msg
 address =
-    Node "address"
+    VS.Node "address"
 
 
 addressS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 addressS =
-    StyledNode "address"
+    VS.StyledNode "address"
 
 
 main_ : List (Attribute msg) -> List (Html msg) -> Html msg
 main_ =
-    Node "main"
+    VS.Node "main"
 
 
 mainS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 mainS =
-    StyledNode "main"
+    VS.StyledNode "main"
 
 
 figure : List (Attribute msg) -> List (Html msg) -> Html msg
 figure =
-    Node "figure"
+    VS.Node "figure"
 
 
 figureS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 figureS =
-    StyledNode "figure"
+    VS.StyledNode "figure"
 
 
 figcaption : List (Attribute msg) -> List (Html msg) -> Html msg
 figcaption =
-    Node "figcaption"
+    VS.Node "figcaption"
 
 
 figcaptionS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 figcaptionS =
-    StyledNode "figcaption"
+    VS.StyledNode "figcaption"
 
 
 table : List (Attribute msg) -> List (Html msg) -> Html msg
 table =
-    Node "table"
+    VS.Node "table"
 
 
 tableS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 tableS =
-    StyledNode "table"
+    VS.StyledNode "table"
 
 
 caption : List (Attribute msg) -> List (Html msg) -> Html msg
 caption =
-    Node "caption"
+    VS.Node "caption"
 
 
 captionS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 captionS =
-    StyledNode "caption"
+    VS.StyledNode "caption"
 
 
 colgroup : List (Attribute msg) -> List (Html msg) -> Html msg
 colgroup =
-    Node "colgroup"
+    VS.Node "colgroup"
 
 
 colgroupS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 colgroupS =
-    StyledNode "colgroup"
+    VS.StyledNode "colgroup"
 
 
 col : List (Attribute msg) -> List (Html msg) -> Html msg
 col =
-    Node "col"
+    VS.Node "col"
 
 
 colS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 colS =
-    StyledNode "col"
+    VS.StyledNode "col"
 
 
 tbody : List (Attribute msg) -> List (Html msg) -> Html msg
 tbody =
-    Node "tbody"
+    VS.Node "tbody"
 
 
 tbodyS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 tbodyS =
-    StyledNode "tbody"
+    VS.StyledNode "tbody"
 
 
 thead : List (Attribute msg) -> List (Html msg) -> Html msg
 thead =
-    Node "thead"
+    VS.Node "thead"
 
 
 theadS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 theadS =
-    StyledNode "thead"
+    VS.StyledNode "thead"
 
 
 tfoot : List (Attribute msg) -> List (Html msg) -> Html msg
 tfoot =
-    Node "tfoot"
+    VS.Node "tfoot"
 
 
 tfootS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 tfootS =
-    StyledNode "tfoot"
+    VS.StyledNode "tfoot"
 
 
 tr : List (Attribute msg) -> List (Html msg) -> Html msg
 tr =
-    Node "tr"
+    VS.Node "tr"
 
 
 trS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 trS =
-    StyledNode "tr"
+    VS.StyledNode "tr"
 
 
 td : List (Attribute msg) -> List (Html msg) -> Html msg
 td =
-    Node "td"
+    VS.Node "td"
 
 
 tdS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 tdS =
-    StyledNode "td"
+    VS.StyledNode "td"
 
 
 th : List (Attribute msg) -> List (Html msg) -> Html msg
 th =
-    Node "th"
+    VS.Node "th"
 
 
 thS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 thS =
-    StyledNode "th"
+    VS.StyledNode "th"
 
 
 fieldset : List (Attribute msg) -> List (Html msg) -> Html msg
 fieldset =
-    Node "fieldset"
+    VS.Node "fieldset"
 
 
 fieldsetS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 fieldsetS =
-    StyledNode "fieldset"
+    VS.StyledNode "fieldset"
 
 
 legend : List (Attribute msg) -> List (Html msg) -> Html msg
 legend =
-    Node "legend"
+    VS.Node "legend"
 
 
 legendS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 legendS =
-    StyledNode "legend"
+    VS.StyledNode "legend"
 
 
 label : List (Attribute msg) -> List (Html msg) -> Html msg
 label =
-    Node "label"
+    VS.Node "label"
 
 
 labelS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 labelS =
-    StyledNode "label"
+    VS.StyledNode "label"
 
 
 datalist : List (Attribute msg) -> List (Html msg) -> Html msg
 datalist =
-    Node "datalist"
+    VS.Node "datalist"
 
 
 datalistS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 datalistS =
-    StyledNode "datalist"
+    VS.StyledNode "datalist"
 
 
 optgroup : List (Attribute msg) -> List (Html msg) -> Html msg
 optgroup =
-    Node "optgroup"
+    VS.Node "optgroup"
 
 
 optgroupS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 optgroupS =
-    StyledNode "optgroup"
+    VS.StyledNode "optgroup"
 
 
 output : List (Attribute msg) -> List (Html msg) -> Html msg
 output =
-    Node "output"
+    VS.Node "output"
 
 
 outputS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 outputS =
-    StyledNode "output"
+    VS.StyledNode "output"
 
 
 progress : List (Attribute msg) -> List (Html msg) -> Html msg
 progress =
-    Node "progress"
+    VS.Node "progress"
 
 
 progressS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 progressS =
-    StyledNode "progress"
+    VS.StyledNode "progress"
 
 
 meter : List (Attribute msg) -> List (Html msg) -> Html msg
 meter =
-    Node "meter"
+    VS.Node "meter"
 
 
 meterS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 meterS =
-    StyledNode "meter"
+    VS.StyledNode "meter"
 
 
 audio : List (Attribute msg) -> List (Html msg) -> Html msg
 audio =
-    Node "audio"
+    VS.Node "audio"
 
 
 audioS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 audioS =
-    StyledNode "audio"
+    VS.StyledNode "audio"
 
 
 video : List (Attribute msg) -> List (Html msg) -> Html msg
 video =
-    Node "video"
+    VS.Node "video"
 
 
 videoS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 videoS =
-    StyledNode "video"
+    VS.StyledNode "video"
 
 
 source : List (Attribute msg) -> List (Html msg) -> Html msg
 source =
-    Node "source"
+    VS.Node "source"
 
 
 sourceS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 sourceS =
-    StyledNode "source"
+    VS.StyledNode "source"
 
 
 track : List (Attribute msg) -> List (Html msg) -> Html msg
 track =
-    Node "track"
+    VS.Node "track"
 
 
 trackS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 trackS =
-    StyledNode "track"
+    VS.StyledNode "track"
 
 
 embed : List (Attribute msg) -> List (Html msg) -> Html msg
 embed =
-    Node "embed"
+    VS.Node "embed"
 
 
 embedS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 embedS =
-    StyledNode "embed"
+    VS.StyledNode "embed"
 
 
 object : List (Attribute msg) -> List (Html msg) -> Html msg
 object =
-    Node "object"
+    VS.Node "object"
 
 
 objectS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 objectS =
-    StyledNode "object"
+    VS.StyledNode "object"
 
 
 param : List (Attribute msg) -> List (Html msg) -> Html msg
 param =
-    Node "param"
+    VS.Node "param"
 
 
 paramS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 paramS =
-    StyledNode "param"
+    VS.StyledNode "param"
 
 
 ins : List (Attribute msg) -> List (Html msg) -> Html msg
 ins =
-    Node "ins"
+    VS.Node "ins"
 
 
 insS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 insS =
-    StyledNode "ins"
+    VS.StyledNode "ins"
 
 
 del : List (Attribute msg) -> List (Html msg) -> Html msg
 del =
-    Node "del"
+    VS.Node "del"
 
 
 delS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 delS =
-    StyledNode "del"
+    VS.StyledNode "del"
 
 
 small : List (Attribute msg) -> List (Html msg) -> Html msg
 small =
-    Node "small"
+    VS.Node "small"
 
 
 smallS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 smallS =
-    StyledNode "small"
+    VS.StyledNode "small"
 
 
 cite : List (Attribute msg) -> List (Html msg) -> Html msg
 cite =
-    Node "cite"
+    VS.Node "cite"
 
 
 citeS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 citeS =
-    StyledNode "cite"
+    VS.StyledNode "cite"
 
 
 dfn : List (Attribute msg) -> List (Html msg) -> Html msg
 dfn =
-    Node "dfn"
+    VS.Node "dfn"
 
 
 dfnS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 dfnS =
-    StyledNode "dfn"
+    VS.StyledNode "dfn"
 
 
 abbr : List (Attribute msg) -> List (Html msg) -> Html msg
 abbr =
-    Node "abbr"
+    VS.Node "abbr"
 
 
 abbrS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 abbrS =
-    StyledNode "abbr"
+    VS.StyledNode "abbr"
 
 
 time : List (Attribute msg) -> List (Html msg) -> Html msg
 time =
-    Node "time"
+    VS.Node "time"
 
 
 timeS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 timeS =
-    StyledNode "time"
+    VS.StyledNode "time"
 
 
 var : List (Attribute msg) -> List (Html msg) -> Html msg
 var =
-    Node "var"
+    VS.Node "var"
 
 
 varS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 varS =
-    StyledNode "var"
+    VS.StyledNode "var"
 
 
 samp : List (Attribute msg) -> List (Html msg) -> Html msg
 samp =
-    Node "samp"
+    VS.Node "samp"
 
 
 sampS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 sampS =
-    StyledNode "samp"
+    VS.StyledNode "samp"
 
 
 kbd : List (Attribute msg) -> List (Html msg) -> Html msg
 kbd =
-    Node "kbd"
+    VS.Node "kbd"
 
 
 kbdS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 kbdS =
-    StyledNode "kbd"
+    VS.StyledNode "kbd"
 
 
 s : List (Attribute msg) -> List (Html msg) -> Html msg
 s =
-    Node "s"
+    VS.Node "s"
 
 
 sS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 sS =
-    StyledNode "s"
+    VS.StyledNode "s"
 
 
 q : List (Attribute msg) -> List (Html msg) -> Html msg
 q =
-    Node "q"
+    VS.Node "q"
 
 
 qS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 qS =
-    StyledNode "q"
+    VS.StyledNode "q"
 
 
 mark : List (Attribute msg) -> List (Html msg) -> Html msg
 mark =
-    Node "mark"
+    VS.Node "mark"
 
 
 markS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 markS =
-    StyledNode "mark"
+    VS.StyledNode "mark"
 
 
 ruby : List (Attribute msg) -> List (Html msg) -> Html msg
 ruby =
-    Node "ruby"
+    VS.Node "ruby"
 
 
 rubyS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 rubyS =
-    StyledNode "ruby"
+    VS.StyledNode "ruby"
 
 
 rt : List (Attribute msg) -> List (Html msg) -> Html msg
 rt =
-    Node "rt"
+    VS.Node "rt"
 
 
 rtS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 rtS =
-    StyledNode "rt"
+    VS.StyledNode "rt"
 
 
 rp : List (Attribute msg) -> List (Html msg) -> Html msg
 rp =
-    Node "rp"
+    VS.Node "rp"
 
 
 rpS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 rpS =
-    StyledNode "rp"
+    VS.StyledNode "rp"
 
 
 bdi : List (Attribute msg) -> List (Html msg) -> Html msg
 bdi =
-    Node "bdi"
+    VS.Node "bdi"
 
 
 bdiS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 bdiS =
-    StyledNode "bdi"
+    VS.StyledNode "bdi"
 
 
 bdo : List (Attribute msg) -> List (Html msg) -> Html msg
 bdo =
-    Node "bdo"
+    VS.Node "bdo"
 
 
 bdoS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 bdoS =
-    StyledNode "bdo"
+    VS.StyledNode "bdo"
 
 
 wbr : List (Attribute msg) -> List (Html msg) -> Html msg
 wbr =
-    Node "wbr"
+    VS.Node "wbr"
 
 
 wbrS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 wbrS =
-    StyledNode "wbr"
+    VS.StyledNode "wbr"
 
 
 details : List (Attribute msg) -> List (Html msg) -> Html msg
 details =
-    Node "details"
+    VS.Node "details"
 
 
 detailsS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 detailsS =
-    StyledNode "details"
+    VS.StyledNode "details"
 
 
 summary : List (Attribute msg) -> List (Html msg) -> Html msg
 summary =
-    Node "summary"
+    VS.Node "summary"
 
 
 summaryS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 summaryS =
-    StyledNode "summary"
+    VS.StyledNode "summary"
 
 
 menuitem : List (Attribute msg) -> List (Html msg) -> Html msg
 menuitem =
-    Node "menuitem"
+    VS.Node "menuitem"
 
 
 menuitemS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 menuitemS =
-    StyledNode "menuitem"
+    VS.StyledNode "menuitem"
 
 
 menu : List (Attribute msg) -> List (Html msg) -> Html msg
 menu =
-    Node "menu"
+    VS.Node "menu"
 
 
 menuS : List Declaration -> List (Attribute msg) -> List (Html msg) -> Html msg
 menuS =
-    StyledNode "menu"
+    VS.StyledNode "menu"

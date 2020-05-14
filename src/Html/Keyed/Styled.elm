@@ -1,7 +1,7 @@
 module Html.Keyed.Styled exposing (..)
 
 import Css.Internal exposing (Declaration)
-import Html.Styled exposing (Attribute, Node(..))
+import VirtualDom.Styled exposing (Attribute, Node(..))
 
 
 node : String -> List (Attribute msg) -> List ( String, Node msg ) -> Node msg
