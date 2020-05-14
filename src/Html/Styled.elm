@@ -16,11 +16,13 @@ import VirtualDom as V
 type Node msg
     = Text String
     | Node String (List (Attribute msg)) (List (Node msg))
-      -- | NodeNS String String (List (Attribute msg)) (List (Node msg))
+    | NodeNS String String (List (Attribute msg)) (List (Node msg))
     | KeyedNode String (List (Attribute msg)) (List ( String, Node msg ))
+    | KeyedNodeNS String String (List (Attribute msg)) (List ( String, Node msg ))
     | StyledNode String (List Declaration) (List (Attribute msg)) (List (Node msg))
-      -- | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
+    | StyledNodeNS String String (List Declaration) (List (Attribute msg)) (List (Node msg))
     | StyledKeyedNode String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
+    | StyledKeyedNodeNS String String (List Declaration) (List (Attribute msg)) (List ( String, Node msg ))
     | VNode (V.Node msg)
 
 
@@ -44,14 +46,29 @@ toHtml node_ =
             V.text str
 
         Node tag attributes children ->
-            toStyledNode Nothing tag attributes children
+            toStyledNode Nothing Nothing tag attributes children
+
+        NodeNS ns tag attributes children ->
+            toStyledNode Nothing (Just ns) tag attributes children
 
         KeyedNode tag attributes children ->
-            toStyledKeyedNode Nothing tag attributes children
+            toStyledKeyedNode Nothing Nothing tag attributes children
+
+        KeyedNodeNS ns tag attributes children ->
+            toStyledKeyedNode Nothing (Just ns) tag attributes children
 
         StyledNode tag declarations attributes children ->
             toStyledNode
                 (getHashAndString declarations)
+                Nothing
+                tag
+                attributes
+                children
+
+        StyledNodeNS ns tag declarations attributes children ->
+            toStyledNode
+                (getHashAndString declarations)
+                (Just ns)
                 tag
                 attributes
                 children
@@ -59,6 +76,15 @@ toHtml node_ =
         StyledKeyedNode tag declarations attributes children ->
             toStyledKeyedNode
                 (getHashAndString declarations)
+                Nothing
+                tag
+                attributes
+                children
+
+        StyledKeyedNodeNS ns tag declarations attributes children ->
+            toStyledKeyedNode
+                (getHashAndString declarations)
+                (Just ns)
                 tag
                 attributes
                 children
@@ -74,11 +100,12 @@ fromHtml =
 
 toStyledNode :
     Maybe ( String, String )
+    -> Maybe String
     -> String
     -> List (Attribute msg)
     -> List (Node msg)
     -> V.Node msg
-toStyledNode maybeHashAndString tag attributes children =
+toStyledNode maybeHashAndString maybeNS tag attributes children =
     let
         ( dict, newAttributes ) =
             toStyledNodeHelper maybeHashAndString attributes
@@ -89,20 +116,26 @@ toStyledNode maybeHashAndString tag attributes children =
                 ( [], dict )
                 children
     in
-    V.node tag newAttributes (addStyleNodes styleDict children_)
+    (case maybeNS of
+        Just ns ->
+            V.nodeNS ns
 
-
-
--- TODO: figure out a helper function make this not just a copy-past of the non-keyed version
+        Nothing ->
+            V.node
+    )
+        tag
+        newAttributes
+        (addStyleNodes styleDict children_)
 
 
 toStyledKeyedNode :
     Maybe ( String, String )
+    -> Maybe String
     -> String
     -> List (Attribute msg)
     -> List ( String, Node msg )
     -> V.Node msg
-toStyledKeyedNode maybeHashAndString tag attributes children =
+toStyledKeyedNode maybeHashAndString maybeNS tag attributes children =
     let
         ( dict, newAttributes ) =
             toStyledNodeHelper maybeHashAndString attributes
@@ -113,16 +146,27 @@ toStyledKeyedNode maybeHashAndString tag attributes children =
                 ( [], dict )
                 (List.map Tuple.second children)
     in
-    V.keyedNode tag
+    (case maybeNS of
+        Just ns ->
+            V.keyedNodeNS ns
+
+        Nothing ->
+            V.keyedNode
+    )
+        tag
         newAttributes
         (addKeyedStyleNodes
             styleDict
-            (List.map2
-                (\( id, _ ) child -> ( id, child ))
-                children
-                children_
-            )
+            (copyIds children children_)
         )
+
+
+copyIds : List ( String, Node msg ) -> List (V.Node msg) -> List ( String, V.Node msg )
+copyIds keyed unkeyed =
+    List.map2
+        (\( id, _ ) child -> ( id, child ))
+        keyed
+        unkeyed
 
 
 toStyledNodeHelper :
@@ -208,8 +252,16 @@ folderHelper styleDict node_ =
             in
             ( V.node tag attributes children_, newStyleDict )
 
-        -- NodeNS someStr otherStr attributes children ->
-        --     V.nodeNS someStr otherStr attributes <| folder (folderHelper seed styleDict) children
+        NodeNS ns tag attributes children ->
+            let
+                ( children_, newStyleDict ) =
+                    List.foldr
+                        folder
+                        ( [], styleDict )
+                        children
+            in
+            ( V.nodeNS ns tag attributes children_, newStyleDict )
+
         KeyedNode tag attributes children ->
             let
                 ( children_, newStyleDict ) =
@@ -220,11 +272,23 @@ folderHelper styleDict node_ =
             in
             ( V.keyedNode tag
                 attributes
-                (List.map2
-                    (\( id, _ ) child -> ( id, child ))
-                    children
-                    children_
-                )
+                (copyIds children children_)
+            , newStyleDict
+            )
+
+        KeyedNodeNS ns tag attributes children ->
+            let
+                ( children_, newStyleDict ) =
+                    List.foldr
+                        folder
+                        ( [], styleDict )
+                        (List.map Tuple.second children)
+            in
+            ( V.keyedNodeNS
+                ns
+                tag
+                attributes
+                (copyIds children children_)
             , newStyleDict
             )
 
@@ -239,17 +303,17 @@ folderHelper styleDict node_ =
             in
             ( V.node tag newAttributes children_, newStyleDict )
 
-        -- StyledNodeNS someStr otherStr declarations attributes children ->
-        --     let
-        --         ( decStr, hash ) =
-        --             getHashAndString seed declarations
-        --     in
-        --     V.nodeNS someStr otherStr attributes <|
-        --         folder
-        --             (folderHelper hash <|
-        --                 Dict.insert hash decStr styleDict
-        --             )
-        --             children
+        StyledNodeNS ns tag declarations attributes children ->
+            let
+                ( newAttributes, ( children_, newStyleDict ) ) =
+                    folderHelperHelper
+                        (getHashAndString declarations)
+                        attributes
+                        children
+                        styleDict
+            in
+            ( V.nodeNS ns tag newAttributes children_, newStyleDict )
+
         StyledKeyedNode tag declarations attributes children ->
             let
                 ( newAttributes, ( children_, newStyleDict ) ) =
@@ -261,11 +325,24 @@ folderHelper styleDict node_ =
             in
             ( V.keyedNode tag
                 attributes
-                (List.map2
-                    (\( id, _ ) child -> ( id, child ))
-                    children
-                    children_
-                )
+                (copyIds children children_)
+            , newStyleDict
+            )
+
+        StyledKeyedNodeNS ns tag declarations attributes children ->
+            let
+                ( newAttributes, ( children_, newStyleDict ) ) =
+                    folderHelperHelper
+                        (getHashAndString declarations)
+                        attributes
+                        (List.map Tuple.second children)
+                        styleDict
+            in
+            ( V.keyedNodeNS
+                ns
+                tag
+                attributes
+                (copyIds children children_)
             , newStyleDict
             )
 
