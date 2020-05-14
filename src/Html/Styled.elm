@@ -423,8 +423,79 @@ nodeS =
     StyledNode
 
 
+map : (a -> msg) -> Node a -> Node msg
+map toMsg node_ =
+    case node_ of
+        Node tag attributes children ->
+            Node
+                tag
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map (map toMsg) children)
 
---map : (a -> msg) -> Node a -> Node msg
+        NodeNS ns tag attributes children ->
+            NodeNS
+                ns
+                tag
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map (map toMsg) children)
+
+        KeyedNode tag attributes children ->
+            KeyedNode
+                tag
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map
+                    (\( id, child ) -> ( id, map toMsg child ))
+                    children
+                )
+
+        KeyedNodeNS ns tag attributes children ->
+            KeyedNodeNS
+                ns
+                tag
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map
+                    (\( id, child ) -> ( id, map toMsg child ))
+                    children
+                )
+
+        StyledNode tag declarations attributes children ->
+            StyledNode
+                tag
+                declarations
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map (map toMsg) children)
+
+        StyledNodeNS ns tag declarations attributes children ->
+            StyledNodeNS
+                ns
+                tag
+                declarations
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map (map toMsg) children)
+
+        StyledKeyedNode tag declarations attributes children ->
+            StyledKeyedNode
+                tag
+                declarations
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map
+                    (\( id, child ) -> ( id, map toMsg child ))
+                    children
+                )
+
+        StyledKeyedNodeNS ns tag declarations attributes children ->
+            StyledKeyedNodeNS
+                ns
+                tag
+                declarations
+                (List.map (V.mapAttribute toMsg) attributes)
+                (List.map
+                    (\( id, child ) -> ( id, map toMsg child ))
+                    children
+                )
+
+        VNode vNode ->
+            VNode <| V.map toMsg vNode
 
 
 h1 : List (Attribute msg) -> List (Html msg) -> Html msg
