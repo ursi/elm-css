@@ -77,6 +77,7 @@ toString declarations =
                     selector
                         ++ " {\n"
                         ++ (pairs
+                                |> List.reverse
                                 |> joinMap
                                     (\( property, value ) ->
                                         "\t" ++ property ++ ": " ++ value ++ ";"

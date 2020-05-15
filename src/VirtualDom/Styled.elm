@@ -353,14 +353,16 @@ folderHelperHelper maybeHashAndString attributes nodes styleDict =
     case maybeHashAndString of
         Just ( hash, decsStr ) ->
             ( addClass hash attributes
-            , List.foldr folder
+            , List.foldr
+                folder
                 ( [], Dict.insert hash decsStr styleDict )
                 nodes
             )
 
         Nothing ->
             ( attributes
-            , List.foldr folder
+            , List.foldr
+                folder
                 ( [], styleDict )
                 nodes
             )
