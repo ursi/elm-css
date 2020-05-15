@@ -3,7 +3,7 @@
     "name": "ursi/elm-css",
     "summary": "todo",
     "license": "BSD-3-Clause",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "exposed-modules": [
         "Css",
         "Css.Functions",
