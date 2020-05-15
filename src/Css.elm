@@ -69,8 +69,77 @@ descendants =
 
 
 
+-- Pseudo-classes
+-- https://drafts.csswg.org/selectors-3/#pseudo-classes
+--
+-- The link pseudo-classes
+
+
+link : List Declaration -> Declaration
+link =
+    mapSelector <| append ":link"
+
+
+visited : List Declaration -> Declaration
+visited =
+    mapSelector <| append ":visited"
+
+
+
+-- The user action pseudo-classes
+
+
+hover : List Declaration -> Declaration
+hover =
+    mapSelector <| append ":hover"
+
+
+active : List Declaration -> Declaration
+active =
+    mapSelector <| append ":active"
+
+
+focus : List Declaration -> Declaration
+focus =
+    mapSelector <| append ":focus"
+
+
+
+-- The target pseudo-class
+
+
+target : List Declaration -> Declaration
+target =
+    mapSelector <| append ":target"
+
+
+
+-- The language pseudo-class
+
+
+lang : String -> List Declaration -> Declaration
+lang =
+    I.function ":lang"
+        >> append
+        >> mapSelector
+
+
+
+-- The UI element states pseudo-classes
+
+
+checked : List Declaration -> Declaration
+checked =
+    mapSelector <| append ":checked"
+
+
+indeterminate : List Declaration -> Declaration
+indeterminate =
+    mapSelector <| append ":indeterminate"
+
+
+
 -- Structural pseudo-classes
--- https://drafts.csswg.org/selectors-3/#structural-pseudos
 -- these pseudo-classes are the reason style elements aren't inserted in the element they're attached to
 
 
@@ -154,12 +223,18 @@ anpb a b =
 
 
 
+-- The negation pseudo-class
+
+
+not : String -> List Declaration -> Declaration
+not =
+    I.function ":not"
+        >> append
+        >> mapSelector
+
+
+
 --
-
-
-hover : List Declaration -> Declaration
-hover =
-    mapSelector <| append ":hover"
 
 
 important : Declaration -> Declaration
@@ -4127,7 +4202,6 @@ toUnit suffix n =
 
 pct : Float -> String
 pct =
-    -- technically not a unit
     toUnit "%"
 
 
