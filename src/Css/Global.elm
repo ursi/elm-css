@@ -7,10 +7,6 @@ import Murmur3
 import VirtualDom as V exposing (Node)
 
 
-todo =
-    Debug.todo ""
-
-
 type Statement
     = Rule Rule_
     | Batch (List Statement)

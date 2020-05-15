@@ -3,10 +3,6 @@ module Css exposing (..)
 import Css.Internal as I
 
 
-todo =
-    Debug.todo ""
-
-
 type alias Declaration =
     I.Declaration
 
