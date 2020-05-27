@@ -317,7 +317,7 @@ folderHelper styleDict node_ =
                         styleDict
             in
             ( V.keyedNode tag
-                attributes
+                newAttributes
                 (copyIds children children_)
             , newStyleDict
             )
@@ -334,7 +334,7 @@ folderHelper styleDict node_ =
             ( V.keyedNodeNS
                 ns
                 tag
-                attributes
+                newAttributes
                 (copyIds children children_)
             , newStyleDict
             )

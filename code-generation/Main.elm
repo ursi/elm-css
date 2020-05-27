@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import List.Extra as List
 
 
+main : Html ()
 main =
     -- view
     code
@@ -73,6 +74,7 @@ generateCode ( property, joinType ) =
     div []
         [ pre []
             [ ("""
+{-| -}
 $ : String -> Declaration
 $ = I.Single identity "#"
 """
@@ -108,6 +110,7 @@ j separator =
         "%"
         separator
         """
+{-| -}
 $J : List String -> Declaration
 $J = I.Single identity "#" << String.join "%"
 """
@@ -119,6 +122,7 @@ jj separator =
         "%"
         separator
         """
+{-| -}
 $JJ : List (List String) -> Declaration
 $JJ = I.Single identity "#" << String.join "%" << List.map (String.join " ")
 """
@@ -132,6 +136,7 @@ camelCase =
         >> somethingFirst String.toLower
 
 
+somethingFirst : (String -> String) -> String -> String
 somethingFirst func str =
     case String.uncons str of
         Just ( first, rest ) ->
@@ -187,6 +192,7 @@ getIndex =
         >> Maybe.withDefault -1
 
 
+properties : List ( String, JoinType )
 properties =
     [ ( "align-content"
       , Space1
